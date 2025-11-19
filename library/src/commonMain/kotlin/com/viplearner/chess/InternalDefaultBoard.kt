@@ -9,10 +9,6 @@ import com.viplearner.chess.PieceTypedBoard.Squares
 import com.viplearner.chess.Side
 import com.viplearner.chess.Square
 import com.viplearner.chess.Square.Pos
-import com.viplearner.model.KStream
-import com.viplearner.model.filter
-import com.viplearner.model.map
-import com.viplearner.model.stream
 import kotlin.jvm.JvmRecord
 
 /**
@@ -57,14 +53,11 @@ class InternalDefaultBoard(
         val to: Pos = Square.pos(uci.substring(2, 4))
         val board = DefaultBoard.fenPositionsToSquares(delegate.toFEN())[to] ?: throw IllegalStateException("No piece at destination square $to")
         if (board is Square.With) {
-            withCaptures = KStream.concat(withCaptures.stream(), KStream.of(board.type.withSide(board.side))).toList()
+            withCaptures = withCaptures + board.type.withSide(board.side)
         }
 
-        val withHistory = KStream.concat(
-                this.history.stream(),
-                KStream.of(MoveAndFen(uci, next.toFEN()))
-            ).toList()
-        return chariot.internal.chess.InternalDefaultBoard(next, withCaptures, this.initialFEN, withHistory)
+        val withHistory = this.history + MoveAndFen(uci, next.toFEN())
+        return InternalDefaultBoard(next, withCaptures, this.initialFEN, withHistory)
     }
 
     // delegate...
@@ -95,17 +88,14 @@ class InternalDefaultBoard(
 
     // ...delegate
     override fun historyFEN(): List<String?> {
-        return KStream.concat(
-            KStream.of(this.initialFEN),
-            this.history.stream().map(MoveAndFen::fen)
-        ).toList()
+        return listOfNotNull(this.initialFEN) + this.history.map { it.fen }
     }
 
     override fun historyMove(): List<String> {
-        return this.history.stream().map(MoveAndFen::move).toList()
+        return this.history.map { it.move }
     }
 
-    override fun squares(): PieceTypedBoard.Squares<Piece> {
+    override fun squares(): Squares<Piece> {
         val squares: Map<Pos, Square<Piece>> = DefaultBoard.fenPositionsToSquares(delegate.toFEN())
         return object : Squares<Piece> {
             override fun get(pos: Pos): Square<Piece> {
@@ -113,7 +103,7 @@ class InternalDefaultBoard(
             }
 
             override fun all(): List<Square<Piece>> {
-                return squares.values.stream().toList()
+                return squares.values.toList()
             }
         }
     }
@@ -122,32 +112,32 @@ class InternalDefaultBoard(
         val squares: Map<Pos, Square<Piece>> = DefaultBoard.fenPositionsToSquares(delegate.toFEN())
         return object : Pieces<Piece> {
             override fun all(): List<Square.With<Piece>> {
-                return squares.values.stream().filter({ s -> s is Square.With })
-                    .map({ s -> s as Square.With<Piece> }).toList()
+                return squares.values.filterIsInstance<Square.With<Piece>>()
             }
 
             override fun all(side: Side): List<Square.With<Piece>> {
-                return all().stream().filter({ p -> p.side === side }).toList()
+                return all().filter { it.side === side }
             }
 
             override fun of(type: Piece): List<Square.With<Piece>> {
-                return all().stream().filter({ p -> p.type === type }).toList()
+                return all().filter { it.type === type }
             }
 
             override fun of(type: Piece, side: Side): List<Square.With<Piece>> {
-                return of(type).stream().filter({ p -> p.side === side }).toList()
+                return of(type).filter { it.side === side }
             }
 
             override fun captured(side: Side): List<Piece> {
-                return this@InternalDefaultBoard.captures.stream().filter({ pieceWithSide -> pieceWithSide.side === side })
-                    .map(Piece.PieceAndSide::piece).toList()
+                return this@InternalDefaultBoard.captures
+                    .filter { it.side === side }
+                    .map { it.piece }
             }
         }
     }
 
     companion object {
         fun of(board: Board): InternalDefaultBoard {
-            return chariot.internal.chess.InternalDefaultBoard(board, listOf(), board.toFEN(), listOf())
+            return InternalDefaultBoard(board, listOf(), board.toFEN(), listOf())
         }
     }
 }

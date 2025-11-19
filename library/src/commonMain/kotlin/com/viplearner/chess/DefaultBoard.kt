@@ -3,11 +3,6 @@ package com.viplearner.chess
 import com.viplearner.model.*
 import com.viplearner.chess.Square.*
 import chariot.internal.chess.InternalDefaultBoard
-import com.viplearner.model.Collectors
-import com.viplearner.model.KStream
-import com.viplearner.model.collect
-import com.viplearner.model.sorted
-import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmRecord
 
 interface DefaultBoard : PieceTypedBoard<Piece> {
@@ -200,10 +195,10 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
         """.trimIndent()
 
         fun render(board: Board): String {
-            return render(board, { `_` -> })
+            return render(board) { }
         }
 
-        fun render(board: Board, config: Consumer<Config?>): String {
+        fun render(board: Board, config: (Config) -> Unit): String {
             val toConsume = object : Config {
                 var mutate: Data = Data(false, false, false, false)
 
@@ -227,7 +222,7 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
                     return this
                 }
             }
-            config.accept(toConsume)
+            config(toConsume)
             val data: Data = toConsume.mutate
             return render(board, data)
         }

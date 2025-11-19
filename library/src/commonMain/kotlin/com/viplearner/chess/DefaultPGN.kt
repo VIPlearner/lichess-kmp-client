@@ -1,33 +1,22 @@
 package com.viplearner.chess
 
-import com.viplearner.model.Collector
-import com.viplearner.model.Collectors
 import com.viplearner.model.PGN
-import com.viplearner.model.SequencedMap
-import com.viplearner.model.KStream
-import com.viplearner.model.collect
-import com.viplearner.model.filter
 import com.viplearner.model.formatted
-import com.viplearner.model.join
-import com.viplearner.model.map
-import com.viplearner.model.mapMulti
-import com.viplearner.model.stream
-import com.viplearner.model.toSequencedMap
 import com.viplearner.model.valueOf
 import dev.simplx.Character
 import kotlin.jvm.JvmOverloads
 
 class DefaultPGN @JvmOverloads constructor(
-    tags: SequencedMap<String, String> = SequencedMap(),
+    tags: Map<String, String> = linkedMapOf(),
     val text: CharSequence = ""
 ) : PGN {
-    val tags: SequencedMap<String, String> = tags.toSequencedMap()
+    val tags: Map<String, String> = LinkedHashMap(tags)
 
     override fun toString(): String {
         return if (tags.isEmpty())
             text.toString() + "\n"
         else
-            tagsSection().toString() + "\n\n" + text + "\n"
+            tagsSection() + "\n\n" + text + "\n"
     }
 
     override fun tags(): Map<String, String> {
@@ -35,12 +24,9 @@ class DefaultPGN @JvmOverloads constructor(
     }
 
     override fun tagsSection(): String {
-        return tags.map({ entry ->
-                """
-                    [%s "%s"]
-                    """.trimIndent().formatted(entry.key, entry.value)
-            })
-            .joinToString("\n")
+        return tags.map { (key, value) ->
+            """[%s "%s"]""".formatted(key, value)
+        }.joinToString("\n")
     }
 
     override fun textSection(): String {
@@ -48,17 +34,13 @@ class DefaultPGN @JvmOverloads constructor(
     }
 
     override fun withTags(_tags: Map<String, String>): DefaultPGN {
-        return DefaultPGN(
-            _tags.entries.stream().collect(DefaultPGN.Companion.sequencedMap), text
-        )
+        return DefaultPGN(LinkedHashMap(_tags), text)
     }
 
-    override fun withTags(_tags: UnaryOperator<KStream<Map.Entry<String, String>>>): DefaultPGN {
-        return DefaultPGN(
-            _tags.apply(tags.entries.stream())
-                .collect(DefaultPGN.Companion.sequencedMap),
-            text
-        )
+    override fun withTags(_tags: (Sequence<Map.Entry<String, String>>) -> Sequence<Map.Entry<String, String>>): DefaultPGN {
+        val newTags = _tags(tags.entries.asSequence())
+            .associate { it.key to it.value }
+        return DefaultPGN(LinkedHashMap(newTags), text)
     }
 
     override fun withText(_text: CharSequence): PGN {
@@ -66,11 +48,10 @@ class DefaultPGN @JvmOverloads constructor(
     }
 
 
-    override fun filterTags(filter: BiPredicate<String, String>): PGN {
-        return withTags({ stream ->
-            stream
-                .filter({ entry -> filter.test(entry.key, entry.value) })
-        })
+    override fun filterTags(filter: (String, String) -> Boolean): PGN {
+        return withTags { entries: Sequence<Map.Entry<String, String>> ->
+            entries.filter { entry -> filter(entry.key, entry.value) }
+        }
     }
 
 //    override fun replaceTags(replace: BiFunction<String, String, String>): PGN {
@@ -83,7 +64,7 @@ class DefaultPGN @JvmOverloads constructor(
 //    }
 
     override fun addTags(add: Map<String, String>): PGN {
-        return withTags({ s -> KStream.Companion.concat(s, add.entries.stream()) })
+        return withTags { s: Sequence<Map.Entry<String, String>> -> s + add.entries.asSequence() }
     }
 
     companion object {
@@ -100,31 +81,20 @@ class DefaultPGN @JvmOverloads constructor(
          *     }
          */
         fun of(tagsSection: String, text: String?): PGN {
-            val tags = tagsSection.lines().stream()
-                .mapMulti({ line, downstream ->
+            val tags = tagsSection.lines()
+                .mapNotNull { line ->
                     try {
-                        downstream.accept(
-                            object: Map.Entry<String, String>{
-                                override val key: String
-                                    get() = line.substring(1, line.indexOf(' '))
-                                override val value: String
-                                    get() = line.substring(line.indexOf('"') + 1, line.length - 2)
-                    }
-                        )
+                        val key = line.substring(1, line.indexOf(' '))
+                        val value = line.substring(line.indexOf('"') + 1, line.length - 2)
+                        key to value
                     } catch (e: Exception) {
+                        null
                     }
-                })
-                .collect(sequencedMap)
+                }
+                .toMap(LinkedHashMap())
             return DefaultPGN(tags, text ?: "")
         }
 
-        private val sequencedMap: Collector<Map.Entry<String, String>, *, SequencedMap<String, String>> =
-            Collectors.toMap(
-                { it.key },
-                { it.value },
-                { _, newValue -> newValue },
-                { LinkedHashMap() }
-            )
 
         fun render(text: PGN.Text): String {
             return when (text) {
@@ -135,10 +105,7 @@ class DefaultPGN @JvmOverloads constructor(
                 )
 
                 is PGN.Text.Variation -> "(%s)".formatted(
-                    String.Companion.join(
-                        " ",
-                        text.variation.stream().map(PGN.Text.Companion::render).toList()
-                    )
+                    text.variation.joinToString(" ") { PGN.Text.render(it) }
                 )
 
                 is PGN.Text.Result -> text.result
@@ -148,41 +115,38 @@ class DefaultPGN @JvmOverloads constructor(
             }
         }
 
-        fun parse(moves: String): KStream<PGN.Text> {
-            val moves = moves.trim()
+        fun parse(moves: String): Sequence<PGN.Text> {
+            val trimmedMoves = moves.trim()
             return when {
-                moves == "" -> {
-                    KStream.Companion.of(PGN.Text.Empty())
+                trimmedMoves == "" -> {
+                    sequenceOf(PGN.Text.Empty())
                 }
 
-                result(moves) != null -> {
-                    KStream.Companion.of(result(moves)!!)
+                result(trimmedMoves) != null -> {
+                    sequenceOf(result(trimmedMoves)!!)
                 }
-                Character.isDigit(moves[0]) -> {
-                    val dotPos = moves.indexOf(".")
-                    val moveNum = moves.substring(0, dotPos).toInt()
-                    val dots = if (moves[dotPos + 1] == '.') 3 else 1
-                    var sanBegin = moves.indexOf(" ", dotPos + 1)
-                    while (moves[sanBegin].isWhitespace()) sanBegin++
-                    val sanEnd = indexOfOrEnd(" ", sanBegin, moves)
-                    val san = moves.substring(sanBegin, sanEnd)
-                    KStream.Companion.concat(
-                        KStream.Companion.of(PGN.Text.Move(san, moveNum, dots)),
-                        parse(moves.substring(sanEnd))
-                    )
+                Character.isDigit(trimmedMoves[0]) -> {
+                    val dotPos = trimmedMoves.indexOf(".")
+                    val moveNum = trimmedMoves.substring(0, dotPos).toInt()
+                    val dots = if (trimmedMoves[dotPos + 1] == '.') 3 else 1
+                    var sanBegin = trimmedMoves.indexOf(" ", dotPos + 1)
+                    while (trimmedMoves[sanBegin].isWhitespace()) sanBegin++
+                    val sanEnd = indexOfOrEnd(" ", sanBegin, trimmedMoves)
+                    val san = trimmedMoves.substring(sanBegin, sanEnd)
+                    sequenceOf(PGN.Text.Move(san, moveNum, dots)) + parse(trimmedMoves.substring(sanEnd))
                 }
-                moves[0] == '(' -> {
+                trimmedMoves[0] == '(' -> {
                     var inComment = false
                     var nest = 1
                     var pos = 1
                     while (nest != 0) {
-                        inComment = when (moves[pos]) {
+                        inComment = when (trimmedMoves[pos]) {
                             '{' -> true
                             '}' -> false
                             else -> inComment
                         }
                         if (!inComment) {
-                            nest = when (moves[pos]) {
+                            nest = when (trimmedMoves[pos]) {
                                 '(' -> nest + 1
                                 ')' -> nest - 1
                                 else -> nest
@@ -190,23 +154,18 @@ class DefaultPGN @JvmOverloads constructor(
                         }
                         pos++
                     }
-                    KStream.Companion.concat(
-                        KStream.Companion.of(
-                            PGN.Text.Variation(
-                                parse(moves.substring(1, pos - 1)).toList()
-                            )
-                        ),
-                        parse(moves.substring(pos))
-                    )
+                    sequenceOf(
+                        PGN.Text.Variation(
+                            parse(trimmedMoves.substring(1, pos - 1)).toList()
+                        )
+                    ) + parse(trimmedMoves.substring(pos))
                 }
-                moves[0] == '{' -> KStream.Companion.concat(
-                    KStream.Companion.of(PGN.Text.Comment(moves.substring(1, moves.indexOf('}')))),
-                    parse(moves.substring(moves.indexOf('}') + 1))
-                )
-                else -> KStream.Companion.concat(
-                    KStream.Companion.of(PGN.Text.Move(moves.substring(0, indexOfOrEnd(" ", 0, moves)))),
-                    parse(moves.substring(indexOfOrEnd(" ", 0, moves)))
-                )
+                trimmedMoves[0] == '{' -> sequenceOf(
+                    PGN.Text.Comment(trimmedMoves.substring(1, trimmedMoves.indexOf('}')))
+                ) + parse(trimmedMoves.substring(trimmedMoves.indexOf('}') + 1))
+                else -> sequenceOf(
+                    PGN.Text.Move(trimmedMoves.substring(0, indexOfOrEnd(" ", 0, trimmedMoves)))
+                ) + parse(trimmedMoves.substring(indexOfOrEnd(" ", 0, trimmedMoves)))
 
             }
         }

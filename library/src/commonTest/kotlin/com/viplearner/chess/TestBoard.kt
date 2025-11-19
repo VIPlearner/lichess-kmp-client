@@ -162,41 +162,41 @@ class TestBoard {
         val whiteToMove: Board = Board.fromFEN("r3k2r/4p3/8/8/8/8/4P3/R3K2R w KQkq - 0 1")
 
         assertTrue(
-            whiteToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e1c1")
+            whiteToMove.validMoves().contains("e1c1")
         )
         assertTrue(
-            whiteToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e1g1")
+            whiteToMove.validMoves().contains("e1g1")
         )
 
         val blackSimulatedNopMove = "e7e6"
 
         val whiteToMoveAfterMovingA1: Board = whiteToMove.play("a1a2").play(blackSimulatedNopMove)
         assertFalse(
-            whiteToMoveAfterMovingA1.validMoves().stream().map({ m -> m.toString() }).toList()
+            whiteToMoveAfterMovingA1.validMoves()
                 .contains("e1c1")
         )
         assertTrue(
-            whiteToMoveAfterMovingA1.validMoves().stream().map({ m -> m.toString() }).toList()
+            whiteToMoveAfterMovingA1.validMoves()
                 .contains("e1g1")
         )
 
         val whiteToMoveAfterMovingH1: Board = whiteToMove.play("h1h2").play(blackSimulatedNopMove)
         assertTrue(
-            whiteToMoveAfterMovingH1.validMoves().stream().map({ m -> m.toString() }).toList()
+            whiteToMoveAfterMovingH1.validMoves()
                 .contains("e1c1")
         )
         assertFalse(
-            whiteToMoveAfterMovingH1.validMoves().stream().map({ m -> m.toString() }).toList()
+            whiteToMoveAfterMovingH1.validMoves()
                 .contains("e1g1")
         )
 
         val whiteToMoveAfterMovingKing: Board = whiteToMove.play("e1d2").play(blackSimulatedNopMove)
         assertFalse(
-            whiteToMoveAfterMovingKing.validMoves().stream().map({ m -> m.toString() }).toList()
+            whiteToMoveAfterMovingKing.validMoves()
                 .contains("e1c1")
         )
         assertFalse(
-            whiteToMoveAfterMovingKing.validMoves().stream().map({ m -> m.toString() }).toList()
+            whiteToMoveAfterMovingKing.validMoves()
                 .contains("e1g1")
         )
     }
@@ -205,41 +205,41 @@ class TestBoard {
     fun revokedCastlingRightsBlack() {
         val blackToMove: Board = Board.fromFEN("r3k2r/4p3/8/8/8/8/4P3/R3K2R b KQkq - 0 1")
         assertTrue(
-            blackToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e8c8")
+            blackToMove.validMoves().contains("e8c8")
         )
         assertTrue(
-            blackToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e8g8")
+            blackToMove.validMoves().contains("e8g8")
         )
 
         val whiteSimulatedNopMove = "e2e3"
 
         val blackToMoveAfterMovingA8: Board = blackToMove.play("a8a7").play(whiteSimulatedNopMove)
         assertFalse(
-            blackToMoveAfterMovingA8.validMoves().stream().map({ m -> m.toString() }).toList()
+            blackToMoveAfterMovingA8.validMoves()
                 .contains("e8c8")
         )
         assertTrue(
-            blackToMoveAfterMovingA8.validMoves().stream().map({ m -> m.toString() }).toList()
+            blackToMoveAfterMovingA8.validMoves()
                 .contains("e8g8")
         )
 
         val blackToMoveAfterMovingH8: Board = blackToMove.play("h8h7").play(whiteSimulatedNopMove)
         assertTrue(
-            blackToMoveAfterMovingH8.validMoves().stream().map({ m -> m.toString() }).toList()
+            blackToMoveAfterMovingH8.validMoves()
                 .contains("e8c8")
         )
         assertFalse(
-            blackToMoveAfterMovingH8.validMoves().stream().map({ m -> m.toString() }).toList()
+            blackToMoveAfterMovingH8.validMoves()
                 .contains("e8g8")
         )
 
         val blackToMoveAfterMovingKing: Board = blackToMove.play("e8d7").play(whiteSimulatedNopMove)
         assertFalse(
-            blackToMoveAfterMovingKing.validMoves().stream().map({ m -> m.toString() }).toList()
+            blackToMoveAfterMovingKing.validMoves()
                 .contains("e8c8")
         )
         assertFalse(
-            blackToMoveAfterMovingKing.validMoves().stream().map({ m -> m.toString() }).toList()
+            blackToMoveAfterMovingKing.validMoves()
                 .contains("e8g8")
         )
     }
@@ -253,10 +253,10 @@ class TestBoard {
         val expectedFenAfterKingSide = "r3k2r/8/8/8/8/8/8/R4RK1 b kq - 1 1"
 
         assertTrue(
-            whiteToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e1c1")
+            whiteToMove.validMoves().contains("e1c1")
         )
         assertTrue(
-            whiteToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e1g1")
+            whiteToMove.validMoves().contains("e1g1")
         )
 
         val queenSideByOOO: Board = whiteToMove.play("O-O-O")
@@ -286,10 +286,10 @@ class TestBoard {
         val expectedFenAfterKingSide = "r4rk1/8/8/8/8/8/8/R3K2R w KQ - 1 2"
 
         assertTrue(
-            blackToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e8c8")
+            blackToMove.validMoves().contains("e8c8")
         )
         assertTrue(
-            blackToMove.validMoves().stream().map({ m -> m.toString() }).toList().contains("e8g8")
+            blackToMove.validMoves().contains("e8g8")
         )
 
         val queenSideByOOO: Board = blackToMove.play("O-O-O")

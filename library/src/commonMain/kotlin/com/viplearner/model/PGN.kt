@@ -11,10 +11,9 @@ interface PGN {
 
     /** Retrieves the list of moves from the mainline of the PGN (omitting comments, variations and result) */
     fun movesList(): List<String> {
-        return textList().stream()
-            .mapMulti({ text, mapper ->
-            if (text is Text.Move) mapper.accept(text.san)
-        }).toList()
+        return textList().mapNotNull { text ->
+            if (text is Text.Move) text.san else null
+        }
     }
 
     /** Retrieves a string of moves from the mainline of the PGN (omitting comments, variations and result) */
@@ -40,11 +39,11 @@ interface PGN {
 
     /** @return a copy of this `PGN` with tags yielded from applying provided `tags` operator on existing tags.
      */
-    fun withTags(tags: UnaryOperator<KStream<Map.Entry<String, String>>>): PGN
+    fun withTags(tags: (Sequence<Map.Entry<String, String>>) -> Sequence<Map.Entry<String, String>>): PGN
 
     /** @return a copy of this `PGN` with tags yielded from applying provided `filter` on existing tags.
      */
-    fun filterTags(filter: BiPredicate<String, String>): PGN
+    fun filterTags(filter: (String, String) -> Boolean): PGN
 
 //    /** @return a copy of this `PGN` with tags yielded from applying provided `mapper` on existing tags.
 //     */
@@ -123,7 +122,7 @@ interface PGN {
                 return DefaultPGN.render(text)
             }
 
-            fun parse(moves: String): KStream<Text> {
+            fun parse(moves: String): Sequence<Text> {
                 return DefaultPGN.parse(moves)
             }
         }
@@ -132,25 +131,21 @@ interface PGN {
     companion object {
         /** Parses a string of PGN into a `PGN` */
         fun read(sequence: CharSequence): PGN {
-            com.viplearner.model.PGN.Companion.stream(sequence).use { stream ->
-                return stream.findFirst().orElseGet({ DefaultPGN() })
-            }
+            return stream(sequence).firstOrNull() ?: DefaultPGN()
         }
 
         /** Parses a file of PGN into a `PGN` */
         fun read(file: Path): PGN {
-            com.viplearner.model.PGN.Companion.stream(file).use { stream ->
-                return stream.findFirst().orElseGet({ DefaultPGN() })
-            }
+            return stream(file).firstOrNull() ?: DefaultPGN()
         }
 
-        /** Parses a string of PGNs into a `Stream<PGN>`</PGN> */
-        fun stream(sequence: CharSequence): KStream<PGN> {
+        /** Parses a string of PGNs into a `Sequence<PGN>` */
+        fun stream(sequence: CharSequence): Sequence<PGN> {
             return Util.pgnStream(sequence)
         }
 
-        /** Parses a file of PGNs into a `Stream<PGN>`</PGN> */
-        fun stream(file: Path): KStream<PGN> {
+        /** Parses a file of PGNs into a `Sequence<PGN>` */
+        fun stream(file: Path): Sequence<PGN> {
             return Util.pgnStream(file)
         }
     }

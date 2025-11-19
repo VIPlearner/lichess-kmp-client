@@ -4,7 +4,6 @@ import com.viplearner.model.formatted
 import kotlin.jvm.JvmRecord
 
 interface Square<T : PieceType> {
-    @JvmRecord
     data class Empty<T : PieceType>(val pos: Pos) : Square<T> {
         override fun pos(): Pos {
             return pos
@@ -43,7 +42,6 @@ interface Square<T : PieceType> {
         return pos().rank()
     }
 
-    @JvmRecord
     data class FileRank(val file: Char, val rank: Int) : Pos {
         override fun toString(): String {
             return "%s%s".formatted(file, rank)

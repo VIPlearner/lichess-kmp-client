@@ -2,15 +2,8 @@ package com.viplearner.chess
 
 import chariot.internal.chess.InternalBoardProvider
 import com.viplearner.model.Optional
-import com.viplearner.model.findFirst
 import com.viplearner.model.formatted
-import com.viplearner.model.gather
-import com.viplearner.model.getFirst
-import com.viplearner.model.getLast
 import com.viplearner.model.join
-import com.viplearner.model.skip
-import com.viplearner.model.stream
-import com.viplearner.model.stream as kstream
 
 interface Board {
     fun play(move: Move): Board
@@ -22,11 +15,9 @@ interface Board {
     fun variant(): String
 
     fun asMoves(vararg moves: String): List<Move> {
-        return Arrays.stream(moves)
-            .flatMap({ s -> Arrays.stream(s.split(" ")) })
-            .filter({ s -> !s.isEmpty() })
+        return moves.flatMap { s -> s.split(" ") }
+            .filter { s -> s.isNotEmpty() }
             .map(Move.Companion::wrap)
-            .toList()
     }
 
     fun sideToMove(): Side {
@@ -38,9 +29,7 @@ interface Board {
     }
 
     fun play(vararg moves: String): Board {
-        return asMoves(*moves).kstream()
-            .gather(Gatherers.fold({ this }, { board, move -> board.play(move) }))
-            .findFirst().orElse(this)!!
+        return asMoves(*moves).fold(this) { board, move -> board.play(move) }
     }
 
     fun toFEN(vararg moves: String): String {
@@ -50,37 +39,28 @@ interface Board {
     fun toSAN(vararg moves: String): String {
         val list: List<Move> = asMoves(*moves)
         if (list.isEmpty()) return ""
-        return list.kstream().skip(1)
-            .gather(
-                Gatherers.fold(
-                    { toSAN(list.getFirst()!!) },
-                    { sans, next -> String.join(" ", sans, play(sans)!!.toSAN(next)) })
-            )
-            .findFirst().orElse("")!!
+        return list.drop(1).fold(toSAN(list.first())) { sans, next ->
+            String.join(" ", sans, play(sans).toSAN(next))
+        }
     }
 
     fun toUCI(vararg moves: String): String {
         val list: List<Move> = asMoves(*moves)
         if (list.isEmpty()) return ""
-        return list.kstream().skip(1)
-            .gather(
-                Gatherers.fold(
-                    { toUCI(list.getFirst()!!) },
-                    { ucis, next -> String.join(" ", ucis, play(ucis)!!.toUCI(next)) })
-            )
-            .findFirst().orElse("")!!
+        return list.drop(1).fold(toUCI(list.first())) { ucis, next ->
+            String.join(" ", ucis, play(ucis).toUCI(next))
+        }
     }
 
     fun toPGN(vararg moves: String): String? {
         val end = play(*moves)
-        val sans: List<String?> = Arrays.stream(toSAN(*moves)!!.split(" "))
-            .filter({ s -> !s.isEmpty() })
-            .toList()
+        val sans: List<String> = toSAN(*moves).split(" ")
+            .filter { s -> s.isNotEmpty() }
 
         val currentFEN: FEN = FEN.Companion.parse(toFEN())
         val endFEN: FEN = FEN.Companion.parse(end.toFEN())
 
-        val lastMove = if (sans.isEmpty()) "" else sans.getLast()!!
+        val lastMove = if (sans.isEmpty()) "" else sans.last()
 
         val result: String? = when (end.validMoves().isEmpty()) {
             true -> when {
@@ -99,7 +79,7 @@ interface Board {
         var move: Int = currentFEN.move()
 
         if (currentFEN.side() === Side.black) {
-            sb.append("%d... %s ".formatted(move, sans.getFirst()))
+            sb.append("%d... %s ".formatted(move, sans.first()))
             move++
         }
         var i = if (currentFEN.side() === Side.black) 1 else 0
