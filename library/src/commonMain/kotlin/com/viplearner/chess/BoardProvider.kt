@@ -1,6 +1,5 @@
 package com.viplearner.chess
 
-import chariot.internal.chess.InternalBoardProvider
 import com.viplearner.model.formatted
 
 interface BoardProvider {

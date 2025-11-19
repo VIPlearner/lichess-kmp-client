@@ -96,12 +96,12 @@ class TeamsService(
      * Members are sorted by reverse chronological order of joining the team (most recent first).
      * OAuth is only required if the list of members is private.
      */
-    suspend fun teamIdUsers(teamId: String, full: Boolean? = null): Result<Unit> {
+    suspend fun teamIdUsers(teamId: String, full: Boolean? = null): Result<Flow<TeamidusersResponse>> {
         return try {
             val queryParams = mapOf(
                 "full" to full
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/team/${teamId}/users", queryParams)
+            val result: Flow<TeamidusersResponse> = apiClient.safeGet("api/team/${teamId}/users", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

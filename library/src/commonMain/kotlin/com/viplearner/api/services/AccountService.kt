@@ -29,9 +29,9 @@ class AccountService(
      * Get my email address
      * Read the email address of the logged in user.
      */
-    suspend fun accountEmail(): Result<Unit> {
+    suspend fun accountEmail(): Result<AccountemailResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/account/email")
+            val result: AccountemailResponse = apiClient.safeGet("api/account/email")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -43,9 +43,9 @@ class AccountService(
      * Read the preferences of the logged in user.
      * - <https://lichess.org/account/preferences/game-display>
      */
-    suspend fun account(): Result<Unit> {
+    suspend fun account(): Result<AccountPreferencesResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/account/preferences")
+            val result: AccountPreferencesResponse = apiClient.safeGet("api/account/preferences")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -57,9 +57,9 @@ class AccountService(
      * Read the kid mode status of the logged in user.
      * - <https://lichess.org/account/kid>
      */
-    suspend fun accountKid(): Result<Unit> {
+    suspend fun accountKid(): Result<AccountkidResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/account/kid")
+            val result: AccountkidResponse = apiClient.safeGet("api/account/kid")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

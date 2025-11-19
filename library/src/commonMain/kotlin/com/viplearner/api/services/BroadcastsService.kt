@@ -52,13 +52,13 @@ class BroadcastsService(
      * Get all incoming, ongoing, and finished official broadcasts.
      * The broadcasts are sorted by created date, most recent first.
      */
-    suspend fun broadcastsByUser(username: String, page: Int? = null, html: Boolean? = null): Result<Unit> {
+    suspend fun broadcastsByUser(username: String, page: Int? = null, html: Boolean? = null): Result<BroadcastsbyuserResponse> {
         return try {
             val queryParams = mapOf(
                 "page" to page,
                 "html" to html
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/broadcast/by/${username}", queryParams)
+            val result: BroadcastsbyuserResponse = apiClient.safeGet("api/broadcast/by/${username}", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -69,13 +69,13 @@ class BroadcastsService(
      * Search broadcasts
      * Search across recent official broadcasts.
      */
-    suspend fun broadcastsSearch(page: Int? = null, q: String? = null): Result<Unit> {
+    suspend fun broadcastsSearch(page: Int? = null, q: String? = null): Result<BroadcastssearchResponse> {
         return try {
             val queryParams = mapOf(
                 "page" to page,
                 "q" to q
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/broadcast/search", queryParams)
+            val result: BroadcastssearchResponse = apiClient.safeGet("api/broadcast/search", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

@@ -17,7 +17,7 @@ class UsersService(
      * Read the `online`, `playing` and `streaming` flags of several users.
      * This API is very fast and cheap on lichess side.
      */
-    suspend fun usersStatus(ids: String, withSignal: Boolean? = null, withGameIds: Boolean? = null, withGameMetas: Boolean? = null): Result<Unit> {
+    suspend fun usersStatus(ids: String, withSignal: Boolean? = null, withGameIds: Boolean? = null, withGameMetas: Boolean? = null): Result<List<UserStatus>> {
         return try {
             val queryParams = mapOf(
                 "ids" to ids,
@@ -25,7 +25,7 @@ class UsersService(
                 "withGameIds" to withGameIds,
                 "withGameMetas" to withGameMetas
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/users/status", queryParams)
+            val result: List<UserStatus> = apiClient.safeGet("api/users/status", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -51,9 +51,9 @@ class UsersService(
      * Get the leaderboard for a single speed or variant (a.k.a. `perfType`).
      * There is no leaderboard for correspondence or puzzles.
      */
-    suspend fun playerTopNbPerfType(nb: Int, perfType: String): Result<Unit> {
+    suspend fun playerTopNbPerfType(nb: Int, perfType: String): Result<Leaderboard> {
         return try {
-            val result: Unit = apiClient.safeGet("api/player/top/${nb}/${perfType}")
+            val result: Leaderboard = apiClient.safeGet("api/player/top/${nb}/${perfType}")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -136,9 +136,9 @@ class UsersService(
      * Get basic info about currently streaming users.
      * This API is very fast and cheap on lichess side.
      */
-    suspend fun streamerLive(): Result<Unit> {
+    suspend fun streamerLive(): Result<List<LiveStreamerResponse>> {
         return try {
-            val result: Unit = apiClient.safeGet("api/streamer/live")
+            val result: List<LiveStreamerResponse> = apiClient.safeGet("api/streamer/live")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -166,7 +166,7 @@ class UsersService(
      * Autocomplete usernames
      * Provides autocompletion options for an incomplete username.
      */
-    suspend fun playerAutocomplete(term: String, `object`: Boolean? = null, names: Boolean? = null, friend: Boolean? = null, team: String? = null, tour: String? = null, swiss: String? = null): Result<Unit> {
+    suspend fun playerAutocomplete(term: String, `object`: Boolean? = null, names: Boolean? = null, friend: Boolean? = null, team: String? = null, tour: String? = null, swiss: String? = null): Result<PlayerAutocompleteResponse> {
         return try {
             val queryParams = mapOf(
                 "term" to term,
@@ -177,7 +177,7 @@ class UsersService(
                 "tour" to tour,
                 "swiss" to swiss
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/player/autocomplete", queryParams)
+            val result: PlayerAutocompleteResponse = apiClient.safeGet("api/player/autocomplete", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

@@ -176,12 +176,12 @@ class GamesService(
      * Get the ongoing games of the current user.
      * Real-time and correspondence games are included.
      */
-    suspend fun accountPlaying(nb: Int? = null): Result<Unit> {
+    suspend fun accountPlaying(nb: Int? = null): Result<AccountPlayingResponse> {
         return try {
             val queryParams = mapOf(
                 "nb" to nb
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/account/playing", queryParams)
+            val result: AccountPlayingResponse = apiClient.safeGet("api/account/playing", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -207,12 +207,12 @@ class GamesService(
      * Import a game from PGN. See <https://lichess.org/paste>.
      * Rate limiting: 200 games per hour for OAuth requests, 100 games per hour for anonymous requests.
      */
-    suspend fun gameImport(pgn: String? = null): Result<Unit> {
+    suspend fun gameImport(pgn: String? = null): Result<GameImportResponse> {
         return try {
             val formBody = mapOf(
                 "pgn" to pgn
             ).filterValues { it != null }
-            val result: Unit = apiClient.safePost("api/import", body = formBody)
+            val result: GameImportResponse = apiClient.safePost("api/import", body = formBody)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

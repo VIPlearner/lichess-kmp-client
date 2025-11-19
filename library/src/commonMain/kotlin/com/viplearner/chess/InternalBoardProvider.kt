@@ -1,9 +1,4 @@
-package chariot.internal.chess
-
-import com.viplearner.chess.Board
-import com.viplearner.chess.Chess960BoardProvider
-import com.viplearner.chess.FEN
-import com.viplearner.chess.NaiveChess
+package com.viplearner.chess
 
 class InternalBoardProvider : Chess960BoardProvider {
     override fun supportedVariants(): Set<String> {

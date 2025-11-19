@@ -108,6 +108,8 @@ class TestBoard {
 
         // third time position shows up
         board = board.play("Nb8")
+
+        assertTrue(board.validMoves().isEmpty())
     }
 
     @Test

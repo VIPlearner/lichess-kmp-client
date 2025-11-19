@@ -210,13 +210,13 @@ class ArenaTournamentsService(
      * Players of an Arena tournament, with their score and performance, sorted by rank (best first).
      * **Players are streamed as [ndjson](#section/Introduction/Streaming-with-ND-JSON)**, i.e. one JSON object per line.
      */
-    suspend fun resultsByTournament(id: String, nb: Int? = null, sheet: Boolean? = null): Result<Unit> {
+    suspend fun resultsByTournament(id: String, nb: Int? = null, sheet: Boolean? = null): Result<Flow<ResultsbytournamentResponse>> {
         return try {
             val queryParams = mapOf(
                 "nb" to nb,
                 "sheet" to sheet
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/tournament/${id}/results", queryParams)
+            val result: Flow<ResultsbytournamentResponse> = apiClient.safeGet("api/tournament/${id}/results", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -227,9 +227,9 @@ class ArenaTournamentsService(
      * Get team standing of a team battle
      * Teams of a team battle tournament, with top players, sorted by rank (best first).
      */
-    suspend fun teamsByTournament(id: String): Result<Unit> {
+    suspend fun teamsByTournament(id: String): Result<TournamentTeamsResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/tournament/${id}/teams")
+            val result: TournamentTeamsResponse = apiClient.safeGet("api/tournament/${id}/teams")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

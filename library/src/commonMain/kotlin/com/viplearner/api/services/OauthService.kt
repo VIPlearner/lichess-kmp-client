@@ -40,7 +40,7 @@ class OauthService(
      * Obtain access token
      * OAuth2 token endpoint. Exchanges an authorization code for an access token.
      */
-    suspend fun token(grant_type: String? = null, code: String? = null, code_verifier: String? = null, redirect_uri: String? = null, client_id: String? = null): Result<Unit> {
+    suspend fun token(grant_type: String? = null, code: String? = null, code_verifier: String? = null, redirect_uri: String? = null, client_id: String? = null): Result<TokenResult> {
         return try {
             val formBody = mapOf(
                 "grant_type" to grant_type,
@@ -49,7 +49,7 @@ class OauthService(
                 "redirect_uri" to redirect_uri,
                 "client_id" to client_id
             ).filterValues { it != null }
-            val result: Unit = apiClient.safePost("api/token", body = formBody)
+            val result: TokenResult = apiClient.safePost("api/token", body = formBody)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

@@ -17,9 +17,9 @@ class TvService(
      * Get basic info about the best games being played for each speed and variant,
      * but also computer games and bot games.
      */
-    suspend fun tvChannels(): Result<Unit> {
+    suspend fun tvChannels(): Result<TvChannelsResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/tv/channels")
+            val result: TvChannelsResponse = apiClient.safeGet("api/tv/channels")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

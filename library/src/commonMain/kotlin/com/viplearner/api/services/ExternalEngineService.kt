@@ -84,9 +84,9 @@ class ExternalEngineService(
      * **Endpoint: `https://engine.lichess.ovh/api/external-engine/{id}/analyse`**
      * Request analysis from an external engine.
      */
-    suspend fun externalEngineAnalyse(body: Map<String, Any>): Result<Unit> {
+    suspend fun externalEngineAnalyse(body: Map<String, Any>): Result<ExternalEngineAnalyseResponse> {
         return try {
-            val result: Unit = apiClient.safePost("api/external-engine/{id}/analyse", body = body)
+            val result: ExternalEngineAnalyseResponse = apiClient.safePost("api/external-engine/work", body = body)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -98,9 +98,9 @@ class ExternalEngineService(
      * **Endpoint: `https://engine.lichess.ovh/api/external-engine/work`**
      * Wait for an analysis requests to any of the external engines that
      */
-    suspend fun externalEngineAcquire(body: Map<String, Any>): Result<Unit> {
+    suspend fun externalEngineAcquire(body: Map<String, Any>): Result<ExternalengineacquireResponse> {
         return try {
-            val result: Unit = apiClient.safePost("api/external-engine/work", body = body)
+            val result: ExternalengineacquireResponse = apiClient.safePost("api/external-engine/work", body = body)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

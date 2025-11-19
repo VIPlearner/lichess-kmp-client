@@ -109,13 +109,13 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                             }
 
                             if (unique.file && unique.rank) {
-                                dis = from.toString().substring(0, 1) // specify the file
+                                dis = from.pos().toString().substring(0, 1) // specify the file
                             } else if (unique.file) {
-                                dis = from.toString().substring(0, 1) // specify the file
+                                dis = from.pos().toString().substring(0, 1) // specify the file
                             } else if (unique.rank) {
-                                dis = from.toString().substring(1, 2) // specify the rank
+                                dis = from.pos().toString().substring(1, 2) // specify the rank
                             } else {
-                                dis = from.toString() // specify both file and rank
+                                dis = from.pos().toString() // specify both file and rank
                             }
                         }
                         "%s".repeat(5).formatted(letter, dis, capture, to, checkSymbol)
@@ -569,12 +569,12 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
         }
     }
 
-    internal class FromTo(val from: Square.With<Piece>, val to: Pos) : InternalMove {
+    internal data class FromTo(val from: Square.With<Piece>, val to: Pos) : InternalMove {
     }
 
     @JvmRecord
     internal data class Castling(val king: FromTo, val rook: FromTo) : InternalMove
-    internal class Promotion(val pawn: FromTo, val piece: Piece) : InternalMove {
+    internal data class Promotion(val pawn: FromTo, val piece: Piece) : InternalMove {
     }
 
     private fun validMovesByPiece(piece: Square.With<Piece>): Sequence<InternalMove> {

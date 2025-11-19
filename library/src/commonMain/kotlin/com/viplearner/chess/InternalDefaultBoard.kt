@@ -1,13 +1,7 @@
-package chariot.internal.chess
+package com.viplearner.chess
 
-import com.viplearner.chess.Board
-import com.viplearner.chess.DefaultBoard
-import com.viplearner.chess.Piece
-import com.viplearner.chess.PieceTypedBoard
 import com.viplearner.chess.PieceTypedBoard.Pieces
 import com.viplearner.chess.PieceTypedBoard.Squares
-import com.viplearner.chess.Side
-import com.viplearner.chess.Square
 import com.viplearner.chess.Square.Pos
 import kotlin.jvm.JvmRecord
 

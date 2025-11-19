@@ -199,12 +199,12 @@ class SwissTournamentsService(
      * Players of a swiss tournament, with their score and performance, sorted by rank (best first).
      * Players are streamed as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
-    suspend fun resultsBySwiss(id: String, nb: Int? = null): Result<Unit> {
+    suspend fun resultsBySwiss(id: String, nb: Int? = null): Result<Flow<ResultsbyswissResponse>> {
         return try {
             val queryParams = mapOf(
                 "nb" to nb
             ).filterValues { it != null }
-            val result: Unit = apiClient.safeGet("api/swiss/${id}/results", queryParams)
+            val result: Flow<ResultsbyswissResponse> = apiClient.safeGet("api/swiss/${id}/results", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

@@ -17,9 +17,9 @@ class SimulsService(
      * Get recently created, started, finished, simuls.
      * Created and finished simul lists are not exhaustives, only those with
      */
-    suspend fun simul(): Result<Unit> {
+    suspend fun simul(): Result<SimulResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/simul")
+            val result: SimulResponse = apiClient.safeGet("api/simul")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

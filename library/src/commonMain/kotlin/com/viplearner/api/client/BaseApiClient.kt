@@ -11,6 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.serialization.json.Json
 
 
@@ -26,6 +28,10 @@ class BaseApiClient(
     token: String
 ) {
     val client = HttpClient {
+        engine {
+            dispatcher = Dispatchers.IO
+            pipelining = true
+        }
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -39,6 +45,8 @@ class BaseApiClient(
                 loadTokens {
                     BearerTokens(token, null)
                 }
+                refreshTokens {  }
+                sendWithoutRequest {  }
             }
         }
 

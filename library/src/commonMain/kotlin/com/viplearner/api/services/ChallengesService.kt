@@ -16,9 +16,9 @@ class ChallengesService(
      * List your challenges
      * Get a list of challenges created by or targeted at you.
      */
-    suspend fun challengeList(): Result<Unit> {
+    suspend fun challengeList(): Result<ChallengelistResponse> {
         return try {
-            val result: Unit = apiClient.safeGet("api/challenge")
+            val result: ChallengelistResponse = apiClient.safeGet("api/challenge")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -107,7 +107,7 @@ class ChallengesService(
      * Start a game with Lichess AI.
      * You will be notified on the [event stream](#operation/apiStreamEvent) that a new game has started.
      */
-    suspend fun challengeAi(level: Int, clockLimit: Int? = null, clockIncrement: Int? = null, days: Int? = null, color: String? = null, variant: String? = null, fen: String? = null): Result<Unit> {
+    suspend fun challengeAi(level: Int, clockLimit: Int? = null, clockIncrement: Int? = null, days: Int? = null, color: String? = null, variant: String? = null, fen: String? = null): Result<ChallengeaiResponse> {
         return try {
             val formBody = mapOf(
                 "level" to level,
@@ -118,7 +118,7 @@ class ChallengesService(
                 "variant" to variant,
                 "fen" to fen
             ).filterValues { it != null }
-            val result: Unit = apiClient.safePost("api/challenge/ai", body = formBody)
+            val result: ChallengeaiResponse = apiClient.safePost("api/challenge/ai", body = formBody)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

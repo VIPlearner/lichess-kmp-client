@@ -2,7 +2,6 @@ package com.viplearner.chess
 
 import com.viplearner.model.*
 import com.viplearner.chess.Square.*
-import chariot.internal.chess.InternalDefaultBoard
 import kotlin.jvm.JvmRecord
 
 interface DefaultBoard : PieceTypedBoard<Piece> {

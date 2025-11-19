@@ -1,6 +1,5 @@
 package com.viplearner.chess
 
-import chariot.internal.chess.InternalBoardProvider
 import com.viplearner.model.Optional
 import com.viplearner.model.formatted
 import com.viplearner.model.join
@@ -29,7 +28,9 @@ interface Board {
     }
 
     fun play(vararg moves: String): Board {
-        return asMoves(*moves).fold(this) { board, move -> board.play(move) }
+        return asMoves(*moves).fold(this) {
+                                          board, move -> board.play(move)
+        }
     }
 
     fun toFEN(vararg moves: String): String {

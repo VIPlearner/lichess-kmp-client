@@ -16,9 +16,9 @@ class BoardService(
      * Stream incoming events
      * Stream the events reaching a lichess user in real time as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
-    suspend fun streamEvent(): Result<Unit> {
+    suspend fun streamEvent(): Result<Flow<ApiStreamEvent>> {
         return try {
-            val result: Unit = apiClient.safeGet("api/stream/event")
+            val result: Flow<ApiStreamEvent> = apiClient.safeGet("api/stream/event")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -29,9 +29,9 @@ class BoardService(
      * Create a seek
      * Create a public seek, to start a game with a random player.
      */
-    suspend fun boardSeek(formData: Map<String, String>): Result<Unit> {
+    suspend fun boardSeek(formData: Map<String, String>): Result<BoardSeekResponse> {
         return try {
-            val result: Unit = apiClient.safePost("api/board/seek", body = formData)
+            val result: BoardSeekResponse = apiClient.safePost("api/board/seek", body = formData)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

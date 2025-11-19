@@ -51,6 +51,28 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        // Platform-specific Ktor engines
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+        linuxMain.dependencies {
+            implementation(libs.ktor.client.curl)
+        }
+
+        // JS engine (if JS target is added in the future)
+         jsMain.dependencies {
+             implementation(libs.ktor.client.js)
+         }
     }
 }
 
