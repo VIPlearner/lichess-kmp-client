@@ -8,13 +8,13 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
-group = "io.github.kotlin"
-version = "1.0.0"
+group = "io.github.viplearner"
+version = "0.1.0-alpha"
 
 kotlin {
     jvm()
     androidLibrary {
-        namespace = "org.jetbrains.kotlinx.multiplatform.library.template"
+        namespace = "io.github.viplearner.lichess.client"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
@@ -36,6 +36,10 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     linuxX64()
+    js(IR) {
+        browser()
+        nodejs()
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -83,31 +87,31 @@ mavenPublishing {
 
     signAllPublications()
 
-    coordinates(group.toString(), "library", version.toString())
+    coordinates(group.toString(), "lichess-kmp-client", version.toString())
 
     pom {
-        name = "Lichess KMP CLient"
-        description = "A library."
-        inceptionYear = "2024"
-        url = "https://github.com/kotlin/multiplatform-library-template/"
+        name = "Lichess KMP Client"
+        description = "A Kotlin Multiplatform client library for the Lichess.org API"
+        inceptionYear = "2025"
+        url = "https://github.com/VIPlearner/lichess-kmp-client/"
         licenses {
             license {
-                name = "XXX"
-                url = "YYY"
-                distribution = "ZZZ"
+                name = "The Apache License, Version 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "repo"
             }
         }
         developers {
             developer {
-                id = "XXX"
-                name = "YYY"
-                url = "ZZZ"
+                id = "viplearner"
+                name = "viplearner"
+                url = "https://github.com/VIPlearner/"
             }
         }
         scm {
-            url = "XXX"
-            connection = "YYY"
-            developerConnection = "ZZZ"
+            url = "https://github.com/VIPlearner/lichess-kmp-client/"
+            connection = "scm:git:git://github.com/VIPlearner/lichess-kmp-client.git"
+            developerConnection = "scm:git:ssh://git@github.com/VIPlearner/lichess-kmp-client.git"
         }
     }
 }
