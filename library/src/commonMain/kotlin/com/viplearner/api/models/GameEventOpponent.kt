@@ -1,15 +1,14 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
-
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 
 object GameEventOpponentSerializer : JsonContentPolymorphicSerializer<GameEventOpponent>(
-    GameEventOpponent::class
+    GameEventOpponent::class,
 ) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<GameEventOpponent> {
         val jsonObject = element.jsonObject
@@ -29,8 +28,8 @@ sealed class GameEventOpponent {
     data class Player(
         val id: String,
         val username: String,
-        val rating: Int,
-        val ratingDiff: Int? = null
+        val rating: Long,
+        val ratingDiff: Long? = null,
     ) : GameEventOpponent()
 
     @Serializable
@@ -38,7 +37,6 @@ sealed class GameEventOpponent {
     data class AiOpponent(
         val id: Unit?,
         val username: String,
-        val ai: Int
+        val ai: Long,
     ) : GameEventOpponent()
-
 }

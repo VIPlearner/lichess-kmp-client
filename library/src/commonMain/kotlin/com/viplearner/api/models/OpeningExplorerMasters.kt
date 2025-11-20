@@ -1,27 +1,26 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class OpeningExplorerMasters(
     val opening: OpeningExplorerOpening?,
-    val white: Int,
-    val draws: Int,
-    val black: Int,
+    val white: Long,
+    val draws: Long,
+    val black: Long,
     val moves: List<Move>,
-    val topGames: List<TopGame>
+    val topGames: List<TopGame>,
 ) {
     @Serializable
     data class Move(
         val uci: String,
         val san: String,
-        val averageRating: Int,
-        val white: Int,
-        val draws: Int,
-        val black: Int,
+        val averageRating: Long,
+        val white: Long,
+        val draws: Long,
+        val black: Long,
         val game: OpeningExplorerMastersGame?,
-        val opening: OpeningExplorerOpening?
+        val opening: OpeningExplorerOpening?,
     )
 
     @Serializable
@@ -31,7 +30,7 @@ data class OpeningExplorerMasters(
         val winner: GameColor?,
         val white: OpeningExplorerGamePlayer,
         val black: OpeningExplorerGamePlayer,
-        val year: Int,
-        val month: String? = null
+        val year: Long,
+        val month: String? = null,
     )
 }

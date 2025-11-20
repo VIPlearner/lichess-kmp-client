@@ -5,7 +5,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
 
-
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @JsonClassDiscriminator("type")
@@ -14,14 +13,14 @@ sealed class ApiStreamEvent {
     @SerialName("gameStart")
     data class GameStartEvent(
         val type: String,
-        val game: GameEventInfo
+        val game: GameEventInfo,
     ) : ApiStreamEvent()
 
     @Serializable
     @SerialName("gameFinish")
     data class GameFinishEvent(
         val type: String,
-        val game: GameEventInfo
+        val game: GameEventInfo,
     ) : ApiStreamEvent()
 
     @Serializable
@@ -29,20 +28,20 @@ sealed class ApiStreamEvent {
     data class ChallengeEvent(
         val type: String,
         val challenge: ChallengeJson,
-        val compat: GameCompat? = null
+        val compat: GameCompat? = null,
     ) : ApiStreamEvent()
 
     @Serializable
     @SerialName("challengeCanceled")
     data class ChallengeCanceledEvent(
         val type: String,
-        val challenge: ChallengeJson
+        val challenge: ChallengeJson,
     ) : ApiStreamEvent()
 
     @Serializable
     @SerialName("challengeDeclined")
     data class ChallengeDeclinedEvent(
         val type: String,
-        val challenge: ChallengeDeclinedJson
+        val challenge: ChallengeDeclinedJson,
     ) : ApiStreamEvent()
 }

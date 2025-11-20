@@ -12,5 +12,5 @@ data class ResultsbytournamentResponse(
     val title: Title? = null,
     val team: String? = null,
     val flair: Flair? = null,
-    val sheet: ArenaSheet? = null
+    val sheet: ArenaSheet? = null,
 )

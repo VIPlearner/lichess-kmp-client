@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class User(
@@ -18,5 +17,5 @@ data class User(
     val playTime: PlayTime? = null,
     val patron: Boolean? = null,
     val patronColor: PatronColor? = null,
-    val verified: Boolean? = null
+    val verified: Boolean? = null,
 )

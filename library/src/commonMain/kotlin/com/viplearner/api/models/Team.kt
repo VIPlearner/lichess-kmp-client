@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class Team(
@@ -11,8 +10,8 @@ data class Team(
     val flair: Flair? = null,
     val leader: LightUser? = null,
     val leaders: List<LightUser>? = null,
-    val nbMembers: Int? = null,
+    val nbMembers: Long? = null,
     val open: Boolean? = null,
     val joined: Boolean? = null,
-    val requested: Boolean? = null
+    val requested: Boolean? = null,
 )

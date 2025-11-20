@@ -5,7 +5,7 @@ class InternalBoardProvider : Chess960BoardProvider {
         return setOf(
             "standard",
             "chess960",
-            "fromPosition"
+            "fromPosition",
         )
     }
 
@@ -18,7 +18,10 @@ class InternalBoardProvider : Chess960BoardProvider {
         }
     }
 
-    override fun fromFEN(variant: String, fen: String): Board {
+    override fun fromFEN(
+        variant: String,
+        fen: String,
+    ): Board {
         return when (variant) {
             "standard" -> NaiveChess.of(variant, fen)
             "chess960" -> NaiveChess.of(variant, fen)
@@ -29,6 +32,7 @@ class InternalBoardProvider : Chess960BoardProvider {
 
     companion object {
         private val instance: InternalBoardProvider = InternalBoardProvider()
+
         fun provider(): InternalBoardProvider {
             return instance
         }

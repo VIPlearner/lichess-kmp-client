@@ -1,8 +1,17 @@
 package com.viplearner.api.client
 
-import kotlinx.cinterop.*
-import platform.Foundation.*
-import platform.CoreCrypto.*
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.usePinned
+import platform.CoreCrypto.CC_SHA256
+import platform.CoreCrypto.CC_SHA256_DIGEST_LENGTH
+import platform.Foundation.NSData
+import platform.Foundation.NSMutableData
+import platform.Foundation.base64EncodedStringWithOptions
+import platform.Foundation.create
+import platform.Foundation.dataWithLength
 import platform.posix.memcpy
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
@@ -30,7 +39,7 @@ private fun ByteArray.toNSData(): NSData {
     return this.usePinned { pinned ->
         NSData.create(
             bytes = pinned.addressOf(0),
-            length = this.size.toULong()
+            length = this.size.toULong(),
         )
     }
 }

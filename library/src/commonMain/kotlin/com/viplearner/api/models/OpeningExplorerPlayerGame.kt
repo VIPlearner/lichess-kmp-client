@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class OpeningExplorerPlayerGameMode {
@@ -9,7 +9,7 @@ enum class OpeningExplorerPlayerGameMode {
     RATED,
 
     @SerialName("casual")
-    CASUAL
+    CASUAL,
 }
 
 @Serializable
@@ -20,6 +20,6 @@ data class OpeningExplorerPlayerGame(
     val mode: OpeningExplorerPlayerGameMode,
     val white: OpeningExplorerGamePlayer,
     val black: OpeningExplorerGamePlayer,
-    val year: Int,
-    val month: String
+    val year: Long,
+    val month: String,
 )

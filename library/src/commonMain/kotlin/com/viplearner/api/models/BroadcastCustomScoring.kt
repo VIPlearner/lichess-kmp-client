@@ -1,10 +1,9 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class BroadcastCustomScoring(
     val white: BroadcastCustomPointsPerColor,
-    val black: BroadcastCustomPointsPerColor
+    val black: BroadcastCustomPointsPerColor,
 )

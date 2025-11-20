@@ -5,6 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AccountPreferencesResponse(
     val prefs: UserPreferences? = null,
-    val language: String? = null
+    val language: String? = null,
 )
-

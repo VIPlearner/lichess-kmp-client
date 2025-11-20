@@ -27,7 +27,7 @@ kotlin {
         compilations.configureEach {
             compilerOptions.configure {
                 jvmTarget.set(
-                    JvmTarget.JVM_11
+                    JvmTarget.JVM_11,
                 )
             }
         }
@@ -39,7 +39,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            //put your multiplatform dependencies here
+            // put your multiplatform dependencies here
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
@@ -50,6 +50,8 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.kotlinx.coroutines.test)
         }
 
         // Platform-specific Ktor engines
@@ -70,9 +72,9 @@ kotlin {
         }
 
         // JS engine (if JS target is added in the future)
-         jsMain.dependencies {
-             implementation(libs.ktor.client.js)
-         }
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
+        }
     }
 }
 

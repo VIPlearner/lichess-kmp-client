@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class BulkPairing(
@@ -9,16 +8,16 @@ data class BulkPairing(
     val games: List<Game>,
     val variant: VariantKey,
     val clock: Clock,
-    val pairAt: Int,
-    val pairedAt: Int?,
+    val pairAt: Long,
+    val pairedAt: Long?,
     val rated: Boolean,
-    val startClocksAt: Int,
-    val scheduledAt: Int
+    val startClocksAt: Long,
+    val scheduledAt: Long,
 ) {
     @Serializable
     data class Game(
         val id: String,
         val black: String,
-        val white: String
+        val white: String,
     )
 }

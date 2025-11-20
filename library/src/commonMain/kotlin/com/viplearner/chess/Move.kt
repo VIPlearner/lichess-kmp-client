@@ -9,7 +9,6 @@ interface Move {
                 override fun asString(): String {
                     return s
                 }
-
             }
         }
     }

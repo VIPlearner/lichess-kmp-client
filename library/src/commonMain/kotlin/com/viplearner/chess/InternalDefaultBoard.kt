@@ -24,7 +24,7 @@ class InternalDefaultBoard(
     val delegate: Board,
     val captures: List<Piece.PieceAndSide>,
     val initialFEN: String?,
-    val history: List<MoveAndFen>
+    val history: List<MoveAndFen>,
 ) : DefaultBoard {
     @JvmRecord
     data class MoveAndFen(val move: String, val fen: String)
@@ -79,7 +79,6 @@ class InternalDefaultBoard(
         return delegate.sideToMove()
     }
 
-
     // ...delegate
     override fun historyFEN(): List<String?> {
         return listOfNotNull(this.initialFEN) + this.history.map { it.fen }
@@ -117,7 +116,10 @@ class InternalDefaultBoard(
                 return all().filter { it.type === type }
             }
 
-            override fun of(type: Piece, side: Side): List<Square.With<Piece>> {
+            override fun of(
+                type: Piece,
+                side: Side,
+            ): List<Square.With<Piece>> {
                 return of(type).filter { it.side === side }
             }
 

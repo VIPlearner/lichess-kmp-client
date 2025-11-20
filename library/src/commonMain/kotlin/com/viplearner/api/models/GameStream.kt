@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GameStream(
-    val items: List<GameStreamGame>
+    val items: List<GameStreamGame>,
 )

@@ -16,9 +16,12 @@ package dev.simplx
  * limitations under the License.
  */
 class Formatter {
-    private val out: StringBuilder = StringBuilder();
+    private val out: StringBuilder = StringBuilder()
 
-    fun format(format: String, vararg args: Any?): Formatter? {
+    fun format(
+        format: String,
+        vararg args: Any?,
+    ): Formatter? {
         val formatBuffer = CharArrayBuffer(format.toCharArray())
         val parser = ParserStateMachine(formatBuffer)
         val transformer = Transformer(this)
@@ -37,10 +40,11 @@ class Formatter {
                 var argument: Any? = null
                 if (token.requireArgument()) {
                     val index = if (token.argIndex == FormatToken.UNSET) currentObjectIndex++ else token.argIndex
-                    argument = getArgument(
-                        index, token, lastArgument,
-                        hasLastArgumentSet, args.toList()
-                    )
+                    argument =
+                        getArgument(
+                            index, token, lastArgument,
+                            hasLastArgumentSet, args.toList(),
+                        )
                     lastArgument = argument
                     hasLastArgumentSet = true
                 }
@@ -58,13 +62,17 @@ class Formatter {
         return this
     }
 
-    private fun getArgument(index: Int, token: FormatToken,
-        lastArgument: Any?, hasLastArgumentSet: Boolean, args: List<Any?>
+    private fun getArgument(
+        index: Int,
+        token: FormatToken,
+        lastArgument: Any?,
+        hasLastArgumentSet: Boolean,
+        args: List<Any?>,
     ): Any? {
         val lst = args[0] as Array<Any>
 
         if (index == FormatToken.LAST_ARGUMENT_INDEX && !hasLastArgumentSet) {
-            throw Exception("<") //$NON-NLS-1$
+            throw Exception("<") // $NON-NLS-1$
         }
         if (null == lst) {
             return null
@@ -74,7 +82,9 @@ class Formatter {
         }
         return if (index == FormatToken.LAST_ARGUMENT_INDEX) {
             lastArgument
-        } else lst[index]
+        } else {
+            lst[index]
+        }
     }
 
     override fun toString(): String {

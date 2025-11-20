@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class BroadcastGameEntryPoints {
@@ -12,7 +12,7 @@ enum class BroadcastGameEntryPoints {
     VALUE_1_2,
 
     @SerialName("0")
-    VALUE_0
+    VALUE_0,
 }
 
 @Serializable
@@ -23,5 +23,5 @@ data class BroadcastGameEntry(
     val color: GameColor,
     val points: BroadcastGameEntryPoints? = null,
     val customPoints: BroadcastCustomPoints? = null,
-    val ratingDiff: Int? = null
+    val ratingDiff: Long? = null,
 )

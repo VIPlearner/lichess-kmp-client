@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class GameColor {
@@ -9,5 +9,5 @@ enum class GameColor {
     WHITE,
 
     @SerialName("black")
-    BLACK
+    BLACK,
 }

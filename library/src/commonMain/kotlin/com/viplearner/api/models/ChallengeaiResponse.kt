@@ -15,6 +15,5 @@ data class ChallengeaiResponse(
     val status: GameStatus? = null,
     val createdAt: Long? = null,
     val player: GameColor? = null,
-    val fullId: String? = null
+    val fullId: String? = null,
 )
-

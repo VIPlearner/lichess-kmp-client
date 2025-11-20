@@ -1,17 +1,16 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class FIDEPlayer(
-    val id: Int,
+    val id: Long,
     val name: String,
     val title: Title? = null,
     val federation: String,
-    val year: Int? = null,
-    val inactive: Int? = null,
-    val standard: Int? = null,
-    val rapid: Int? = null,
-    val blitz: Int? = null
+    val year: Long? = null,
+    val inactive: Long? = null,
+    val standard: Long? = null,
+    val rapid: Long? = null,
+    val blitz: Long? = null,
 )

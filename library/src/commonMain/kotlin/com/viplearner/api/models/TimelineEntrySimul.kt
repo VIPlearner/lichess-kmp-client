@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class TimelineEntrySimulType {
@@ -9,19 +9,19 @@ enum class TimelineEntrySimulType {
     SIMUL_CREATE,
 
     @SerialName("simul-join")
-    SIMUL_JOIN
+    SIMUL_JOIN,
 }
 
 @Serializable
 data class TimelineEntrySimulData(
     val userId: String,
     val simulId: String,
-    val simulName: String
+    val simulName: String,
 )
 
 @Serializable
 data class TimelineEntrySimul(
     val type: TimelineEntrySimulType,
     val date: Double,
-    val data: TimelineEntrySimulData
+    val data: TimelineEntrySimulData,
 )

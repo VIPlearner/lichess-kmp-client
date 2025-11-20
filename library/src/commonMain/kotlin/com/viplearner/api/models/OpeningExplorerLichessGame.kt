@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 open class OpeningExplorerLichessGame(
@@ -11,5 +10,5 @@ open class OpeningExplorerLichessGame(
     val white: OpeningExplorerGamePlayer,
     val black: OpeningExplorerGamePlayer,
     val year: Double,
-    val month: String?
+    val month: String?,
 )

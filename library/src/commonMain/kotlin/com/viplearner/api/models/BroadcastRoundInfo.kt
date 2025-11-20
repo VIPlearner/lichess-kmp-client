@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class BroadcastRoundInfo(
@@ -17,5 +16,5 @@ data class BroadcastRoundInfo(
     val finished: Boolean? = null,
     val url: String,
     val delay: Long? = null,
-    val customScoring: BroadcastCustomScoring? = null
+    val customScoring: BroadcastCustomScoring? = null,
 )

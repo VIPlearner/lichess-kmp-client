@@ -111,7 +111,7 @@ interface PGN {
                 var move = move
                 var dots = dots
                 move = max(0, move)
-                dots = dots.coerceIn(0,3)
+                dots = dots.coerceIn(0, 3)
                 this.move = move
                 this.dots = dots
             }

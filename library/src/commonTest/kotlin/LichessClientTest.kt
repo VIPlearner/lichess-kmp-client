@@ -2,11 +2,10 @@ package com.viplearner.api.client
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class LichessClientTest {
-
     @Test
     fun testFromTokenCreatesClient() {
         val token = "test_token_12345"
@@ -42,11 +41,12 @@ class LichessClientTest {
         val redirectUri = "http://localhost:8080/callback"
         val scopes = listOf("board:play", "puzzle:read")
 
-        val (authUrl, flowState) = client.startOAuthFlow(
-            redirectUri = redirectUri,
-            scopes = scopes,
-            state = "test_state"
-        )
+        val (authUrl, flowState) =
+            client.startOAuthFlow(
+                redirectUri = redirectUri,
+                scopes = scopes,
+                state = "test_state",
+            )
 
         // Verify auth URL contains required parameters
         assertTrue(authUrl.contains("response_type=code"))
@@ -67,12 +67,12 @@ class LichessClientTest {
     @Test
     fun testStartOAuthFlowWithoutScopes() {
         val client = LichessClient.fromClientId("test_client")
-        val (authUrl, _) = client.startOAuthFlow(
-            redirectUri = "http://localhost:8080/callback"
-        )
+        val (authUrl, _) =
+            client.startOAuthFlow(
+                redirectUri = "http://localhost:8080/callback",
+            )
 
         assertNotNull(authUrl)
         assertTrue(authUrl.contains("client_id=test_client"))
     }
 }
-

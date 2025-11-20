@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class TablebaseJsonCategory {
@@ -33,18 +33,18 @@ enum class TablebaseJsonCategory {
     SYZYGY_LOSS,
 
     @SerialName("loss")
-    LOSS
+    LOSS,
 }
 
 @Serializable
 data class TablebaseJson(
     val category: TablebaseJsonCategory,
-    val dtz: Int? = null,
+    val dtz: Long? = null,
     @SerialName("precise_dtz")
-    val preciseDtz: Int? = null,
-    val dtc: Int? = null,
-    val dtm: Int? = null,
-    val dtw: Int? = null,
+    val preciseDtz: Long? = null,
+    val dtc: Long? = null,
+    val dtm: Long? = null,
+    val dtw: Long? = null,
     val checkmate: Boolean? = null,
     val stalemate: Boolean? = null,
     @SerialName("variant_win")
@@ -53,5 +53,5 @@ data class TablebaseJson(
     val variantLoss: Boolean? = null,
     @SerialName("insufficient_material")
     val insufficientMaterial: Boolean? = null,
-    val moves: List<TablebaseMove>
+    val moves: List<TablebaseMove>,
 )

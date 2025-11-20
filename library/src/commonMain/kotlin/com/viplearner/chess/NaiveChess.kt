@@ -44,10 +44,11 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
 
         val boardIfPlayed = _play(internalMove)
 
-        val king = boardIfPlayed.piecesMatching { candidate ->
-            candidate.side === this.fen.side().other() &&
-                candidate.type === Piece.king
-        }.firstOrNull() ?: throw IllegalStateException("No king found for side ${this.fen.side().other()}!")
+        val king =
+            boardIfPlayed.piecesMatching { candidate ->
+                candidate.side === this.fen.side().other() &&
+                    candidate.type === Piece.king
+            }.firstOrNull() ?: throw IllegalStateException("No king found for side ${this.fen.side().other()}!")
 
         val inCheck: Boolean =
             boardIfPlayed.piecesMatching { candidate -> candidate.side === this.fen.side() }
@@ -56,15 +57,18 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                         .any { square -> square == king.pos() }
                 }
 
-        val checkSymbol = if (inCheck)
-            (if (boardIfPlayed.validMoves().isEmpty())
-                "#"
-            else
-                "+"
-                    )
-        else
-            ""
-
+        val checkSymbol =
+            if (inCheck) {
+                (
+                    if (boardIfPlayed.validMoves().isEmpty()) {
+                        "#"
+                    } else {
+                        "+"
+                    }
+                )
+            } else {
+                ""
+            }
 
         return when (internalMove) {
             is FromTo -> {
@@ -76,20 +80,22 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                 val letter: String? = String.valueOf(type.toChar(Side.white))
                 val capture = if (this.squareMap.get(to) is Square.With) "x" else ""
 
-
                 when (internalMove.from.type) {
-                    Piece.pawn -> if (this.squareMap.get(to) is Square.With || to.file() != from.file())
-                        "%s".repeat(4).formatted(from.file(), capture, to, checkSymbol)
-                    else
-                        "%s".repeat(2).formatted(to, checkSymbol)
+                    Piece.pawn ->
+                        if (this.squareMap.get(to) is Square.With || to.file() != from.file()) {
+                            "%s".repeat(4).formatted(from.file(), capture, to, checkSymbol)
+                        } else {
+                            "%s".repeat(2).formatted(to, checkSymbol)
+                        }
 
                     Piece.king -> "%s".repeat(4).formatted(letter, capture, to, checkSymbol)
                     Piece.knight, Piece.bishop, Piece.rook, Piece.queen -> {
-                        val disambiguation: List<Square.With<Piece>> = piecesMatching { candidate ->
-                            candidate.type === type && candidate.side === side && candidate.pos() != from &&
+                        val disambiguation: List<Square.With<Piece>> =
+                            piecesMatching { candidate ->
+                                candidate.type === type && candidate.side === side && candidate.pos() != from &&
                                     squaresAttackedByPiece(candidate).any { square -> square == to }
-                        }
-                            .toList()
+                            }
+                                .toList()
 
                         var dis: String? = ""
                         if (!disambiguation.isEmpty()) {
@@ -99,14 +105,15 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                              * public inline fun <S, T : S> Sequence<T>.reduce(operation: (acc: S, T) -> S): S {
                              *
                              */
-                            val unique = disambiguation.fold(
-                                Unique(file = true, rank = true)
-                            ) { result, piece ->
-                                Unique(
-                                    result.file && piece.file() != from.file(),
-                                    result.rank && piece.rank() != from.rank()
-                                )
-                            }
+                            val unique =
+                                disambiguation.fold(
+                                    Unique(file = true, rank = true),
+                                ) { result, piece ->
+                                    Unique(
+                                        result.file && piece.file() != from.file(),
+                                        result.rank && piece.rank() != from.rank(),
+                                    )
+                                }
 
                             if (unique.file && unique.rank) {
                                 dis = from.pos().toString().substring(0, 1) // specify the file
@@ -161,7 +168,7 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
         var ep = "-"
         var maybeCapture: Square<Piece>? = null
         when (internalMove) {
-            is FromTo-> {
+            is FromTo -> {
                 val to = internalMove.to
                 val from = internalMove.from.pos
                 val type = internalMove.from.type
@@ -187,19 +194,21 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
 
                         val distance: Int = from.rank() - to.rank()
                         if (abs(distance) == 2) {
-                            val square1 = mutableMap[
-                                to.delta(
-                                    0,
-                                    -1
-                                )
-                            ]
+                            val square1 =
+                                mutableMap[
+                                    to.delta(
+                                        0,
+                                        -1,
+                                    ),
+                                ]
 
-                            val square2 = mutableMap[
-                                to.delta(
-                                    0,
-                                    +1
-                                )
-                            ]
+                            val square2 =
+                                mutableMap[
+                                    to.delta(
+                                        0,
+                                        +1,
+                                    ),
+                                ]
                             if (square1 is Square.With && square1.type === Piece.pawn && square1.side === side.other()) {
                                 ep = to.delta(distance / 2, 0).toString()
                             } else if (square2 is Square.With && square2.type === Piece.pawn && square2.side === side.other()) {
@@ -209,35 +218,40 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                     }
 
                     Piece.king -> {
-                        nextFen = nextFen.withCastling(
-                            nextFen.castling().toCharArray()
-                                .filter(
-                                    { i ->
-                                        if (this.fen.side() === Side.black)
-                                            Character.isUpperCase(i)
-                                        else
-                                            Character.isLowerCase(i)
-                                    },
-                                ).joinToString(transform = { i -> String.valueOf(i) })
-                        )
+                        nextFen =
+                            nextFen.withCastling(
+                                nextFen.castling().toCharArray()
+                                    .filter(
+                                        { i ->
+                                            if (this.fen.side() === Side.black) {
+                                                Character.isUpperCase(i)
+                                            } else {
+                                                Character.isLowerCase(i)
+                                            }
+                                        },
+                                    ).joinToString(transform = { i -> String.valueOf(i) }),
+                            )
                     }
 
                     Piece.rook -> {
                         if (castlingRookFiles(this.fen.side()).contains(from.file()) &&
                             from.rank() == (if (this.fen.side() == Side.white) 1 else 8)
                         ) {
-                            val king: Pos? = piecesMatching { candidate ->
-                                candidate.side === fen.side() &&
+                            val king: Pos? =
+                                piecesMatching { candidate ->
+                                    candidate.side === fen.side() &&
                                         candidate.type === Piece.king
-                            }
-                                .firstOrNull()
-                                ?.pos()
+                                }
+                                    .firstOrNull()
+                                    ?.pos()
 
                             if (king != null) {
-                                val file = if (this.fen.side() === Side.white)
-                                    String.valueOf(from.file()).uppercase()
-                                else
-                                    String.valueOf(from.file())
+                                val file =
+                                    if (this.fen.side() === Side.white) {
+                                        String.valueOf(from.file()).uppercase()
+                                    } else {
+                                        String.valueOf(from.file())
+                                    }
 
                                 nextFen = nextFen.withCastling(nextFen.castling().replace(file, ""))
 
@@ -262,9 +276,11 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                 val fromTo = internalMove.pawn
                 val promotion = internalMove.piece
                 mutableMap.put(fromTo.from.pos(), Square.empty(fromTo.from.pos()))
-                maybeCapture = mutableMap.put(fromTo.to,
-                    withPiece(fromTo.to, promotion, fromTo.from.side)
-                )
+                maybeCapture =
+                    mutableMap.put(
+                        fromTo.to,
+                        withPiece(fromTo.to, promotion, fromTo.from.side),
+                    )
                 resetHalfMoveClock = true
             }
 
@@ -278,17 +294,19 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                 mutableMap.put(king.to, withPiece(king.to, king.from.type, king.from.side))
                 mutableMap.put(rook.to, withPiece(rook.to, rook.from.type, rook.from.side))
 
-                nextFen = nextFen.withCastling(
-                    nextFen.castling().toCharArray()
-                        .filter(
-                            { i ->
-                                if (this.fen.side() === Side.black)
-                                    Character.isUpperCase(i)
-                                else
-                                    Character.isLowerCase(i)
-                            },
-                        ).joinToString(transform = { i -> String.valueOf(i) })
-                )
+                nextFen =
+                    nextFen.withCastling(
+                        nextFen.castling().toCharArray()
+                            .filter(
+                                { i ->
+                                    if (this.fen.side() === Side.black) {
+                                        Character.isUpperCase(i)
+                                    } else {
+                                        Character.isLowerCase(i)
+                                    }
+                                },
+                            ).joinToString(transform = { i -> String.valueOf(i) }),
+                    )
             }
         }
 
@@ -300,18 +318,21 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             val capturedPos = maybeCapture.pos
 
             if (capturedPiece === Piece.rook && castlingRookFiles(capturedSide).contains(capturedPos.file()) && capturedPos.rank() == (if (capturedSide === Side.white) 1 else 8)) {
-                val king: Pos? = piecesMatching { candidate ->
-                    candidate.side === capturedSide &&
+                val king: Pos? =
+                    piecesMatching { candidate ->
+                        candidate.side === capturedSide &&
                             candidate.type === Piece.king
-                }
-                    .firstOrNull()
-                    ?.pos()
+                    }
+                        .firstOrNull()
+                        ?.pos()
 
                 if (king != null) {
-                    val file = if (capturedSide === Side.white)
-                        String.valueOf(capturedPos.file()).uppercase()
-                    else
-                        String.valueOf(capturedPos.file())
+                    val file =
+                        if (capturedSide === Side.white) {
+                            String.valueOf(capturedPos.file()).uppercase()
+                        } else {
+                            String.valueOf(capturedPos.file())
+                        }
 
                     nextFen = nextFen.withCastling(nextFen.castling().replace(file, ""))
 
@@ -328,12 +349,13 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             }
         }
 
-        nextFen = nextFen
-            .withPositions(DefaultBoard.squaresToFenPositions(mutableMap))
-            .withSide(this.fen.side().other())
-            .withEP(ep)
-            .withHalfMove(if (resetHalfMoveClock) 0 else this.fen.halfMove() + 1)
-            .withMove(if (this.fen.side() === Side.black) this.fen.move() + 1 else this.fen.move())
+        nextFen =
+            nextFen
+                .withPositions(DefaultBoard.squaresToFenPositions(mutableMap))
+                .withSide(this.fen.side().other())
+                .withEP(ep)
+                .withHalfMove(if (resetHalfMoveClock) 0 else this.fen.halfMove() + 1)
+                .withMove(if (this.fen.side() === Side.black) this.fen.move() + 1 else this.fen.move())
 
         val nextBoard = withFEN(nextFen)
 
@@ -356,15 +378,17 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
         var move: InternalMove = fromToMove
 
         if (uci.length == 5) {
-            move = Promotion(
-                fromToMove, when (uci[4]) {
-                    'q' -> Piece.queen
-                    'n' -> Piece.knight
-                    'b' -> Piece.bishop
-                    'r' -> Piece.rook
-                    else -> Piece.queen
-                }
-            )
+            move =
+                Promotion(
+                    fromToMove,
+                    when (uci[4]) {
+                        'q' -> Piece.queen
+                        'n' -> Piece.knight
+                        'b' -> Piece.bishop
+                        'r' -> Piece.rook
+                        else -> Piece.queen
+                    },
+                )
         }
 
         val validMoves = validMovesByPiece(square).toSet()
@@ -372,9 +396,12 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             return validMoves.asSequence()
                 .filter { m ->
                     m is Castling &&
-                            (m.king == fromToMove || (fromToMove.from == m.king.from &&
-                                fromToMove.to == m.rook.from.pos())
-                                    )
+                        (
+                            m.king == fromToMove || (
+                                fromToMove.from == m.king.from &&
+                                    fromToMove.to == m.rook.from.pos()
+                            )
+                        )
                 }
                 .firstOrNull() ?: throw NoSuchElementException("No valid castling move found")
         }
@@ -398,36 +425,40 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
 
         when (move) {
             "O-O", "0-0" -> {
-                val kingPos = piecesMatching { candidate ->
-                    candidate.side === fen.side() &&
+                val kingPos =
+                    piecesMatching { candidate ->
+                        candidate.side === fen.side() &&
                             candidate.type === Piece.king
-                }
-                    .firstOrNull()
-                    ?.pos
+                    }
+                        .firstOrNull()
+                        ?.pos
                 if (kingPos == null) return ""
 
-                val rookPos: Pos? = castlingRookFiles(this.fen.side()).asSequence()
-                    .filter { file -> kingPos.file() < file }
-                    .map { file -> Square.pos(file, kingPos.rank()) }
-                    .firstOrNull()
+                val rookPos: Pos? =
+                    castlingRookFiles(this.fen.side()).asSequence()
+                        .filter { file -> kingPos.file() < file }
+                        .map { file -> Square.pos(file, kingPos.rank()) }
+                        .firstOrNull()
                 if (rookPos == null) return ""
 
                 return "%s%s".formatted(kingPos, rookPos) // king-onto-rook
             }
 
             "O-O-O", "0-0-0" -> {
-                val kingPos: Pos? = piecesMatching { candidate ->
-                    candidate.side === fen.side() &&
+                val kingPos: Pos? =
+                    piecesMatching { candidate ->
+                        candidate.side === fen.side() &&
                             candidate.type === Piece.king
-                }
-                    .firstOrNull()
-                    ?.pos
+                    }
+                        .firstOrNull()
+                        ?.pos
                 if (kingPos == null) return ""
 
-                val rookPos: Pos? = castlingRookFiles(this.fen.side()).asSequence()
-                    .filter { file -> kingPos.file() > file }
-                    .map { file -> Square.pos(file, kingPos.rank()) }
-                    .firstOrNull()
+                val rookPos: Pos? =
+                    castlingRookFiles(this.fen.side()).asSequence()
+                        .filter { file -> kingPos.file() > file }
+                        .map { file -> Square.pos(file, kingPos.rank()) }
+                        .firstOrNull()
                 if (rookPos == null) return ""
 
                 return "%s%s".formatted(kingPos, rookPos) // king-onto-rook
@@ -459,50 +490,53 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                     val fileOrRank: Char = disambiguation[0]
                     if (fileOrRank >= '1' && fileOrRank <= '8') {
                         // rank
-                        val from: Pos? = piecesMatching { candidate ->
-                            candidate.side == this.fen.side() && candidate.type
-                                .toChar(Side.white) == typeChar && candidate.pos()
-                                .rank() == fileOrRank.digitToInt()
-                        }
-                            .filter { candidate ->
-                                validMovesByPiece(candidate)
-                                    .map { validMove -> validMove.toUCI(variant()) }
-                                    .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                        val from: Pos? =
+                            piecesMatching { candidate ->
+                                candidate.side == this.fen.side() && candidate.type
+                                    .toChar(Side.white) == typeChar && candidate.pos()
+                                    .rank() == fileOrRank.digitToInt()
                             }
-                            .map { it.pos }
-                            .firstOrNull()
+                                .filter { candidate ->
+                                    validMovesByPiece(candidate)
+                                        .map { validMove -> validMove.toUCI(variant()) }
+                                        .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                                }
+                                .map { it.pos }
+                                .firstOrNull()
                         if (from == null) ""
                         "%s%s".formatted(from, to)
                     } else {
                         // file
-                        val from: Pos? = piecesMatching { candidate ->
-                            candidate.side === this.fen.side() && candidate.type
-                                .toChar(Side.white) == typeChar && candidate.pos().file() == fileOrRank
-                        }
-                            .filter { candidate ->
-                                validMovesByPiece(candidate)
-                                    .map { validMove -> validMove.toUCI(variant()) }
-                                    .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                        val from: Pos? =
+                            piecesMatching { candidate ->
+                                candidate.side === this.fen.side() && candidate.type
+                                    .toChar(Side.white) == typeChar && candidate.pos().file() == fileOrRank
                             }
-                            .map { it.pos }
-                            .firstOrNull()
+                                .filter { candidate ->
+                                    validMovesByPiece(candidate)
+                                        .map { validMove -> validMove.toUCI(variant()) }
+                                        .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                                }
+                                .map { it.pos }
+                                .firstOrNull()
                         if (from == null) ""
                         "%s%s".formatted(from, to)
                     }
                 }
 
                 // No disambiguation, so only one Q can make it to e1, find it
-                val from: Pos? = piecesMatching { candidate ->
-                    candidate.side === this.fen.side() &&
+                val from: Pos? =
+                    piecesMatching { candidate ->
+                        candidate.side === this.fen.side() &&
                             candidate.type.toChar(Side.white) == typeChar
-                }
-                    .filter { candidate ->
-                        validMovesByPiece(candidate)
-                            .map { validMove -> validMove.toUCI(variant()) }
-                            .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
                     }
-                    .map { it.pos }
-                    .firstOrNull()
+                        .filter { candidate ->
+                            validMovesByPiece(candidate)
+                                .map { validMove -> validMove.toUCI(variant()) }
+                                .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                        }
+                        .map { it.pos }
+                        .firstOrNull()
                 if (from == null) ""
                 "%s%s".formatted(from, to)
             }
@@ -522,18 +556,19 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                 // d3    d2d3
                 // d4    d2d4 / d3d4
                 // dc6
-                val from: Pos? = piecesMatching { candidate ->
-                    candidate.type === Piece.pawn && candidate.side === this.fen.side() && candidate.pos()
-                        .file() == file
-                }
-                    .filter { candidate ->
-                        validMovesByPiece(candidate)
-                            .map { validMove -> validMove.toUCI(variant()) }
-                            .map { str -> str.substring(0, 4) } // truncate any promotion piece
-                            .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                val from: Pos? =
+                    piecesMatching { candidate ->
+                        candidate.type === Piece.pawn && candidate.side === this.fen.side() && candidate.pos()
+                            .file() == file
                     }
-                    .map { it.pos }
-                    .firstOrNull()
+                        .filter { candidate ->
+                            validMovesByPiece(candidate)
+                                .map { validMove -> validMove.toUCI(variant()) }
+                                .map { str -> str.substring(0, 4) } // truncate any promotion piece
+                                .any { str -> str == "%s%s".formatted(candidate.pos(), to) }
+                        }
+                        .map { it.pos }
+                        .firstOrNull()
                 if (from == null) ""
                 "%s%s".formatted(from, to.toString() + promotion)
             }
@@ -545,10 +580,11 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
     fun piecesMatching(filter: (Square.With<Piece>) -> Boolean): Sequence<Square.With<Piece>> {
         return this.squareMap.values.asSequence()
             .mapNotNull { square ->
-                if (square is Square.With<Piece> && filter(square))
+                if (square is Square.With<Piece> && filter(square)) {
                     square
-                else
+                } else {
                     null
+                }
             }
     }
 
@@ -557,154 +593,164 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             return when (this) {
                 is FromTo -> "%s%s".formatted(from.pos(), to)
                 is Promotion -> "%s%s%s".formatted(pawn.from.pos(), pawn.to, piece.toChar(Side.black))
-                is Castling -> when (variant) {
-                    "standard" -> if (rook.from.file() == 'a')
-                        "%s%s".formatted(king.from.pos(), "c" + king.from.pos().rank())
-                    else
-                        "%s%s".formatted(king.from.pos(), "g" + king.from.pos().rank())
-                    else -> "%s%s".formatted(king.from.pos(), rook.from.pos())
-                }
+                is Castling ->
+                    when (variant) {
+                        "standard" ->
+                            if (rook.from.file() == 'a') {
+                                "%s%s".formatted(king.from.pos(), "c" + king.from.pos().rank())
+                            } else {
+                                "%s%s".formatted(king.from.pos(), "g" + king.from.pos().rank())
+                            }
+                        else -> "%s%s".formatted(king.from.pos(), rook.from.pos())
+                    }
                 else -> ""
             }
         }
     }
 
-    internal data class FromTo(val from: Square.With<Piece>, val to: Pos) : InternalMove {
-    }
+    internal data class FromTo(val from: Square.With<Piece>, val to: Pos) : InternalMove
 
     @JvmRecord
     internal data class Castling(val king: FromTo, val rook: FromTo) : InternalMove
-    internal data class Promotion(val pawn: FromTo, val piece: Piece) : InternalMove {
-    }
+
+    internal data class Promotion(val pawn: FromTo, val piece: Piece) : InternalMove
 
     private fun validMovesByPiece(piece: Square.With<Piece>): Sequence<InternalMove> {
         val attackedSquares = squaresAttackedByPiece(piece)
 
-        val movesByPiece = when (piece.type) {
-            Piece.knight, Piece.bishop, Piece.rook, Piece.queen -> attackedSquares
-                .mapNotNull { pos ->
-                    val square = this.squareMap.get(pos)
-                    if (square is Square.Empty ||
-                        (square is Square.With<Piece> && square.side === this.fen.side().other())
-                    ) {
-                        FromTo(piece, pos)
-                    } else {
-                        null
-                    }
-                }
-
-            Piece.pawn -> {
-                var fromTo: Sequence<FromTo> = attackedSquares
-                    .mapNotNull { pos ->
-                        val square = this.squareMap.get(pos)
-                        if (square is Square.With && square.side == this.fen.side().other()) {
-                            FromTo(piece, pos)
-                        } else {
-                            null
+        val movesByPiece =
+            when (piece.type) {
+                Piece.knight, Piece.bishop, Piece.rook, Piece.queen ->
+                    attackedSquares
+                        .mapNotNull { pos ->
+                            val square = this.squareMap.get(pos)
+                            if (square is Square.Empty ||
+                                (square is Square.With<Piece> && square.side === this.fen.side().other())
+                            ) {
+                                FromTo(piece, pos)
+                            } else {
+                                null
+                            }
                         }
-                    }
 
-                val dir = if (piece.side === Side.black) -1 else 1
-                val oneForward = FromTo(piece, piece.pos().delta(dir, 0))
+                Piece.pawn -> {
+                    var fromTo: Sequence<FromTo> =
+                        attackedSquares
+                            .mapNotNull { pos ->
+                                val square = this.squareMap.get(pos)
+                                if (square is Square.With && square.side == this.fen.side().other()) {
+                                    FromTo(piece, pos)
+                                } else {
+                                    null
+                                }
+                            }
 
-                if (this.squareMap.get(oneForward.to) is Square.Empty) {
-                    fromTo = fromTo + sequenceOf(oneForward)
+                    val dir = if (piece.side === Side.black) -1 else 1
+                    val oneForward = FromTo(piece, piece.pos().delta(dir, 0))
 
-                    if (piece.side === Side.black && piece.rank() == 7 ||
-                        piece.side === Side.white && piece.rank() == 2
-                    ) {
-                        val twoForward =
-                            FromTo(piece, piece.pos().delta(dir * 2, 0))
+                    if (this.squareMap.get(oneForward.to) is Square.Empty) {
+                        fromTo = fromTo + sequenceOf(oneForward)
 
-                        if (this.squareMap.get(twoForward.to) is Square.Empty) {
-                            fromTo = fromTo + sequenceOf(twoForward)
-                        }
-                    }
-                }
-
-                fromTo.flatMap { move ->
-                    if (move.to.rank() == 1 || move.to.rank() == 8) {
-                        listOf(Piece.knight, Piece.bishop, Piece.rook, Piece.queen)
-                            .asSequence()
-                            .map { type -> Promotion(move, type) }
-                    } else {
-                        sequenceOf(move)
-                    }
-                }
-
-            }
-
-            Piece.king -> {
-                val moves: Sequence<InternalMove> = attackedSquares.mapNotNull { pos ->
-                    val square = this.squareMap.get(pos)
-                    if (square is Square.With && square.side === this.fen.side().other()
-                            || square is Square.Empty) {
-                        FromTo(piece, pos)
-                    } else {
-                        null
-                    }
-                }
-
-                var castlings: Sequence<InternalMove> = emptySequence()
-
-                val rookFiles= castlingRookFiles(this.fen.side())
-
-                if (!rookFiles.isEmpty()) {
-                    val rank = if (this.fen.side() === Side.black) 8 else 1
-                    for (file in rookFiles) {
-                        val rook = this.squareMap.get(Square.pos(file, rank))
-                        if (!(rook is Square.With<Piece> && rook.type === Piece.rook && rook.side === this.fen.side())
+                        if (piece.side === Side.black && piece.rank() == 7 ||
+                            piece.side === Side.white && piece.rank() == 2
                         ) {
-                            println(
-                                """
+                            val twoForward =
+                                FromTo(piece, piece.pos().delta(dir * 2, 0))
+
+                            if (this.squareMap.get(twoForward.to) is Square.Empty) {
+                                fromTo = fromTo + sequenceOf(twoForward)
+                            }
+                        }
+                    }
+
+                    fromTo.flatMap { move ->
+                        if (move.to.rank() == 1 || move.to.rank() == 8) {
+                            listOf(Piece.knight, Piece.bishop, Piece.rook, Piece.queen)
+                                .asSequence()
+                                .map { type -> Promotion(move, type) }
+                        } else {
+                            sequenceOf(move)
+                        }
+                    }
+                }
+
+                Piece.king -> {
+                    val moves: Sequence<InternalMove> =
+                        attackedSquares.mapNotNull { pos ->
+                            val square = this.squareMap.get(pos)
+                            if (square is Square.With && square.side === this.fen.side().other() ||
+                                square is Square.Empty
+                            ) {
+                                FromTo(piece, pos)
+                            } else {
+                                null
+                            }
+                        }
+
+                    var castlings: Sequence<InternalMove> = emptySequence()
+
+                    val rookFiles = castlingRookFiles(this.fen.side())
+
+                    if (!rookFiles.isEmpty()) {
+                        val rank = if (this.fen.side() === Side.black) 8 else 1
+                        for (file in rookFiles) {
+                            val rook = this.squareMap.get(Square.pos(file, rank))
+                            if (!(rook is Square.With<Piece> && rook.type === Piece.rook && rook.side === this.fen.side())
+                            ) {
+                                println(
+                                    """
                                     Huh. Couldn't find rook for castling!
                                     file: %s
                                     Variant: %s
                                     FEN: %s
 
-                                    """.trimIndent().formatted(file, variant(), this.fen)
-                            )
-                            Exception().printStackTrace()
-                            continue
+                                    """.trimIndent().formatted(file, variant(), this.fen),
+                                )
+                                Exception().printStackTrace()
+                                continue
+                            }
+
+                            val castling: Castling =
+                                if (rook.pos().file() < piece.file()) {
+                                    Castling(
+                                        FromTo(
+                                            piece,
+                                            Square.pos('c', rank),
+                                        ),
+                                        FromTo(rook, Square.pos('d', rank)),
+                                    )
+                                } else {
+                                    Castling(
+                                        FromTo(
+                                            piece,
+                                            Square.pos('g', rank),
+                                        ),
+                                        FromTo(rook, Square.pos('f', rank)),
+                                    )
+                                }
+
+                            // check that rook doesn't move through pieces (other than self and own king)
+                            val rookSquares: Set<Pos?> = travelSquares(castling.rook)
+                            if (blocked(rookSquares, setOf(piece, rook))) continue
+
+                            // check that king doesn't move through pieces (other than the castling rook)
+                            val kingSquares: Set<Pos?> = travelSquares(castling.king)
+                            val kingBlocked = blocked(kingSquares, setOf(piece, rook))
+                            if (kingBlocked) continue
+
+                            // check that king doesn't move through check
+                            val kingMovesThroughCheck: Boolean =
+                                piecesMatching { candidate -> candidate.side === this.fen.side().other() }
+                                    .any { candidate -> squaresAttackedByPiece(candidate).any(kingSquares::contains) }
+                            if (kingMovesThroughCheck) continue
+
+                            castlings = castlings + sequenceOf(castling)
                         }
-
-                        val castling: Castling = if (rook.pos().file() < piece.file())
-                            Castling(
-                                FromTo(
-                                    piece,
-                                    Square.pos('c', rank)
-                                ), FromTo(rook, Square.pos('d', rank))
-                            )
-                        else
-                            Castling(
-                                FromTo(
-                                    piece,
-                                    Square.pos('g', rank)
-                                ), FromTo(rook, Square.pos('f', rank))
-                            )
-
-                        // check that rook doesn't move through pieces (other than self and own king)
-                        val rookSquares: Set<Pos?> = travelSquares(castling.rook)
-                        if (blocked(rookSquares, setOf(piece, rook))) continue
-
-                        // check that king doesn't move through pieces (other than the castling rook)
-                        val kingSquares: Set<Pos?> = travelSquares(castling.king)
-                        val kingBlocked = blocked(kingSquares, setOf(piece, rook))
-                        if (kingBlocked) continue
-
-                        // check that king doesn't move through check
-                        val kingMovesThroughCheck: Boolean =
-                            piecesMatching { candidate -> candidate.side === this.fen.side().other() }
-                                .any { candidate -> squaresAttackedByPiece(candidate).any(kingSquares::contains) }
-                        if (kingMovesThroughCheck) continue
-
-                        castlings = castlings + sequenceOf(castling)
                     }
-                }
 
-                moves + castlings
+                    moves + castlings
+                }
             }
-        }
 
         return movesByPiece
             .filter { move ->
@@ -718,8 +764,7 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
     }
 
     private fun travelSquares(piece: FromTo): Set<Pos?> {
-        return (min(piece.from.file().code, piece.to.file().code)..
-            max(piece.from.file().code, piece.to.file().code))
+        return (min(piece.from.file().code, piece.to.file().code)..max(piece.from.file().code, piece.to.file().code))
             .map { i -> Square.pos(i.toChar(), piece.from.rank()) }
             .toSet()
     }
@@ -739,7 +784,10 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             }.toList()
     }
 
-    fun blocked(squares: Set<Pos?>, ignoredPieces: Set<Square.With<Piece>>): Boolean {
+    fun blocked(
+        squares: Set<Pos?>,
+        ignoredPieces: Set<Square.With<Piece>>,
+    ): Boolean {
         return piecesMatching { candidate -> !ignoredPieces.contains(candidate) && squares.contains(candidate.pos()) }
             .firstOrNull() != null
     }
@@ -748,17 +796,18 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
         // Check if move would result in current side being in check
 
         try {
-            val kingPos = if (fromTo.from.type === Piece.king)
-                fromTo.to
-            else
-                piecesMatching { candidate ->
-                    candidate.side === fen.side() &&
-                        candidate.type === Piece.king
+            val kingPos =
+                if (fromTo.from.type === Piece.king) {
+                    fromTo.to
+                } else {
+                    piecesMatching { candidate ->
+                        candidate.side === fen.side() &&
+                            candidate.type === Piece.king
+                    }
+                        .firstOrNull()
+                        ?.pos
+                        ?: throw NoSuchElementException("No king found")
                 }
-                    .firstOrNull()
-                    ?.pos
-                    ?: throw NoSuchElementException("No king found")
-
 
             val mutableMap = HashMap(this.squareMap)
             mutableMap.put(fromTo.from.pos(), Square.empty(fromTo.from.pos()))
@@ -766,17 +815,18 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
 
             val mutatedPositions = DefaultBoard.squaresToFenPositions(mutableMap)
 
-            val mutatedBoard = withFEN(
-                this.fen
-                    .withPositions(mutatedPositions)
-                    .withSide(this.fen.side().other())
-            )
+            val mutatedBoard =
+                withFEN(
+                    this.fen
+                        .withPositions(mutatedPositions)
+                        .withSide(this.fen.side().other()),
+                )
 
             return mutatedBoard.piecesMatching { candidate ->
-                    candidate.side === this.fen.side().other() &&
-                        mutatedBoard.squaresAttackedByPiece(candidate)
-                            .any { square -> square == kingPos }
-                }
+                candidate.side === this.fen.side().other() &&
+                    mutatedBoard.squaresAttackedByPiece(candidate)
+                        .any { square -> square == kingPos }
+            }
                 .firstOrNull() != null
         } catch (_: Exception) {
             return true
@@ -791,65 +841,86 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
 
     fun squaresAttackedByPiece(piece: Square.With<Piece>): Sequence<Pos> {
         val pos: Pos = piece.pos()
-        val unboundedCoordinates: Sequence<Pos> = when (piece.type) {
-            Piece.pawn -> sequenceOf(
-                pos.delta(if (piece.side === Side.black) -1 else 1, +1),
-                pos.delta(if (piece.side === Side.black) -1 else 1, -1)
-            )
+        val unboundedCoordinates: Sequence<Pos> =
+            when (piece.type) {
+                Piece.pawn ->
+                    sequenceOf(
+                        pos.delta(if (piece.side === Side.black) -1 else 1, +1),
+                        pos.delta(if (piece.side === Side.black) -1 else 1, -1),
+                    )
 
-            Piece.bishop -> reachableSquaresInDirectionsFromSquare(
-                pos,
-                listOf(
-                    Dir(-1, 1),
-                    Dir(1, 1),
-                    Dir(-1, -1),
-                    Dir(1, -1)
-                )
-            )
+                Piece.bishop ->
+                    reachableSquaresInDirectionsFromSquare(
+                        pos,
+                        listOf(
+                            Dir(-1, 1),
+                            Dir(1, 1),
+                            Dir(-1, -1),
+                            Dir(1, -1),
+                        ),
+                    )
 
-            Piece.rook -> reachableSquaresInDirectionsFromSquare(
-                pos,
-                listOf(
-                    Dir(0, 1),
-                    Dir(0, -1),
-                    Dir(1, 0),
-                    Dir(-1, 0)
-                )
-            )
+                Piece.rook ->
+                    reachableSquaresInDirectionsFromSquare(
+                        pos,
+                        listOf(
+                            Dir(0, 1),
+                            Dir(0, -1),
+                            Dir(1, 0),
+                            Dir(-1, 0),
+                        ),
+                    )
 
-            Piece.queen -> reachableSquaresInDirectionsFromSquare(
-                pos,
-                listOf(
-                    Dir(0, 1),
-                    Dir(0, -1),
-                    Dir(1, 0),
-                    Dir(-1, 0),
-                    Dir(-1, 1),
-                    Dir(1, 1),
-                    Dir(-1, -1),
-                    Dir(1, -1)
-                )
-            )
+                Piece.queen ->
+                    reachableSquaresInDirectionsFromSquare(
+                        pos,
+                        listOf(
+                            Dir(0, 1),
+                            Dir(0, -1),
+                            Dir(1, 0),
+                            Dir(-1, 0),
+                            Dir(-1, 1),
+                            Dir(1, 1),
+                            Dir(-1, -1),
+                            Dir(1, -1),
+                        ),
+                    )
 
-            Piece.king -> sequenceOf(
-                pos.delta(-1, -1), pos.delta(-1, 0), pos.delta(-1, 1),
-                pos.delta(0, -1), pos.delta(0, 1),
-                pos.delta(1, -1), pos.delta(1, 0), pos.delta(1, 1)
-            )
+                Piece.king ->
+                    sequenceOf(
+                        pos.delta(-1, -1),
+                        pos.delta(-1, 0),
+                        pos.delta(-1, 1),
+                        pos.delta(0, -1),
+                        pos.delta(0, 1),
+                        pos.delta(1, -1),
+                        pos.delta(1, 0),
+                        pos.delta(1, 1),
+                    )
 
-            Piece.knight -> sequenceOf(
-                pos.delta(-2, -1), pos.delta(-2, 1),
-                pos.delta(-1, -2), pos.delta(-1, 2),
-                pos.delta(1, -2), pos.delta(1, 2),
-                pos.delta(2, -1), pos.delta(2, 1)
-            )
-        }
+                Piece.knight ->
+                    sequenceOf(
+                        pos.delta(-2, -1),
+                        pos.delta(-2, 1),
+                        pos.delta(-1, -2),
+                        pos.delta(-1, 2),
+                        pos.delta(1, -2),
+                        pos.delta(1, 2),
+                        pos.delta(2, -1),
+                        pos.delta(2, 1),
+                    )
+            }
         return unboundedCoordinates
-            .filter { candidate -> candidate.rank() >= 1 && candidate.rank() <= 8 && candidate.file() >= 'a' && candidate.file() <= 'h' }
+            .filter {
+                    candidate ->
+                candidate.rank() >= 1 && candidate.rank() <= 8 && candidate.file() >= 'a' && candidate.file() <= 'h'
+            }
     }
 
-
-    private fun reachableSquaresInDirectionsFromSquare(pos: Pos, directions: List<Dir?>): Sequence<Pos> {
+    private fun reachableSquaresInDirectionsFromSquare(
+        pos: Pos,
+        directions: List<Dir?>,
+    ): Sequence<Pos> {
         return sequence {
             for (dir in directions) {
                 var r = pos.rank() + dir!!.dy
@@ -867,7 +938,10 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
     }
 
     companion object {
-        fun of(variant: String, fenString: String): NaiveChess {
+        fun of(
+            variant: String,
+            fenString: String,
+        ): NaiveChess {
             val fen: FEN = FEN.parse(fenString)
             val squareMap = DefaultBoard.fenPositionsToSquares(fen.positions())
             val rookFiles: RookFiles =
@@ -875,7 +949,11 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             return NaiveChess(variant, fen, squareMap, rookFiles)
         }
 
-        fun initRookFiles(variant: String, castling: String, squareMap: Map<Pos, Square<Piece>>): RookFiles {
+        fun initRookFiles(
+            variant: String,
+            castling: String,
+            squareMap: Map<Pos, Square<Piece>>,
+        ): RookFiles {
             return when (variant) {
                 "chess960" -> {
                     var k = ' '
@@ -901,21 +979,23 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
                                 }
                             }
                         } else if (lowercase == 'k') {
-                            k = findPieceFile(
-                                kingFile.code - 'a'.code,
-                                7,
-                                Piece.rook,
-                                rank,
-                                squareMap
-                            )
+                            k =
+                                findPieceFile(
+                                    kingFile.code - 'a'.code,
+                                    7,
+                                    Piece.rook,
+                                    rank,
+                                    squareMap,
+                                )
                         } else if (lowercase == 'q') {
-                            q = findPieceFile(
-                                0,
-                                kingFile.code - 'a'.code,
-                                Piece.rook,
-                                rank,
-                                squareMap
-                            )
+                            q =
+                                findPieceFile(
+                                    0,
+                                    kingFile.code - 'a'.code,
+                                    Piece.rook,
+                                    rank,
+                                    squareMap,
+                                )
                         }
                     }
                     RookFiles(k, q)
@@ -930,7 +1010,7 @@ class NaiveChess(val variant: String, val fen: FEN, val squareMap: Map<Pos, Squa
             rangeEnd: Int,
             piece: Piece?,
             rank: Int,
-            squareMap: Map<Pos, Square<Piece>>
+            squareMap: Map<Pos, Square<Piece>>,
         ): Char {
             return (rangeStart..rangeEnd).asSequence()
                 .filter { i ->

@@ -9,16 +9,15 @@ import kotlinx.coroutines.flow.Flow
  * Provides methods to interact with Lichess relations data
  */
 class RelationsService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * Get users followed by the logged in user
      * Users are streamed as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
     suspend fun userFollowing(): Result<Flow<UserExtended>> {
         return try {
-            val result: Flow<UserExtended> = apiClient.safeGet("api/rel/following")
+            val result: Flow<UserExtended> = apiClient.safeNdjsonGet("api/rel/following")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -31,7 +30,7 @@ class RelationsService(
      */
     suspend fun followUser(username: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/rel/follow/${username}")
+            val result: Ok = apiClient.safePost("api/rel/follow/$username")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -44,7 +43,7 @@ class RelationsService(
      */
     suspend fun unfollowUser(username: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/rel/unfollow/${username}")
+            val result: Ok = apiClient.safePost("api/rel/unfollow/$username")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -57,7 +56,7 @@ class RelationsService(
      */
     suspend fun blockUser(username: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/rel/block/${username}")
+            val result: Ok = apiClient.safePost("api/rel/block/$username")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -70,7 +69,7 @@ class RelationsService(
      */
     suspend fun unblockUser(username: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/rel/unblock/${username}")
+            val result: Ok = apiClient.safePost("api/rel/unblock/$username")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

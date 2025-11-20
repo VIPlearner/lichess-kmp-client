@@ -1,6 +1,8 @@
 package com.viplearner.api.models
 
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class UserStatus(
     val id: String,
     val name: String,
@@ -11,5 +13,5 @@ data class UserStatus(
     val streaming: Boolean? = null,
     @Deprecated("patron is deprecated")
     val patron: Boolean? = null,
-    val patronColor: PatronColor? = null
+    val patronColor: PatronColor? = null,
 )

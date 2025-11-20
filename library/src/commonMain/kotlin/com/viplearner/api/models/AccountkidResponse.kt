@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AccountkidResponse(
-    val kid: Boolean? = null
+    val kid: Boolean? = null,
 )
-

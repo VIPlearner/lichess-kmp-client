@@ -2,16 +2,14 @@ package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
 import com.viplearner.api.models.*
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Service for External engine API endpoints
  * Provides methods to interact with Lichess external engine data
  */
 class ExternalEngineService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * List external engines
      * Lists all external engines that have been registered for the user,
@@ -44,9 +42,9 @@ class ExternalEngineService(
      * Get external engine
      * Get properties and credentials of an external engine.
      */
-    suspend fun externalEngineGet(): Result<ExternalEngine> {
+    suspend fun externalEngineGet(id: String): Result<ExternalEngine> {
         return try {
-            val result: ExternalEngine = apiClient.safeGet("api/external-engine/{id}")
+            val result: ExternalEngine = apiClient.safeGet("api/external-engine/$id")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -57,9 +55,12 @@ class ExternalEngineService(
      * Update external engine
      * Updates the properties of an external engine.
      */
-    suspend fun externalEnginePut(body: ExternalEngineRegistration): Result<ExternalEngine> {
+    suspend fun externalEnginePut(
+        id: String,
+        body: ExternalEngineRegistration,
+    ): Result<ExternalEngine> {
         return try {
-            val result: ExternalEngine = apiClient.safePut("api/external-engine/{id}", body = body)
+            val result: ExternalEngine = apiClient.safePut("api/external-engine/$id", body = body)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -70,9 +71,9 @@ class ExternalEngineService(
      * Delete external engine
      * Unregisters an external engine.
      */
-    suspend fun externalEngineDelete(): Result<Ok> {
+    suspend fun externalEngineDelete(id: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safeDelete("api/external-engine/{id}")
+            val result: Ok = apiClient.safeDelete("api/external-engine/$id")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

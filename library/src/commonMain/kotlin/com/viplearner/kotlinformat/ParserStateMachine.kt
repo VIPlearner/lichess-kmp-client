@@ -21,17 +21,18 @@ class ParserStateMachine(val format: CharArrayBuffer) {
     private var token: FormatToken? = null
     private var state = ENTRY_STATE
     private var currentChar = 0.toChar()
+
     fun reset() {
         currentChar = FormatToken.UNSET.toChar()
         state = ENTRY_STATE
         token = null
-    }// exit state does not need to get next char// FINITE AUTOMATIC MACHINE
+    } // exit state does not need to get next char// FINITE AUTOMATIC MACHINE
 
     /*
-         * Gets the information about the current format token. Information is
-         * recorded in the FormatToken returned and the position of the stream
-         * for the format string will be advanced till the next format token.
-         */
+     * Gets the information about the current format token. Information is
+     * recorded in the FormatToken returned and the position of the stream
+     * for the format string will be advanced till the next format token.
+     */
     val nextFormatToken: FormatToken
         get() {
             token = FormatToken()
@@ -40,11 +41,11 @@ class ParserStateMachine(val format: CharArrayBuffer) {
             while (true) {
                 if (EXIT_STATE != state) { // exit state does not need to get next char
                     currentChar = nextFormatChar
-                    if (EOS == currentChar
-                        && ENTRY_STATE != state
+                    if (EOS == currentChar &&
+                        ENTRY_STATE != state
                     ) {
                         throw Exception(
-                            formatString
+                            formatString,
                         )
                     }
                 }
@@ -79,20 +80,25 @@ class ParserStateMachine(val format: CharArrayBuffer) {
         }
 
     /*
-         * Gets next char from the format string.
-         */
+     * Gets next char from the format string.
+     */
     private val nextFormatChar: Char
-        get() = if (format.hasRemaining()) {
-            format.get()
-        } else EOS
+        get() =
+            if (format.hasRemaining()) {
+                format.get()
+            } else {
+                EOS
+            }
 
     private val formatString: String
         get() {
             val end: Int = format.position()
             format.rewind()
-            val formatString: String = format.subSequence(
-                token!!.formatStringStartIndex, end
-            ).toString()
+            val formatString: String =
+                format.subSequence(
+                    token!!.formatStringStartIndex,
+                    end,
+                ).toString()
             format.position(end)
             return formatString
         }
@@ -122,7 +128,7 @@ class ParserStateMachine(val format: CharArrayBuffer) {
                     token!!.argIndex = number - 1
                 } else if (number == FormatToken.UNSET) {
                     throw Exception(
-                        formatString
+                        formatString,
                     )
                 }
                 state = FLAGS_STATE
@@ -184,11 +190,12 @@ class ParserStateMachine(val format: CharArrayBuffer) {
 
     private fun process_CONVERSION_TYPE_STATE() {
         token!!.conversionType = currentChar
-        state = if ('t' == currentChar || 'T' == currentChar) {
-            SUFFIX_STATE
-        } else {
-            EXIT_STATE
-        }
+        state =
+            if ('t' == currentChar || 'T' == currentChar) {
+                SUFFIX_STATE
+            } else {
+                EXIT_STATE
+            }
     }
 
     private fun process_SUFFIX_STATE() {
@@ -201,8 +208,8 @@ class ParserStateMachine(val format: CharArrayBuffer) {
     }
 
     /*
-         * Parses integer value from the given buffer
-         */
+     * Parses integer value from the given buffer
+     */
     private fun parseInt(buffer: CharArrayBuffer): Int {
         val start: Int = buffer.position() - 1
         var end: Int = buffer.limit()
@@ -233,5 +240,4 @@ class ParserStateMachine(val format: CharArrayBuffer) {
         private const val CONVERSION_TYPE_STATE = 6
         private const val SUFFIX_STATE = 7
     }
-
 }

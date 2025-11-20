@@ -1,12 +1,12 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChallengeJsonPerf(
     val icon: String,
-    val name: String
+    val name: String,
 )
 
 @Serializable
@@ -15,7 +15,7 @@ enum class ChallengeJsonDirection {
     IN,
 
     @SerialName("out")
-    OUT
+    OUT,
 }
 
 @Serializable
@@ -34,5 +34,5 @@ data class ChallengeJson(
     val perf: ChallengeJsonPerf,
     val direction: ChallengeJsonDirection? = null,
     val initialFen: String? = null,
-    val rematchOf: String? = null
+    val rematchOf: String? = null,
 )

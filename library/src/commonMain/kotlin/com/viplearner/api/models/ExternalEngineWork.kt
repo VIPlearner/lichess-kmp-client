@@ -7,9 +7,8 @@ import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 
-
 object ExternalEngineWorkSerializer : JsonContentPolymorphicSerializer<ExternalEngineWork>(
-    ExternalEngineWork::class
+    ExternalEngineWork::class,
 ) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<ExternalEngineWork> {
         val jsonObject = element.jsonObject
@@ -27,39 +26,39 @@ sealed class ExternalEngineWork {
     @Serializable
     @SerialName("search_by_movetime")
     data class SearchByMovetime(
-        val movetime: Int,
+        val movetime: Long,
         val sessionId: String,
-        val threads: Int,
-        val hash: Int,
-        val multiPv: Int,
+        val threads: Long,
+        val hash: Long,
+        val multiPv: Long,
         val variant: UciVariant,
         val initialFen: String,
-        val moves: List<String>
+        val moves: List<String>,
     ) : ExternalEngineWork()
 
     @Serializable
     @SerialName("search_by_depth")
     data class SearchByDepth(
-        val depth: Int,
+        val depth: Long,
         val sessionId: String,
-        val threads: Int,
-        val hash: Int,
-        val multiPv: Int,
+        val threads: Long,
+        val hash: Long,
+        val multiPv: Long,
         val variant: UciVariant,
         val initialFen: String,
-        val moves: List<String>
+        val moves: List<String>,
     ) : ExternalEngineWork()
 
     @Serializable
     @SerialName("search_by_nodes")
     data class SearchByNodes(
-        val nodes: Int,
+        val nodes: Long,
         val sessionId: String,
-        val threads: Int,
-        val hash: Int,
-        val multiPv: Int,
+        val threads: Long,
+        val hash: Long,
+        val multiPv: Long,
         val variant: UciVariant,
         val initialFen: String,
-        val moves: List<String>
+        val moves: List<String>,
     ) : ExternalEngineWork()
 }

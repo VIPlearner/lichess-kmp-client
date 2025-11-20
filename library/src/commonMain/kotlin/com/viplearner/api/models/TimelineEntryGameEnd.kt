@@ -1,12 +1,12 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class TimelineEntryGameEndType {
     @SerialName("game-end")
-    GAME_END
+    GAME_END,
 }
 
 @Serializable
@@ -14,12 +14,12 @@ data class TimelineEntryGameEndData(
     val fullId: String,
     val opponent: String,
     val win: Boolean,
-    val perf: PerfType
+    val perf: PerfType,
 )
 
 @Serializable
 data class TimelineEntryGameEnd(
     val type: TimelineEntryGameEndType,
     val date: Double,
-    val data: TimelineEntryGameEndData
+    val data: TimelineEntryGameEndData,
 )

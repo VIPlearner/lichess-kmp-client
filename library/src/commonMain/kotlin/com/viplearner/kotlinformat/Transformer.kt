@@ -3,7 +3,6 @@ package dev.simplx
 import kotlin.math.max
 import kotlin.math.min
 
-
 /* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,99 +23,103 @@ class Transformer internal constructor(private val formatter: Formatter) {
     private var arg: Any? = null
 
     /*
-         * Gets the formatted string according to the format token and the
-         * argument.
-         */
-    fun transform(token: FormatToken, argument: Any?): String { /* init data member to print */
+     * Gets the formatted string according to the format token and the
+     * argument.
+     */
+    fun transform(
+        token: FormatToken,
+        argument: Any?,
+    ): String { // init data member to print
         formatToken = token
         arg = argument
-        var result: String = when (token.conversionType) {
-            'S', 's' -> {
-                transformFromString()
+        var result: String =
+            when (token.conversionType) {
+                'S', 's' -> {
+                    transformFromString()
+                }
+                'd', 'o', 'x', 'X' -> {
+                    transformFromInteger()
+                }
+                '%' -> {
+                    transformFromPercent()
+                }
+                else -> {
+                    throw Exception(
+                        token.conversionType.toString(),
+                    )
+                }
             }
-            'd', 'o', 'x', 'X' -> {
-                transformFromInteger()
-            }
-            '%' -> {
-                transformFromPercent()
-            }
-            else -> {
-                throw Exception(
-                    token.conversionType.toString()
-                )
-            }
-        }
         if (Character.isUpperCase(token.conversionType)) {
             return result.uppercase()
         }
         return result
     }
 
-
     /*
-         * Transforms the String to a formatted string.
-         */
+     * Transforms the String to a formatted string.
+     */
     private fun transformFromString(): String {
         val result = StringBuilder()
         val startIndex = 0
         val flags = formatToken!!.flags
-        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS)
-            && !formatToken!!.isWidthSet
+        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS) &&
+            !formatToken!!.isWidthSet
         ) {
             throw Exception(
-                "-" //$NON-NLS-1$
-                        + formatToken!!.conversionType
+                "-" + // $NON-NLS-1$
+                    formatToken!!.conversionType,
             )
         }
         // only '-' is valid for flags if the argument is not an
 // instance of Formattable
-        if (FormatToken.FLAGS_UNSET != flags
-            && FormatToken.FLAG_MINUS != flags
+        if (FormatToken.FLAGS_UNSET != flags &&
+            FormatToken.FLAG_MINUS != flags
         ) {
-            throw Exception(
-            )
+            throw Exception()
         }
         result.append(arg)
         return padding(result, startIndex)
     }
 
     /*
-         * Transforms percent to a formatted string. Only '-' is legal flag.
-         * Precision is illegal.
-         */
+     * Transforms percent to a formatted string. Only '-' is legal flag.
+     * Precision is illegal.
+     */
     private fun transformFromPercent(): String {
-        val result = StringBuilder("%") //$NON-NLS-1$
+        val result = StringBuilder("%") // $NON-NLS-1$
         val startIndex = 0
         val flags = formatToken!!.flags
-        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS)
-            && !formatToken!!.isWidthSet
+        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS) &&
+            !formatToken!!.isWidthSet
         ) {
             throw Exception(
-                "-" //$NON-NLS-1$
-                        + formatToken!!.conversionType
+                "-" + // $NON-NLS-1$
+                    formatToken!!.conversionType,
             )
         }
-        if (FormatToken.FLAGS_UNSET != flags
-            && FormatToken.FLAG_MINUS != flags
+        if (FormatToken.FLAGS_UNSET != flags &&
+            FormatToken.FLAG_MINUS != flags
         ) {
-            throw Exception(
-            )
+            throw Exception()
         }
         if (formatToken!!.isPrecisionSet) {
-            throw Exception(
-            )
+            throw Exception()
         }
         return padding(result, startIndex)
     }
 
     /*
-         * Pads characters to the formatted string.
-         */
-    private fun padding(sourc: StringBuilder, startIndex: Int): String {
+     * Pads characters to the formatted string.
+     */
+    private fun padding(
+        sourc: StringBuilder,
+        startIndex: Int,
+    ): String {
         var source = sourc
         var start = startIndex
-        val paddingRight = formatToken
-            ?.isFlagSet(FormatToken.FLAG_MINUS)
+        val paddingRight =
+            formatToken
+                ?.isFlagSet(FormatToken.FLAG_MINUS)
         var paddingChar = '\u0020' // space as padding char.
         if (formatToken!!.isFlagSet(FormatToken.FLAG_ZERO)) {
             paddingChar = '0'
@@ -148,67 +151,65 @@ class Transformer internal constructor(private val formatter: Formatter) {
     }
 
     /*
-         * Transforms the Integer to a formatted string.
-         */
+     * Transforms the Integer to a formatted string.
+     */
     private fun transformFromInteger(): String {
         var startIndex = 0
         var isNegative = false
         var result = StringBuilder()
         val currentConversionType = formatToken!!.conversionType
         var value: Long
-        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS)
-            || formatToken!!.isFlagSet(FormatToken.FLAG_ZERO)
+        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS) ||
+            formatToken!!.isFlagSet(FormatToken.FLAG_ZERO)
         ) {
             if (!formatToken!!.isWidthSet) {
-                throw Exception(
-                )
+                throw Exception()
             }
         }
         // Combination of '+' & ' ' is illegal.
-        if (formatToken!!.isFlagSet(FormatToken.FLAG_ADD)
-            && formatToken!!.isFlagSet(FormatToken.FLAG_SPACE)
+        if (formatToken!!.isFlagSet(FormatToken.FLAG_ADD) &&
+            formatToken!!.isFlagSet(FormatToken.FLAG_SPACE)
         ) {
             throw Exception(formatToken!!.getStrFlags())
         }
         if (formatToken!!.isPrecisionSet) {
-            throw Exception(
-            )
+            throw Exception()
         }
-        value = if (arg is Long) {
-            (arg as Long).toLong()
-        } else if (arg is Int) {
-            (arg as Int).toLong()
-        } else if (arg is Short) {
-            (arg as Short).toLong()
-        } else if (arg is Byte) {
-            (arg as Byte).toLong()
-        } else {
-            error("Value not supported [$arg] for type `$currentConversionType'")
-        }
+        value =
+            if (arg is Long) {
+                (arg as Long).toLong()
+            } else if (arg is Int) {
+                (arg as Int).toLong()
+            } else if (arg is Short) {
+                (arg as Short).toLong()
+            } else if (arg is Byte) {
+                (arg as Byte).toLong()
+            } else {
+                error("Value not supported [$arg] for type `$currentConversionType'")
+            }
         if ('d' != currentConversionType) {
-            if (formatToken!!.isFlagSet(FormatToken.FLAG_ADD)
-                || formatToken!!.isFlagSet(FormatToken.FLAG_SPACE)
-                || formatToken!!.isFlagSet(FormatToken.FLAG_COMMA)
-                || formatToken!!.isFlagSet(FormatToken.FLAG_PARENTHESIS)
+            if (formatToken!!.isFlagSet(FormatToken.FLAG_ADD) ||
+                formatToken!!.isFlagSet(FormatToken.FLAG_SPACE) ||
+                formatToken!!.isFlagSet(FormatToken.FLAG_COMMA) ||
+                formatToken!!.isFlagSet(FormatToken.FLAG_PARENTHESIS)
             ) {
-                throw Exception(
-                )
+                throw Exception()
             }
         }
         if (formatToken!!.isFlagSet(FormatToken.FLAG_SHARP)) {
-            startIndex += if ('d' == currentConversionType) {
-                throw Exception(
-                )
-            } else if ('o' == currentConversionType) {
-                result.append("0") //$NON-NLS-1$
-                1
-            } else {
-                result.append("0x") //$NON-NLS-1$
-                2
-            }
+            startIndex +=
+                if ('d' == currentConversionType) {
+                    throw Exception()
+                } else if ('o' == currentConversionType) {
+                    result.append("0") // $NON-NLS-1$
+                    1
+                } else {
+                    result.append("0x") // $NON-NLS-1$
+                    2
+                }
         }
-        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS)
-            && formatToken!!.isFlagSet(FormatToken.FLAG_ZERO)
+        if (formatToken!!.isFlagSet(FormatToken.FLAG_MINUS) &&
+            formatToken!!.isFlagSet(FormatToken.FLAG_ZERO)
         ) {
             throw Exception(formatToken!!.getStrFlags())
         }
@@ -218,16 +219,16 @@ class Transformer internal constructor(private val formatter: Formatter) {
         if ('d' == currentConversionType) {
             result.append(arg.toString())
         } else {
-            val BYTE_MASK = 0x00000000000000FFL
-            val SHORT_MASK = 0x000000000000FFFFL
-            val INT_MASK = 0x00000000FFFFFFFFL
+            val byteMask = 0x00000000000000FFL
+            val shortMask = 0x000000000000FFFFL
+            val intMask = 0x00000000FFFFFFFFL
             if (isNegative) {
                 if (arg is Byte) {
-                    value = value and BYTE_MASK
+                    value = value and byteMask
                 } else if (arg is Short) {
-                    value = value and SHORT_MASK
+                    value = value and shortMask
                 } else if (arg is Int) {
-                    value = value and INT_MASK
+                    value = value and intMask
                 }
             }
             isNegative = false
@@ -242,8 +243,9 @@ class Transformer internal constructor(private val formatter: Formatter) {
                 startIndex += 1
             }
         }
-        /* pad paddingChar to the output */if (isNegative
-            && formatToken!!.isFlagSet(FormatToken.FLAG_PARENTHESIS)
+        // pad paddingChar to the output
+        if (isNegative &&
+            formatToken!!.isFlagSet(FormatToken.FLAG_PARENTHESIS)
         ) {
             result = wrapParentheses(result)
             return result.toString()
@@ -255,10 +257,10 @@ class Transformer internal constructor(private val formatter: Formatter) {
     }
 
     /*
-         * add () to the output,if the value is negative and
-         * formatToken.FLAG_PARENTHESIS is set. 'result' is used as an in-out
-         * parameter.
-         */
+     * add () to the output,if the value is negative and
+     * formatToken.FLAG_PARENTHESIS is set. 'result' is used as an in-out
+     * parameter.
+     */
     private fun wrapParentheses(result: StringBuilder): StringBuilder { // delete the '-'
         result.deleteAt(0)
         result.insert(0, '(')
@@ -272,7 +274,6 @@ class Transformer internal constructor(private val formatter: Formatter) {
         }
         return result
     }
-
 
     /**
      * Indicates whether the specified double is a *Not-a-Number (NaN)*
@@ -296,17 +297,16 @@ class Transformer internal constructor(private val formatter: Formatter) {
      * infinity; `false` otherwise.
      */
     fun isInfinite(d: Double): Boolean {
-        return d == POSITIVE_INFINITY || d == NEGATIVE_INFINITY
+        return d == positiveInfinity || d == negativeInfinity
     }
 
     /**
      * Constant for the Positive Infinity value of the `double` type.
      */
-    val POSITIVE_INFINITY = 1.0 / 0.0
+    val positiveInfinity = 1.0 / 0.0
 
     /**
      * Constant for the Negative Infinity value of the `double` type.
      */
-    val NEGATIVE_INFINITY = -1.0 / 0.0
-
+    val negativeInfinity = -1.0 / 0.0
 }

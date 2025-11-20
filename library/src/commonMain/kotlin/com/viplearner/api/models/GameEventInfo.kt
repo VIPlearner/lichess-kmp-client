@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class GameEventInfo(
@@ -19,10 +18,10 @@ data class GameEventInfo(
     val hasMoved: Boolean? = null,
     val opponent: GameEventOpponent? = null,
     val isMyTurn: Boolean? = null,
-    val secondsLeft: Int? = null,
+    val secondsLeft: Long? = null,
     val winner: GameColor? = null,
-    val ratingDiff: Int? = null,
+    val ratingDiff: Long? = null,
     val compat: GameCompat? = null,
     val id: String? = null,
-    val tournamentId: String? = null
+    val tournamentId: String? = null,
 )

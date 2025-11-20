@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class UciVariant {
@@ -27,5 +27,5 @@ enum class UciVariant {
     RACINGKINGS,
 
     @SerialName("3check")
-    VALUE_3CHECK
+    VALUE_3CHECK,
 }

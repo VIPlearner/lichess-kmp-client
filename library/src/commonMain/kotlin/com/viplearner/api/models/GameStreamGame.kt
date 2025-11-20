@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 /**
  * "GameStreamGame": {
@@ -82,20 +81,20 @@ import kotlinx.serialization.SerialName
  */
 @Serializable
 data class GameStreamGameClock(
-    val initial: Int? = null,
-    val increment: Int? = null,
-    val totalTime: Int? = null
+    val initial: Long? = null,
+    val increment: Long? = null,
+    val totalTime: Long? = null,
 )
 
 @Serializable
 data class GameStreamGamePlayers(
     val white: Player? = null,
-    val black: Player? = null
+    val black: Player? = null,
 ) {
     @Serializable
     data class Player(
         val userId: String,
-        val rating: Int
+        val rating: Long,
     )
 }
 
@@ -106,12 +105,10 @@ data class GameStreamGame(
     val variant: VariantKey? = null,
     val speed: Speed? = null,
     val perf: PerfType? = null,
-    val createdAt: Int? = null,
+    val createdAt: Long? = null,
     val status: GameStatusId? = null,
     val statusName: GameStatusName? = null,
     val clock: GameStreamGameClock? = null,
     val players: GameStreamGamePlayers? = null,
-    val winner: GameColor? = null
-) {
-
-}
+    val winner: GameColor? = null,
+)

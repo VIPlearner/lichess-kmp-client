@@ -7,9 +7,8 @@ import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 
-
 object ApiplayerautocompleteSerializer : JsonContentPolymorphicSerializer<Apiplayerautocomplete>(
-    Apiplayerautocomplete::class
+    Apiplayerautocomplete::class,
 ) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<Apiplayerautocomplete> {
         val jsonObject = element.jsonObject
@@ -22,10 +21,9 @@ object ApiplayerautocompleteSerializer : JsonContentPolymorphicSerializer<Apipla
 
 @Serializable(with = ApiplayerautocompleteSerializer::class)
 sealed class Apiplayerautocomplete {
-
     @Serializable
     @SerialName("variant2")
     data class Variant2(
-        val result: List<LightUserOnline>? = null
+        val result: List<LightUserOnline>? = null,
     ) : Apiplayerautocomplete()
 }

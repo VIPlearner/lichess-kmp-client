@@ -1,14 +1,16 @@
 package com.viplearner.model
 
 interface Enums {
-
     enum class ColorPref {
-        random, white, black;
-
+        random,
+        white,
+        black,
     }
 
     enum class Color {
-        white, black;
+        white,
+        black,
+        ;
 
         interface Provider {
             fun white(): Color {
@@ -22,7 +24,10 @@ interface Enums {
     }
 
     enum class Outcome {
-        win, draw, loss, none
+        win,
+        draw,
+        loss,
+        none,
     }
 
     enum class Status(val status: Int) {
@@ -39,7 +44,8 @@ interface Enums {
         noStart(37),
         unknownFinish(38),
         insufficientMaterialClaim(39),
-        variantEnd(60);
+        variantEnd(60),
+        ;
 
         fun status(): Int {
             return status
@@ -69,12 +75,18 @@ interface Enums {
     }
 
     enum class Direction {
-        `in`, out
+        `in`,
+        out,
     }
 
-
     enum class Speed {
-        ultraBullet, bullet, blitz, rapid, classical, correspondence;
+        ultraBullet,
+        bullet,
+        blitz,
+        rapid,
+        classical,
+        correspondence,
+        ;
 
         interface Provider {
             fun ultraBullet(): Speed {
@@ -116,7 +128,16 @@ interface Enums {
      * _2500 indicates ratings from 2500 and up.
      */
     enum class RatingGroup {
-        _0, _1000, _1200, _1400, _1600, _1800, _2000, _2200, _2500;
+        _0,
+        _1000,
+        _1200,
+        _1400,
+        _1600,
+        _1800,
+        _2000,
+        _2200,
+        _2500,
+        ;
 
         fun asString(): String {
             return name.substring(1)
@@ -204,7 +225,8 @@ interface Enums {
         horde,
         kingOfTheHill,
         racingKings,
-        threeCheck;
+        threeCheck,
+        ;
 
         interface Provider {
             fun standard(): VariantName {
@@ -261,7 +283,8 @@ interface Enums {
         kingOfTheHill,
         racingKings,
         threeCheck,
-        fromPosition;
+        fromPosition,
+        ;
 
         interface Provider {
             fun standard(): GameVariant {
@@ -316,7 +339,11 @@ interface Enums {
      * Specifies who will be able to chat
      */
     enum class ChatFor(val id: Int) {
-        none(0), onlyTeamLeaders(10), onlyTeamMembers(20), allLichessPlayers(30);
+        none(0),
+        onlyTeamLeaders(10),
+        onlyTeamMembers(20),
+        allLichessPlayers(30),
+        ;
 
         interface Provider {
             fun none(): ChatFor {
@@ -357,7 +384,8 @@ interface Enums {
         standard,
         variant,
         noBot,
-        onlyBot;
+        onlyBot,
+        ;
 
         interface Provider {
             fun generic(): DeclineReason {
@@ -416,7 +444,23 @@ interface Enums {
      * The TV Channels
      */
     enum class Channel {
-        bot, blitz, racingKings, ultraBullet, bullet, classical, threeCheck, antichess, computer, horde, rapid, atomic, crazyhouse, chess960, kingOfTheHill, topRated;
+        bot,
+        blitz,
+        racingKings,
+        ultraBullet,
+        bullet,
+        classical,
+        threeCheck,
+        antichess,
+        computer,
+        horde,
+        rapid,
+        atomic,
+        crazyhouse,
+        chess960,
+        kingOfTheHill,
+        topRated,
+        ;
 
         interface Provider {
             fun bot(): Channel {
@@ -495,7 +539,21 @@ interface Enums {
      * The possible performance types
      */
     enum class PerfType {
-        antichess, atomic, blitz, bullet, chess960, classical, correspondence, crazyhouse, horde, kingOfTheHill, racingKings, rapid, threeCheck, ultraBullet;
+        antichess,
+        atomic,
+        blitz,
+        bullet,
+        chess960,
+        classical,
+        correspondence,
+        crazyhouse,
+        horde,
+        kingOfTheHill,
+        racingKings,
+        rapid,
+        threeCheck,
+        ultraBullet,
+        ;
 
         interface Provider {
             fun atomic(): PerfType {
@@ -566,7 +624,20 @@ interface Enums {
      * The possible performance types, excluding correspondence
      */
     enum class PerfTypeNoCorr {
-        antichess, atomic, blitz, bullet, chess960, classical, crazyhouse, horde, kingOfTheHill, racingKings, rapid, threeCheck, ultraBullet;
+        antichess,
+        atomic,
+        blitz,
+        bullet,
+        chess960,
+        classical,
+        crazyhouse,
+        horde,
+        kingOfTheHill,
+        racingKings,
+        rapid,
+        threeCheck,
+        ultraBullet,
+        ;
 
         interface Provider {
             fun atomic(): PerfTypeNoCorr {
@@ -630,7 +701,22 @@ interface Enums {
     }
 
     enum class PerfTypeWithFromPos {
-        antichess, atomic, blitz, bullet, chess960, classical, correspondence, crazyhouse, horde, kingOfTheHill, racingKings, rapid, threeCheck, ultraBullet, fromPosition;
+        antichess,
+        atomic,
+        blitz,
+        bullet,
+        chess960,
+        classical,
+        correspondence,
+        crazyhouse,
+        horde,
+        kingOfTheHill,
+        racingKings,
+        rapid,
+        threeCheck,
+        ultraBullet,
+        fromPosition,
+        ;
 
         interface Provider {
             fun atomic(): PerfTypeWithFromPos {

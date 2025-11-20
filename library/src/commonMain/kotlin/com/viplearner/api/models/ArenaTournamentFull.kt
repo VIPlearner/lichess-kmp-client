@@ -1,63 +1,60 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class ArenaTournamentFullSpotlight(
-    val headline: String? = null
+    val headline: String? = null,
 )
 
 @Serializable
 data class ArenaTournamentFullQuote(
     val text: String? = null,
-    val author: String? = null
+    val author: String? = null,
 )
 
 @Serializable
 data class ArenaTournamentFullGreatplayer(
     val name: String? = null,
-    val url: String? = null
+    val url: String? = null,
 )
 
 @Serializable
 data class ArenaTournamentFullMinratedgames(
-    val nb: Int? = null
+    val nb: Long? = null,
 )
 
 @Serializable
 data class ArenaTournamentFullPerf(
     val icon: String,
     val key: String,
-    val name: String
+    val name: String,
 )
 
 @Serializable
 data class ArenaTournamentFullSchedule(
     val freq: String,
-    val speed: String
+    val speed: String,
 )
 
 @Serializable
 data class ArenaTournamentFullStanding(
-    val page: Int? = null,
-    val players: List<Player> = emptyList()
+    val page: Long? = null,
+    val players: List<Player> = emptyList(),
 ) {
     @Serializable
     data class Player(
         val name: String? = null,
-        val title: String? = null,
+        val title: Title? = null,
         val patron: Boolean? = null,
-        val patronColor: String? = null,
-        val flair: String? = null,
-        val rank: Int? = null,
-        val rating: Int? = null,
-        val score: Int? = null,
-        val sheet: ArenaSheet? = null
+        val patronColor: PatronColor? = null,
+        val flair: Flair? = null,
+        val rank: Long? = null,
+        val rating: Long? = null,
+        val score: Long? = null,
+        val sheet: ArenaSheet? = null,
     )
 }
-
-
 
 @Serializable
 data class ArenaTournamentFullFeatured(
@@ -68,33 +65,32 @@ data class ArenaTournamentFullFeatured(
     val lastMove: String? = null,
     val white: Player? = null,
     val black: Player? = null,
-    val c: LiveClock? = null
+    val c: LiveClock? = null,
 ) {
     @Serializable
     data class LiveClock(
-        val white: Int, //in seconds
-        val black: Int, //in seconds
+        val white: Long, // in seconds
+        val black: Long, // in seconds
     )
 
     @Serializable
     data class Player(
         val name: String? = null,
         val id: String? = null,
-        val rank: Int? = null,
-        val rating: Int? = null
+        val rank: Long? = null,
+        val rating: Long? = null,
     )
-
 }
 
 @Serializable
 data class ArenaTournamentFullStats(
-    val games: Int,
-    val moves: Int,
-    val whiteWins: Int,
-    val blackWins: Int,
-    val draws: Int,
-    val berserks: Int,
-    val averageRating: Int
+    val games: Long,
+    val moves: Long,
+    val whiteWins: Long,
+    val blackWins: Long,
+    val draws: Long,
+    val berserks: Long,
+    val averageRating: Long,
 )
 
 @Serializable
@@ -106,16 +102,16 @@ data class ArenaTournamentFull(
     val berserkable: Boolean? = null,
     val onlyTitled: Boolean? = null,
     val clock: Clock,
-    val minutes: Int? = null,
+    val minutes: Long? = null,
     val createdBy: String? = null,
     val system: String? = null,
-    val secondsToStart: Int? = null,
-    val secondsToFinish: Int? = null,
+    val secondsToStart: Long? = null,
+    val secondsToFinish: Long? = null,
     val isFinished: Boolean? = null,
     val isRecentlyFinished: Boolean? = null,
     val pairingsClosed: Boolean? = null,
     val startsAt: String? = null,
-    val nbPlayers: Int,
+    val nbPlayers: Long,
     val verdicts: Verdicts? = null,
     val quote: ArenaTournamentFullQuote? = null,
     val greatPlayer: ArenaTournamentFullGreatplayer? = null,
@@ -125,7 +121,7 @@ data class ArenaTournamentFull(
     val minRating: ArenaRatingObj? = null,
     val minRatedGames: ArenaTournamentFullMinratedgames? = null,
     val botsAllowed: Boolean? = null,
-    val minAccountAgeInDays: Int? = null,
+    val minAccountAgeInDays: Long? = null,
     val perf: ArenaTournamentFullPerf? = null,
     val schedule: ArenaTournamentFullSchedule? = null,
     val description: String? = null,
@@ -135,41 +131,91 @@ data class ArenaTournamentFull(
     val featured: ArenaTournamentFullFeatured? = null,
     val podium: List<Podium>? = null,
     val stats: ArenaTournamentFullStats? = null,
-    val myUsername: String? = null
+    val myUsername: String? = null,
 ) {
     @Serializable
     data class Duels(
         val id: String,
-        val p: List<Player>
+        val p: List<Player>,
     ) {
         @Serializable
         data class Player(
             val n: String,
-            val r: Int,
-            val k: Int
+            val r: Long,
+            val k: Long,
         )
     }
 
+    /**
+     * "podium": {
+     *             "type": "array",
+     *             "items": {
+     *               "type": "object",
+     *               "properties": {
+     *                 "name": {
+     *                   "type": "string"
+     *                 },
+     *                 "title": {
+     *                   "$ref": "#/components/schemas/Title"
+     *                 },
+     *                 "patron": {
+     *                   "type": "boolean",
+     *                   "deprecated": true
+     *                 },
+     *                 "patronColor": {
+     *                   "$ref": "#/components/schemas/PatronColor"
+     *                 },
+     *                 "flair": {
+     *                   "$ref": "#/components/schemas/Flair"
+     *                 },
+     *                 "rank": {
+     *                   "type": "integer"
+     *                 },
+     *                 "rating": {
+     *                   "type": "integer"
+     *                 },
+     *                 "score": {
+     *                   "type": "integer"
+     *                 },
+     *                 "nb": {
+     *                   "type": "object",
+     *                   "properties": {
+     *                     "game": {
+     *                       "type": "integer"
+     *                     },
+     *                     "berserk": {
+     *                       "type": "integer"
+     *                     },
+     *                     "win": {
+     *                       "type": "integer"
+     *                     }
+     *                   }
+     *                 },
+     *                 "performance": {
+     *                   "type": "integer"
+     *                 }
+     *               }
+     *             }
+     *           }
+     */
     @Serializable
     data class Podium(
         val name: String? = null,
         val title: String? = null,
         val patron: Boolean? = null,
-        val patronColor: String? = null,
-        val flair: String? = null,
-        val rank: Int? = null,
-        val rating: Int? = null,
-        val score: Int? = null,
+        val patronColor: PatronColor? = null,
+        val flair: Flair? = null,
+        val rank: Long? = null,
+        val rating: Long? = null,
+        val score: Long? = null,
         val nb: Nb? = null,
-        val performance: Int? = null
+        val performance: Long? = null,
     ) {
         @Serializable
         data class Nb(
-            val game: Int? = null,
-            val berserk: Int? = null,
-            val win: Int? = null
+            val game: Long? = null,
+            val berserk: Long? = null,
+            val win: Long? = null,
         )
     }
 }
-
-

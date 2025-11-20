@@ -1,19 +1,18 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class GameJsonClock(
-    val initial: Int,
-    val increment: Int,
-    val totalTime: Int
+    val initial: Long,
+    val increment: Long,
+    val totalTime: Long,
 )
 
 @Serializable
 data class GameJsonDivision(
-    val middle: Int? = null,
-    val end: Int? = null
+    val middle: Long? = null,
+    val end: Long? = null,
 )
 
 @Serializable
@@ -33,11 +32,11 @@ data class GameJson(
     val opening: GameOpening? = null,
     val moves: String? = null,
     val pgn: String? = null,
-    val daysPerTurn: Int? = null,
+    val daysPerTurn: Long? = null,
     val analysis: List<GameMoveAnalysis>? = null,
     val tournament: String? = null,
     val swiss: String? = null,
     val clock: GameJsonClock? = null,
-    val clocks: List<Int>? = null,
-    val division: GameJsonDivision? = null
+    val clocks: List<Long>? = null,
+    val division: GameJsonDivision? = null,
 )

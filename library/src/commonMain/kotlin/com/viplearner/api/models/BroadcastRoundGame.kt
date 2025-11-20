@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class BroadcastRoundGameCheck {
@@ -9,7 +9,7 @@ enum class BroadcastRoundGameCheck {
     PLUS,
 
     @SerialName("#")
-    HASH
+    HASH,
 }
 
 @Serializable
@@ -24,7 +24,7 @@ enum class BroadcastRoundGameStatus {
     BLACK_WINS,
 
     @SerialName("½-½")
-    DRAW
+    DRAW,
 }
 
 @Serializable
@@ -35,16 +35,16 @@ data class BroadcastRoundGame(
     val players: List<Player>? = null,
     val lastMove: String? = null,
     val check: BroadcastRoundGameCheck? = null,
-    val thinkTime: Int? = null,
-    val status: BroadcastRoundGameStatus? = null
+    val thinkTime: Long? = null,
+    val status: BroadcastRoundGameStatus? = null,
 ) {
     @Serializable
     data class Player(
         val name: String,
         val title: String? = null,
-        val rating: Int? = null,
-        val fideId: Int? = null,
+        val rating: Long? = null,
+        val fideId: Long? = null,
         val fed: String? = null,
-        val clock: Int? = null
+        val clock: Long? = null,
     )
 }

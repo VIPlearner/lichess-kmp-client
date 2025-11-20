@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class BroadcastTourInfo(
@@ -12,7 +11,7 @@ data class BroadcastTourInfo(
     val fideTc: String? = null,
     val timeZone: String? = null,
     val standings: String? = null,
-    val format: String? = null
+    val format: String? = null,
 )
 
 @Serializable
@@ -20,14 +19,14 @@ data class BroadcastTour(
     val id: String,
     val name: String,
     val slug: String,
-    val createdAt: Int,
+    val createdAt: Long,
     val dates: List<Long>? = null,
     val info: BroadcastTourInfo? = null,
-    val tier: Int? = null,
+    val tier: Long? = null,
     val image: String? = null,
     val description: String? = null,
     val leaderboard: Boolean? = null,
     val teamTable: Boolean? = null,
     val url: String,
-    val communityOwner: LightUser? = null
+    val communityOwner: LightUser? = null,
 )

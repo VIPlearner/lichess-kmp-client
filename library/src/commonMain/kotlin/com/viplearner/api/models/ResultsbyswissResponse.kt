@@ -11,5 +11,5 @@ data class ResultsbyswissResponse(
     val rating: Int,
     val username: String,
     val title: Title? = null,
-    val performance: Int
+    val performance: Int,
 )

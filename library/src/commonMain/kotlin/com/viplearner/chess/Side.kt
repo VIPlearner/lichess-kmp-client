@@ -1,7 +1,9 @@
 package com.viplearner.chess
 
 enum class Side {
-    white, black;
+    white,
+    black,
+    ;
 
     fun other(): Side {
         return when (this) {

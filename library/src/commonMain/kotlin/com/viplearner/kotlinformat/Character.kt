@@ -17,7 +17,6 @@ package dev.simplx
  */
 class Character {
     companion object {
-
         /**
          * Indicates whether the specified character is a digit.
          *
@@ -28,7 +27,6 @@ class Character {
          */
         fun isDigit(c: Char): Boolean = c in '0'..'9'
 
-
         /**
          * Indicates whether the specified character is an upper case letter.
          *
@@ -37,8 +35,7 @@ class Character {
          * @return `true` if `c` is a upper case letter; `false`
          * otherwise.
          */
-        fun isUpperCase(c: Char): Boolean =
-             c in 'A'..'Z'
+        fun isUpperCase(c: Char): Boolean = c in 'A'..'Z'
 
         /**
          * Indicates whether the specified character is a lower case letter.
@@ -48,8 +45,6 @@ class Character {
          * @return `true` if `c` is a lower case letter; `false`
          * otherwise.
          */
-        fun isLowerCase(c: Char): Boolean =
-             c in 'a'..'z'
-
+        fun isLowerCase(c: Char): Boolean = c in 'a'..'z'
     }
 }

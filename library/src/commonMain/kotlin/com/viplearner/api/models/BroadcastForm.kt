@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class BroadcastFormVisibility {
@@ -12,7 +12,7 @@ enum class BroadcastFormVisibility {
     UNLISTED,
 
     @SerialName("private")
-    PRIVATE
+    PRIVATE,
 }
 
 @Serializable
@@ -41,8 +41,8 @@ data class BroadcastForm(
     val visibility: BroadcastFormVisibility? = null,
     val players: String? = null,
     val teams: String? = null,
-    val tier: Int? = null,
-    val tiebreaks: List<BroadcastTiebreakExtendedCode>? = null
+    val tier: Long? = null,
+    val tiebreaks: List<BroadcastTiebreakExtendedCode>? = null,
 ) {
     @Serializable
     enum class InfoFideTc {
@@ -53,6 +53,6 @@ data class BroadcastForm(
         RAPID,
 
         @SerialName("blitz")
-        BLITZ
+        BLITZ,
     }
 }

@@ -5,7 +5,6 @@ package com.viplearner.model
  * This allows the codebase to remain KMP-compatible while maintaining the same API surface.
  */
 class Optional<T> private constructor(private val value: T?) {
-
     companion object {
         private val EMPTY = Optional<Any?>(null)
 
@@ -72,7 +71,10 @@ class Optional<T> private constructor(private val value: T?) {
     /**
      * If a value is present, performs the given action with the value, otherwise performs the empty action.
      */
-    fun ifPresentOrElse(action: (T) -> Unit, emptyAction: () -> Unit) {
+    fun ifPresentOrElse(
+        action: (T) -> Unit,
+        emptyAction: () -> Unit,
+    ) {
         if (value != null) {
             action(value)
         } else {
@@ -178,4 +180,3 @@ class Optional<T> private constructor(private val value: T?) {
         }
     }
 }
-

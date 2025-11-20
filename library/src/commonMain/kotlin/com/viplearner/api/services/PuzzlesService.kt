@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.Flow
  * Provides methods to interact with Lichess puzzles data
  */
 class PuzzlesService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * Get the daily puzzle
      * Get the daily Lichess puzzle in JSON format.
@@ -32,7 +31,7 @@ class PuzzlesService(
      */
     suspend fun puzzleId(id: String): Result<PuzzleAndGame> {
         return try {
-            val result: PuzzleAndGame = apiClient.safeGet("api/puzzle/${id}")
+            val result: PuzzleAndGame = apiClient.safeGet("api/puzzle/$id")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -43,13 +42,18 @@ class PuzzlesService(
      * Get a new puzzle
      * Get a random Lichess puzzle in JSON format.
      */
-    suspend fun puzzleNext(angle: String? = null, difficulty: String? = null, color: String? = null): Result<PuzzleAndGame> {
+    suspend fun puzzleNext(
+        angle: String? = null,
+        difficulty: String? = null,
+        color: String? = null,
+    ): Result<PuzzleAndGame> {
         return try {
-            val queryParams = mapOf(
-                "angle" to angle,
-                "difficulty" to difficulty,
-                "color" to color
-            ).filterValues { it != null }
+            val queryParams =
+                mapOf(
+                    "angle" to angle,
+                    "difficulty" to difficulty,
+                    "color" to color,
+                ).filterValues { it != null }
             val result: PuzzleAndGame = apiClient.safeGet("api/puzzle/next", queryParams)
             Result.success(result)
         } catch (e: Exception) {
@@ -61,14 +65,20 @@ class PuzzlesService(
      * Get multiple puzzles at once
      * Get a batch of random Lichess puzzles in JSON format.
      */
-    suspend fun puzzleBatchSelect(angle: String, difficulty: String? = null, nb: Int? = null, color: String? = null): Result<PuzzleBatchSelect> {
+    suspend fun puzzleBatchSelect(
+        angle: String,
+        difficulty: String? = null,
+        nb: Int? = null,
+        color: String? = null,
+    ): Result<PuzzleBatchSelect> {
         return try {
-            val queryParams = mapOf(
-                "difficulty" to difficulty,
-                "nb" to nb,
-                "color" to color
-            ).filterValues { it != null }
-            val result: PuzzleBatchSelect = apiClient.safeGet("api/puzzle/batch/${angle}", queryParams)
+            val queryParams =
+                mapOf(
+                    "difficulty" to difficulty,
+                    "nb" to nb,
+                    "color" to color,
+                ).filterValues { it != null }
+            val result: PuzzleBatchSelect = apiClient.safeGet("api/puzzle/batch/$angle", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -79,12 +89,17 @@ class PuzzlesService(
      * Solve multiple puzzles at once
      * Set puzzles as solved and update ratings.
      */
-    suspend fun puzzleBatchSolve(angle: String, nb: Int? = null, body: PuzzleBatchSolveRequest): Result<PuzzleBatchSolveResponse> {
+    suspend fun puzzleBatchSolve(
+        angle: String,
+        nb: Int? = null,
+        body: PuzzleBatchSolveRequest,
+    ): Result<PuzzleBatchSolveResponse> {
         return try {
-            val queryParams = mapOf(
-                "nb" to nb
-            ).filterValues { it != null }
-            val result: PuzzleBatchSolveResponse = apiClient.safePost("api/puzzle/batch/${angle}", queryParams, body)
+            val queryParams =
+                mapOf(
+                    "nb" to nb,
+                ).filterValues { it != null }
+            val result: PuzzleBatchSolveResponse = apiClient.safePost("api/puzzle/batch/$angle", queryParams, body)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -96,13 +111,17 @@ class PuzzlesService(
      * Download your puzzle activity in [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.
      * Puzzle activity is sorted by reverse chronological order (most recent first)
      */
-    suspend fun puzzleActivity(max: Int? = null, before: Int? = null): Result<Flow<PuzzleActivity>> {
+    suspend fun puzzleActivity(
+        max: Int? = null,
+        before: Int? = null,
+    ): Result<Flow<PuzzleActivity>> {
         return try {
-            val queryParams = mapOf(
-                "max" to max,
-                "before" to before
-            ).filterValues { it != null }
-            val result: Flow<PuzzleActivity> = apiClient.safeGet("api/puzzle/activity", queryParams)
+            val queryParams =
+                mapOf(
+                    "max" to max,
+                    "before" to before,
+                ).filterValues { it != null }
+            val result: Flow<PuzzleActivity> = apiClient.safeNdjsonGet("api/puzzle/activity", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -113,9 +132,12 @@ class PuzzlesService(
      * Get puzzles to replay
      * Gets the puzzle IDs of remaining puzzles to re-attempt in JSON format.
      */
-    suspend fun puzzleReplay(days: Int, theme: String): Result<PuzzleReplay> {
+    suspend fun puzzleReplay(
+        days: Int,
+        theme: String,
+    ): Result<PuzzleReplay> {
         return try {
-            val result: PuzzleReplay = apiClient.safeGet("api/puzzle/replay/${days}/${theme}")
+            val result: PuzzleReplay = apiClient.safeGet("api/puzzle/replay/$days/$theme")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -129,7 +151,7 @@ class PuzzlesService(
      */
     suspend fun puzzleDashboard(days: Int): Result<PuzzleDashboard> {
         return try {
-            val result: PuzzleDashboard = apiClient.safeGet("api/puzzle/dashboard/${days}")
+            val result: PuzzleDashboard = apiClient.safeGet("api/puzzle/dashboard/$days")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -141,12 +163,16 @@ class PuzzlesService(
      * Download the [storm dashboard](https://lichess.org/storm/dashboard/mrbasso) of any player as JSON.
      * Contains the aggregated highscores, and the history of storm runs aggregated by days.
      */
-    suspend fun stormDashboard(username: String, days: Int? = null): Result<PuzzleStormDashboard> {
+    suspend fun stormDashboard(
+        username: String,
+        days: Int? = null,
+    ): Result<PuzzleStormDashboard> {
         return try {
-            val queryParams = mapOf(
-                "days" to days
-            ).filterValues { it != null }
-            val result: PuzzleStormDashboard = apiClient.safeGet("api/storm/dashboard/${username}", queryParams)
+            val queryParams =
+                mapOf(
+                    "days" to days,
+                ).filterValues { it != null }
+            val result: PuzzleStormDashboard = apiClient.safeGet("api/storm/dashboard/$username", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -174,7 +200,7 @@ class PuzzlesService(
      */
     suspend fun racerGet(id: String): Result<PuzzleRaceResults> {
         return try {
-            val result: PuzzleRaceResults = apiClient.safeGet("api/racer/${id}")
+            val result: PuzzleRaceResults = apiClient.safeGet("api/racer/$id")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

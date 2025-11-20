@@ -23,8 +23,8 @@ class FormatToken {
     var width = UNSET
     var precision = UNSET
     private val strFlags = StringBuilder(FLAGT_TYPE_COUNT)
-    var dateSuffix // will be used in new feature.
-            = 0.toChar()
+    var dateSuffix = // will be used in new feature.
+        0.toChar()
     var conversionType = UNSET.toChar()
     val isPrecisionSet: Boolean
         get() = precision != UNSET
@@ -42,30 +42,31 @@ class FormatToken {
 
     fun setFlag(c: Char): Boolean {
         val newFlag: Int
-        newFlag = when (c) {
-            '-' -> {
-                FLAG_MINUS
+        newFlag =
+            when (c) {
+                '-' -> {
+                    FLAG_MINUS
+                }
+                '#' -> {
+                    FLAG_SHARP
+                }
+                '+' -> {
+                    FLAG_ADD
+                }
+                ' ' -> {
+                    FLAG_SPACE
+                }
+                '0' -> {
+                    FLAG_ZERO
+                }
+                ',' -> {
+                    FLAG_COMMA
+                }
+                '(' -> {
+                    FLAG_PARENTHESIS
+                }
+                else -> return false
             }
-            '#' -> {
-                FLAG_SHARP
-            }
-            '+' -> {
-                FLAG_ADD
-            }
-            ' ' -> {
-                FLAG_SPACE
-            }
-            '0' -> {
-                FLAG_ZERO
-            }
-            ',' -> {
-                FLAG_COMMA
-            }
-            '(' -> {
-                FLAG_PARENTHESIS
-            }
-            else -> return false
-        }
         flags = flags or newFlag
         strFlags.append(c)
         return true

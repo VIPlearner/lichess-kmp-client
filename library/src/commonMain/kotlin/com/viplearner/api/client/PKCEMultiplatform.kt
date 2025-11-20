@@ -5,6 +5,6 @@ package com.viplearner.api.client
  */
 expect object PKCEMultiplatform {
     fun sha256(input: ByteArray): ByteArray
+
     fun base64UrlEncode(input: ByteArray): String
 }
-

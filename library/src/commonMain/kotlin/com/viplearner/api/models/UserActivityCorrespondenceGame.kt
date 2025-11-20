@@ -1,12 +1,11 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class UserActivityCorrespondenceGameOpponent(
     val user: String,
-    val rating: Int
+    val rating: Long,
 )
 
 @Serializable
@@ -18,5 +17,5 @@ data class UserActivityCorrespondenceGame(
     val speed: String? = null,
     val perf: String? = null,
     val rated: Boolean? = null,
-    val opponent: UserActivityCorrespondenceGameOpponent
+    val opponent: UserActivityCorrespondenceGameOpponent,
 )

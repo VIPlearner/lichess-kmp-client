@@ -1,36 +1,56 @@
 package com.viplearner.chess
 
-import com.viplearner.model.*
 import com.viplearner.chess.Square.*
+import com.viplearner.model.*
 import kotlin.jvm.JvmRecord
 
 interface DefaultBoard : PieceTypedBoard<Piece> {
     fun play(vararg uciOrSan: String): DefaultBoard
 
-    fun play(from: Pos, to: Pos): DefaultBoard? {
+    fun play(
+        from: Pos,
+        to: Pos,
+    ): DefaultBoard? {
         return play(from.toString() + to.toString())
     }
 
-    fun play(from: Pos, to: Pos, promotion: Piece): DefaultBoard? {
+    fun play(
+        from: Pos,
+        to: Pos,
+        promotion: Piece,
+    ): DefaultBoard? {
         return play(from.toString() + to.toString() + promotion.toChar())
     }
 
-    fun play(from: Square<Piece>, to: Square<Piece>): DefaultBoard? {
+    fun play(
+        from: Square<Piece>,
+        to: Square<Piece>,
+    ): DefaultBoard? {
         return play(from.pos(), to.pos())
     }
 
-    fun play(from: Square<Piece>, to: Square<Piece>, promotion: Piece): DefaultBoard? {
+    fun play(
+        from: Square<Piece>,
+        to: Square<Piece>,
+        promotion: Piece,
+    ): DefaultBoard? {
         return play(from.pos(), to.pos(), promotion)
     }
 
     fun toSAN(move: String): String?
+
     fun toUCI(move: String): String?
+
     fun toFEN(): String?
+
     fun variant(): String?
+
     fun validMoves(): Collection<String?>?
+
     fun sideToMove(): Side
 
     fun historyFEN(): List<String?>?
+
     fun historyMove(): List<String?>?
 
     fun whiteToMove(): Boolean {
@@ -72,7 +92,7 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
                 if (component is Frame) component.value else frame,
                 if (component is Letter) component.value else letter,
                 if (component is Coordinates) component.value else coordinates,
-                if (component is Flipped) component.value else flipped
+                if (component is Flipped) component.value else flipped,
             )
         }
 
@@ -96,7 +116,6 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
             return of(Board.fromFEN(fen))
         }
 
-
         fun fenPositionsToSquares(positionsOrFen: String): Map<Pos, Square<Piece>> {
             // in case complete FEN, just keep positions part
             val positions = positionsOrFen.trim().split(" ")[0]
@@ -115,22 +134,27 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
                     } else {
                         val pieceAndSide: Piece.PieceAndSide? = Piece.fromCharWithSide(c)
                         if (pieceAndSide != null) {
-                            squareList.add(Square.withPiece(
-                                ('a'.code + file).toChar(),
-                                8 - rank,
-                                pieceAndSide.piece,
-                                pieceAndSide.side
-                            ))
+                            squareList.add(
+                                Square.withPiece(
+                                    ('a'.code + file).toChar(),
+                                    8 - rank,
+                                    pieceAndSide.piece,
+                                    pieceAndSide.side,
+                                ),
+                            )
                         }
-                            file++
+                        file++
                     }
                 }
             }
 
-            val squareMap: Map<Pos, Square<Piece>> = squareList
-                .sortedWith(compareBy<Square<Piece>> { it.pos().file() }
-                    .thenBy { it.pos().rank() })
-                .associateByTo(LinkedHashMap()) { it.pos() }
+            val squareMap: Map<Pos, Square<Piece>> =
+                squareList
+                    .sortedWith(
+                        compareBy<Square<Piece>> { it.pos().file() }
+                            .thenBy { it.pos().rank() },
+                    )
+                    .associateByTo(LinkedHashMap()) { it.pos() }
 
             return squareMap
         }
@@ -162,65 +186,71 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
             return rows.joinToString("/")
         }
 
-        val noframeTemplate: String = """
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        %s %s %s %s %s %s %s %s
-        """.trimIndent()
+        val noframeTemplate: String =
+            """
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            %s %s %s %s %s %s %s %s
+            """.trimIndent()
 
-        val frameTemplate: String = """
-        ┌───┬───┬───┬───┬───┬───┬───┬───┐
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        ├───┼───┼───┼───┼───┼───┼───┼───┤
-        │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
-        └───┴───┴───┴───┴───┴───┴───┴───┘
-        """.trimIndent()
+        val frameTemplate: String =
+            """
+            ┌───┬───┬───┬───┬───┬───┬───┬───┐
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            ├───┼───┼───┼───┼───┼───┼───┼───┤
+            │ %s│ %s│ %s│ %s│ %s│ %s│ %s│ %s│
+            └───┴───┴───┴───┴───┴───┴───┴───┘
+            """.trimIndent()
 
         fun render(board: Board): String {
             return render(board) { }
         }
 
-        fun render(board: Board, config: (Config) -> Unit): String {
-            val toConsume = object : Config {
-                var mutate: Data = Data(false, false, false, false)
+        fun render(
+            board: Board,
+            config: (Config) -> Unit,
+        ): String {
+            val toConsume =
+                object : Config {
+                    var mutate: Data = Data(false, false, false, false)
 
-                override fun frame(frame: Boolean): Config {
-                    mutate = mutate.with(Data.Frame(frame))
-                    return this
-                }
+                    override fun frame(frame: Boolean): Config {
+                        mutate = mutate.with(Data.Frame(frame))
+                        return this
+                    }
 
-                override fun letter(letter: Boolean): Config {
-                    mutate = mutate.with(Data.Letter(letter))
-                    return this
-                }
+                    override fun letter(letter: Boolean): Config {
+                        mutate = mutate.with(Data.Letter(letter))
+                        return this
+                    }
 
-                override fun coordinates(coordinates: Boolean): Config {
-                    mutate = mutate.with(Data.Coordinates(coordinates))
-                    return this
-                }
+                    override fun coordinates(coordinates: Boolean): Config {
+                        mutate = mutate.with(Data.Coordinates(coordinates))
+                        return this
+                    }
 
-                override fun flipped(flipped: Boolean): Config {
-                    mutate = mutate.with(Data.Flipped(flipped))
-                    return this
+                    override fun flipped(flipped: Boolean): Config {
+                        mutate = mutate.with(Data.Flipped(flipped))
+                        return this
+                    }
                 }
-            }
             config(toConsume)
             val data: Data = toConsume.mutate
             return render(board, data)
@@ -241,17 +271,22 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
             }
         }
 
-        private fun render(board: Board, config: Data): String {
+        private fun render(
+            board: Board,
+            config: Data,
+        ): String {
             val render = { p: With<Piece> ->
-                (if (config.letter)
-                    toLetter(p)
-                else
-                    toUnicode(p)
-                        )
+                (
+                    if (config.letter) {
+                        toLetter(p)
+                    } else {
+                        toUnicode(p)
+                    }
+                )
                     .toString() + (if (config.frame) " " else "")
             }
 
-            val empty =  { if (config.frame) "  " else " " }
+            val empty = { if (config.frame) "  " else " " }
             var template: String =
                 if (config.frame) frameTemplate else noframeTemplate
 
@@ -284,28 +319,38 @@ interface DefaultBoard : PieceTypedBoard<Piece> {
             val pieces = ArrayList<String?>()
             if (!config.flipped) {
                 for (row in 7 downTo 0) for (col in 0..7) {
-                    val square = map.get(
-                        Square.pos(
-                            ('a'.code + col).toChar(),
-                            row + 1,
-                        ),
-                    )
+                    val square =
+                        map.get(
+                            Square.pos(
+                                ('a'.code + col).toChar(),
+                                row + 1,
+                            ),
+                        )
                     pieces.add(
                         if (square is With<Piece>
-                        ) (render(square)) else empty.invoke(),
+                        ) {
+                            (render(square))
+                        } else {
+                            empty.invoke()
+                        },
                     )
                 }
             } else {
                 for (row in 0..7) for (col in 7 downTo 0) {
-                    val square = map.get(
-                        Square.pos(
-                            ('a'.code + col).toChar(),
-                            row + 1,
-                        ),
-                    )
+                    val square =
+                        map.get(
+                            Square.pos(
+                                ('a'.code + col).toChar(),
+                                row + 1,
+                            ),
+                        )
                     pieces.add(
                         if (square is With<Piece>
-                        ) (render(square)) else empty(),
+                        ) {
+                            (render(square))
+                        } else {
+                            empty()
+                        },
                     )
                 }
             }

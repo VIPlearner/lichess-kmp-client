@@ -9,21 +9,24 @@ import kotlinx.coroutines.flow.Flow
  * Provides methods to interact with Lichess broadcasts data
  */
 class BroadcastsService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * Get official broadcasts
      * Returns ongoing official broadcasts sorted by tier.
      * After that, returns finished broadcasts sorted by most recent sync time.
      */
-    suspend fun broadcastsOfficial(nb: Int? = null, html: Boolean? = null): Result<Flow<BroadcastWithRounds>> {
+    suspend fun broadcastsOfficial(
+        nb: Int? = null,
+        html: Boolean? = null,
+    ): Result<Flow<BroadcastWithRounds>> {
         return try {
-            val queryParams = mapOf(
-                "nb" to nb,
-                "html" to html
-            ).filterValues { it != null }
-            val result: Flow<BroadcastWithRounds> = apiClient.safeGet("api/broadcast", queryParams)
+            val queryParams =
+                mapOf(
+                    "nb" to nb,
+                    "html" to html,
+                ).filterValues { it != null }
+            val result: Flow<BroadcastWithRounds> = apiClient.safeNdjsonGet("api/broadcast", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -34,12 +37,16 @@ class BroadcastsService(
      * Get paginated top broadcast previews
      * The same data, in the same order, as can be seen on [https://lichess.org/broadcast](/broadcast).
      */
-    suspend fun broadcastsTop(page: Int? = null, html: Boolean? = null): Result<BroadcastTop> {
+    suspend fun broadcastsTop(
+        page: Int? = null,
+        html: Boolean? = null,
+    ): Result<BroadcastTop> {
         return try {
-            val queryParams = mapOf(
-                "page" to page,
-                "html" to html
-            ).filterValues { it != null }
+            val queryParams =
+                mapOf(
+                    "page" to page,
+                    "html" to html,
+                ).filterValues { it != null }
             val result: BroadcastTop = apiClient.safeGet("api/broadcast/top", queryParams)
             Result.success(result)
         } catch (e: Exception) {
@@ -52,13 +59,18 @@ class BroadcastsService(
      * Get all incoming, ongoing, and finished official broadcasts.
      * The broadcasts are sorted by created date, most recent first.
      */
-    suspend fun broadcastsByUser(username: String, page: Int? = null, html: Boolean? = null): Result<BroadcastsbyuserResponse> {
+    suspend fun broadcastsByUser(
+        username: String,
+        page: Int? = null,
+        html: Boolean? = null,
+    ): Result<BroadcastsbyuserResponse> {
         return try {
-            val queryParams = mapOf(
-                "page" to page,
-                "html" to html
-            ).filterValues { it != null }
-            val result: BroadcastsbyuserResponse = apiClient.safeGet("api/broadcast/by/${username}", queryParams)
+            val queryParams =
+                mapOf(
+                    "page" to page,
+                    "html" to html,
+                ).filterValues { it != null }
+            val result: BroadcastsbyuserResponse = apiClient.safeGet("api/broadcast/by/$username", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -69,12 +81,16 @@ class BroadcastsService(
      * Search broadcasts
      * Search across recent official broadcasts.
      */
-    suspend fun broadcastsSearch(page: Int? = null, q: String? = null): Result<BroadcastssearchResponse> {
+    suspend fun broadcastsSearch(
+        page: Int? = null,
+        q: String? = null,
+    ): Result<BroadcastssearchResponse> {
         return try {
-            val queryParams = mapOf(
-                "page" to page,
-                "q" to q
-            ).filterValues { it != null }
+            val queryParams =
+                mapOf(
+                    "page" to page,
+                    "q" to q,
+                ).filterValues { it != null }
             val result: BroadcastssearchResponse = apiClient.safeGet("api/broadcast/search", queryParams)
             Result.success(result)
         } catch (e: Exception) {
@@ -102,7 +118,7 @@ class BroadcastsService(
      */
     suspend fun broadcastTourGet(broadcastTournamentId: String): Result<BroadcastWithRounds> {
         return try {
-            val result: BroadcastWithRounds = apiClient.safeGet("api/broadcast/${broadcastTournamentId}")
+            val result: BroadcastWithRounds = apiClient.safeGet("api/broadcast/$broadcastTournamentId")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -115,7 +131,7 @@ class BroadcastsService(
      */
     suspend fun broadcastPlayersGet(broadcastTournamentId: String): Result<List<BroadcastPlayerEntry>> {
         return try {
-            val result: List<BroadcastPlayerEntry> = apiClient.safeGet("broadcast/${broadcastTournamentId}/players")
+            val result: List<BroadcastPlayerEntry> = apiClient.safeGet("broadcast/$broadcastTournamentId/players")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -126,9 +142,15 @@ class BroadcastsService(
      * Get a player from a broadcast
      * Get the details of a specific player and their games from a broadcast tournament.
      */
-    suspend fun broadcastPlayerGet(broadcastTournamentId: String, playerId: String): Result<BroadcastPlayerEntryWithFideAndGames> {
+    suspend fun broadcastPlayerGet(
+        broadcastTournamentId: String,
+        playerId: String,
+    ): Result<BroadcastPlayerEntryWithFideAndGames> {
         return try {
-            val result: BroadcastPlayerEntryWithFideAndGames = apiClient.safeGet("broadcast/${broadcastTournamentId}/players/${playerId}")
+            val result: BroadcastPlayerEntryWithFideAndGames =
+                apiClient.safeGet(
+                    "broadcast/$broadcastTournamentId/players/$playerId",
+                )
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -140,9 +162,12 @@ class BroadcastsService(
      * Update information about a broadcast tournament that you created.
      * This endpoint accepts the same form data as the web form.
      */
-    suspend fun broadcastTourUpdate(broadcastTournamentId: String, formData: Map<String, String>): Result<Ok> {
+    suspend fun broadcastTourUpdate(
+        broadcastTournamentId: String,
+        formData: Map<String, String>,
+    ): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("broadcast/${broadcastTournamentId}/edit", body = formData)
+            val result: Ok = apiClient.safePost("broadcast/$broadcastTournamentId/edit", body = formData)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -154,9 +179,12 @@ class BroadcastsService(
      * Create a new broadcast round to relay external games.
      * This endpoint accepts the same form data as the web form.
      */
-    suspend fun broadcastRoundCreate(broadcastTournamentId: String, formData: Map<String, String>): Result<BroadcastRoundNew> {
+    suspend fun broadcastRoundCreate(
+        broadcastTournamentId: String,
+        formData: Map<String, String>,
+    ): Result<BroadcastRoundNew> {
         return try {
-            val result: BroadcastRoundNew = apiClient.safePost("broadcast/${broadcastTournamentId}/new", body = formData)
+            val result: BroadcastRoundNew = apiClient.safePost("broadcast/$broadcastTournamentId/new", body = formData)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -167,9 +195,16 @@ class BroadcastsService(
      * Get a broadcast round
      * Get information about a broadcast round.
      */
-    suspend fun broadcastRoundGet(broadcastTournamentSlug: String, broadcastRoundSlug: String, broadcastRoundId: String): Result<BroadcastRound> {
+    suspend fun broadcastRoundGet(
+        broadcastTournamentSlug: String,
+        broadcastRoundSlug: String,
+        broadcastRoundId: String,
+    ): Result<BroadcastRound> {
         return try {
-            val result: BroadcastRound = apiClient.safeGet("api/broadcast/${broadcastTournamentSlug}/${broadcastRoundSlug}/${broadcastRoundId}")
+            val result: BroadcastRound =
+                apiClient.safeGet(
+                    "api/broadcast/$broadcastTournamentSlug/$broadcastRoundSlug/$broadcastRoundId",
+                )
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -181,9 +216,12 @@ class BroadcastsService(
      * Update information about a broadcast round.
      * This endpoint accepts the same form data as the web form.
      */
-    suspend fun broadcastRoundUpdate(broadcastRoundId: String, formData: Map<String, String>): Result<BroadcastRound> {
+    suspend fun broadcastRoundUpdate(
+        broadcastRoundId: String,
+        formData: Map<String, String>,
+    ): Result<BroadcastRound> {
         return try {
-            val result: BroadcastRound = apiClient.safePost("broadcast/round/${broadcastRoundId}/edit", body = formData)
+            val result: BroadcastRound = apiClient.safePost("broadcast/round/$broadcastRoundId/edit", body = formData)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -196,7 +234,7 @@ class BroadcastsService(
      */
     suspend fun broadcastRoundReset(broadcastRoundId: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/broadcast/round/${broadcastRoundId}/reset")
+            val result: Ok = apiClient.safePost("api/broadcast/round/$broadcastRoundId/reset")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -208,9 +246,12 @@ class BroadcastsService(
      * Update a broadcast with new PGN.
      * Only for broadcasts without a source URL.
      */
-    suspend fun broadcastPush(broadcastRoundId: String, body: String): Result<BroadcastPgnPush> {
+    suspend fun broadcastPush(
+        broadcastRoundId: String,
+        body: String,
+    ): Result<BroadcastPgnPush> {
         return try {
-            val result: BroadcastPgnPush = apiClient.safePost("api/broadcast/round/${broadcastRoundId}/push", body = body)
+            val result: BroadcastPgnPush = apiClient.safePost("api/broadcast/round/$broadcastRoundId/push", body = body)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -224,7 +265,7 @@ class BroadcastsService(
      */
     suspend fun broadcastStreamRoundPgn(broadcastRoundId: String): Result<String> {
         return try {
-            val result: String = apiClient.safeGet("api/stream/broadcast/round/${broadcastRoundId}.pgn")
+            val result: String = apiClient.safeGetPgn("api/stream/broadcast/round/$broadcastRoundId.pgn")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -238,7 +279,7 @@ class BroadcastsService(
      */
     suspend fun broadcastRoundPgn(broadcastRoundId: String): Result<String> {
         return try {
-            val result: String = apiClient.safeGet("api/broadcast/round/${broadcastRoundId}.pgn")
+            val result: String = apiClient.safeGetPgn("api/broadcast/round/$broadcastRoundId.pgn")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -252,7 +293,7 @@ class BroadcastsService(
      */
     suspend fun broadcastAllRoundsPgn(broadcastTournamentId: String): Result<String> {
         return try {
-            val result: String = apiClient.safeGet("api/broadcast/${broadcastTournamentId}.pgn")
+            val result: String = apiClient.safeGetPgn("api/broadcast/$broadcastTournamentId.pgn")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -266,10 +307,11 @@ class BroadcastsService(
      */
     suspend fun broadcastMyRoundsGet(nb: Int? = null): Result<Flow<BroadcastMyRound>> {
         return try {
-            val queryParams = mapOf(
-                "nb" to nb
-            ).filterValues { it != null }
-            val result: Flow<BroadcastMyRound> = apiClient.safeGet("api/broadcast/my-rounds", queryParams)
+            val queryParams =
+                mapOf(
+                    "nb" to nb,
+                ).filterValues { it != null }
+            val result: Flow<BroadcastMyRound> = apiClient.safeNdjsonGet("api/broadcast/my-rounds", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

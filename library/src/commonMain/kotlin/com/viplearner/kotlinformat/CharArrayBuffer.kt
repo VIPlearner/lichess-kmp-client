@@ -17,20 +17,18 @@ package dev.simplx
  *  limitations under the License.
  */
 class CharArrayBuffer : Buffer {
-
     protected val backingArray: CharArray
 
-    protected val offset: Int;
+    protected val offset: Int
 
     constructor(array: CharArray) : this(array.size, array, 0)
 
-    constructor(capacity:Int) : this(capacity, CharArray(capacity), 0);
+    constructor(capacity: Int) : this(capacity, CharArray(capacity), 0)
 
-    constructor(capacity:Int, backingArray:CharArray, offset:Int) : super(capacity) {
-        this.backingArray = backingArray;
-        this.offset = offset;
+    constructor(capacity: Int, backingArray: CharArray, offset: Int) : super(capacity) {
+        this.backingArray = backingArray
+        this.offset = offset
     }
-
 
     fun get(): Char {
         if (position == limit) {
@@ -46,7 +44,11 @@ class CharArrayBuffer : Buffer {
         return backingArray[offset + index]
     }
 
-    operator fun get(dest: CharArray, off: Int, len: Int): CharArrayBuffer {
+    operator fun get(
+        dest: CharArray,
+        off: Int,
+        len: Int,
+    ): CharArrayBuffer {
         val length = dest.size
         if (off < 0 || len < 0 || off.toLong() + len.toLong() > length) {
             throw IndexOutOfBoundsException()
@@ -63,7 +65,10 @@ class CharArrayBuffer : Buffer {
         return false
     }
 
-    fun subSequence(start: Int, end: Int): CharArrayBuffer {
+    fun subSequence(
+        start: Int,
+        end: Int,
+    ): CharArrayBuffer {
         if (start < 0 || end < start || end > remaining()) {
             throw IndexOutOfBoundsException()
         }
@@ -73,11 +78,17 @@ class CharArrayBuffer : Buffer {
         return result
     }
 
-    fun copy(other: CharArrayBuffer, markOfOther: Int): CharArrayBuffer {
-        val buf = CharArrayBuffer(
-            other
-                .capacity(), other.backingArray, other.offset
-        )
+    fun copy(
+        other: CharArrayBuffer,
+        markOfOther: Int,
+    ): CharArrayBuffer {
+        val buf =
+            CharArrayBuffer(
+                other
+                    .capacity(),
+                other.backingArray,
+                other.offset,
+            )
         buf.limit = other.limit()
         buf.position = other.position()
         buf.mark = markOfOther

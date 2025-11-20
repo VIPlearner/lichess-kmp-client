@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AccountPlayingResponse(
-    val nowPlaying: List<NowPlayingGame>
+    val nowPlaying: List<NowPlayingGame>,
 )
 
 @Serializable
@@ -27,7 +27,7 @@ data class NowPlayingGame(
     val tournamentId: String? = null,
     val swissId: String? = null,
     val winner: GameColor? = null,
-    val ratingDiff: Int? = null
+    val ratingDiff: Int? = null,
 )
 
 @Serializable
@@ -36,13 +36,13 @@ data class NowPlayingOpponent(
     val username: String,
     val rating: Int? = null,
     val ratingDiff: Int? = null,
-    val ai: Int? = null
+    val ai: Int? = null,
 )
 
 @Serializable
 data class GameImportResponse(
     val id: String,
-    val url: String
+    val url: String,
 )
 
 @Serializable
@@ -53,14 +53,14 @@ data class LiveStreamerResponse(
     val patron: Boolean? = null,
     val flair: Flair? = null,
     val stream: LiveStream? = null,
-    val streamer: StreamerInfo? = null
+    val streamer: StreamerInfo? = null,
 )
 
 @Serializable
 data class LiveStream(
     val service: String,
     val status: String,
-    val lang: String? = null
+    val lang: String? = null,
 )
 
 @Serializable
@@ -70,24 +70,24 @@ data class StreamerInfo(
     val description: String? = null,
     val twitch: String? = null,
     val youTube: String? = null,
-    val image: String? = null
+    val image: String? = null,
 )
 
 @Serializable
 data class PlayerAutocompleteResponse(
-    val result: List<LightUserOnline>
+    val result: List<LightUserOnline>,
 )
 
 @Serializable
 data class BoardSeekResponse(
-    val id: String
+    val id: String,
 )
 
 @Serializable
 data class ExternalEngineAnalyseResponse(
     val id: String,
     val work: ExternalEngineWork,
-    val engine: ExternalEngine
+    val engine: ExternalEngine,
 )
 
 @Serializable
@@ -107,13 +107,13 @@ data class TvChannelsResponse(
     val crazyhouse: TvGame,
     val chess960: TvGame,
     val kingOfTheHill: TvGame,
-    val best: TvGame
+    val best: TvGame,
 )
 
 @Serializable
 data class TournamentTeamsResponse(
     val id: String,
-    val teams: List<TournamentTeam>
+    val teams: List<TournamentTeam>,
 )
 
 @Serializable
@@ -121,12 +121,11 @@ data class TournamentTeam(
     val rank: Int,
     val id: String,
     val score: Int,
-    val players: List<TournamentTeamPlayer>
+    val players: List<TournamentTeamPlayer>,
 )
 
 @Serializable
 data class TournamentTeamPlayer(
     val user: LightUser,
-    val score: Int? = null
+    val score: Int? = null,
 )
-

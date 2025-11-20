@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class UserExtended(
@@ -26,5 +25,5 @@ data class UserExtended(
     val streamer: UserStreamer? = null,
     val followable: Boolean? = null,
     val following: Boolean? = null,
-    val blocking: Boolean? = null
+    val blocking: Boolean? = null,
 )

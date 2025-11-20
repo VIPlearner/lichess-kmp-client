@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class Perfs(
@@ -22,5 +21,5 @@ data class Perfs(
     val rapid: Perf? = null,
     val storm: PuzzleModePerf? = null,
     val racer: PuzzleModePerf? = null,
-    val streak: PuzzleModePerf? = null
+    val streak: PuzzleModePerf? = null,
 )

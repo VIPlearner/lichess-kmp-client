@@ -8,12 +8,12 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 @Serializable
 data class BoardgamestreamEventGameFullEventClock(
     val initial: Long? = null,
-    val increment: Long? = null
+    val increment: Long? = null,
 )
 
 @Serializable
 data class BoardgamestreamEventGameFullEventPerf(
-    val name: String? = null
+    val name: String? = null,
 )
 
 @Serializable
@@ -22,9 +22,8 @@ enum class BoardgamestreamEventChatLineEventRoom {
     PLAYER,
 
     @SerialName("spectator")
-    SPECTATOR
+    SPECTATOR,
 }
-
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -46,7 +45,7 @@ sealed class BoardgamestreamEvent {
         val initialFen: String,
         val state: GameStateEvent,
         val daysPerTurn: Int? = null,
-        val tournamentId: String? = null
+        val tournamentId: String? = null,
     ) : BoardgamestreamEvent()
 
     @Serializable
@@ -63,7 +62,7 @@ sealed class BoardgamestreamEvent {
         val wdraw: Boolean? = null,
         val bdraw: Boolean? = null,
         val wtakeback: Boolean? = null,
-        val btakeback: Boolean? = null
+        val btakeback: Boolean? = null,
     ) : BoardgamestreamEvent()
 
     @Serializable
@@ -72,7 +71,7 @@ sealed class BoardgamestreamEvent {
         val type: String,
         val room: BoardgamestreamEventChatLineEventRoom,
         val username: String,
-        val text: String
+        val text: String,
     ) : BoardgamestreamEvent()
 
     @Serializable
@@ -80,6 +79,6 @@ sealed class BoardgamestreamEvent {
     data class OpponentGoneEvent(
         val type: String,
         val gone: Boolean,
-        val claimWinInSeconds: Int? = null
+        val claimWinInSeconds: Int? = null,
     ) : BoardgamestreamEvent()
 }

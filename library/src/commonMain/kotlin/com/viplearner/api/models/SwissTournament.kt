@@ -1,12 +1,12 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class SwissTournamentClock(
     val limit: Double,
-    val increment: Double
+    val increment: Double,
 )
 
 @Serializable
@@ -17,14 +17,14 @@ data class SwissTournamentStats(
     val draws: Double,
     val byes: Double,
     val absences: Double,
-    val averageRating: Double
+    val averageRating: Double,
 )
 
 @Serializable
 data class SwissTournamentNextround(
     val at: String? = null,
     @SerialName("in")
-    val `in`: Int? = null
+    val `in`: Long? = null,
 )
 
 @Serializable
@@ -43,5 +43,5 @@ data class SwissTournament(
     val stats: SwissTournamentStats? = null,
     val rated: Boolean,
     val verdicts: Verdicts,
-    val nextRound: SwissTournamentNextround? = null
+    val nextRound: SwissTournamentNextround? = null,
 )

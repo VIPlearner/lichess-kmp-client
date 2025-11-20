@@ -1,14 +1,13 @@
 package com.viplearner
 
-import com.viplearner.model.PGN
 import com.viplearner.chess.DefaultPGN
+import com.viplearner.model.PGN
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.readLine
 
 object Util {
-
     fun pgnStream(lines: Sequence<String>): Sequence<PGN> {
         return PgnIterator(lines.iterator()).asSequence()
     }
@@ -85,19 +84,21 @@ object Util {
                     consecutiveEmptyLines = 0
                 }
 
-                val balance: Int = line.toCharArray().sumOf { c ->
-                    when (c) {
-                        '{' -> 1
-                        '}' -> -1
-                        else -> 0
+                val balance: Int =
+                    line.toCharArray().sumOf { c ->
+                        when (c) {
+                            '{' -> 1
+                            '}' -> -1
+                            else -> 0
+                        }
                     }
-                }
 
-                comment = when (balance) {
-                    -1 -> false
-                    1 -> true
-                    else -> comment
-                }
+                comment =
+                    when (balance) {
+                        -1 -> false
+                        1 -> true
+                        else -> comment
+                    }
             }
 
             if (tagList.isEmpty() && moveList.isEmpty()) return null
@@ -111,6 +112,4 @@ object Util {
             return DefaultPGN.of(tags, moves)
         }
     }
-
-
 }

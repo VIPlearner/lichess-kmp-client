@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ArenaStatusName {
@@ -12,5 +12,5 @@ enum class ArenaStatusName {
     STARTED,
 
     @SerialName("finished")
-    FINISHED
+    FINISHED,
 }

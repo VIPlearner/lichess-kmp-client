@@ -9,16 +9,15 @@ import kotlinx.coroutines.flow.Flow
  * Provides methods to interact with Lichess bot data
  */
 class BotService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * Stream incoming events
      * Stream the events reaching a lichess user in real time as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
     suspend fun streamEvent(): Result<Flow<ApiStreamEvent>> {
         return try {
-            val result: Flow<ApiStreamEvent> = apiClient.safeGet("api/stream/event")
+            val result: Flow<ApiStreamEvent> = apiClient.safeNdjsonGet("api/stream/event")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -31,10 +30,11 @@ class BotService(
      */
     suspend fun botOnline(nb: Int? = null): Result<Flow<User>> {
         return try {
-            val queryParams = mapOf(
-                "nb" to nb
-            ).filterValues { it != null }
-            val result: Flow<User> = apiClient.safeGet("api/bot/online", queryParams)
+            val queryParams =
+                mapOf(
+                    "nb" to nb,
+                ).filterValues { it != null }
+            val result: Flow<User> = apiClient.safeNdjsonGet("api/bot/online", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -62,7 +62,7 @@ class BotService(
      */
     suspend fun botGameStream(gameId: String): Result<Flow<BotgamestreamEvent>> {
         return try {
-            val result: Flow<BotgamestreamEvent> = apiClient.safeGet("api/bot/game/stream/${gameId}")
+            val result: Flow<BotgamestreamEvent> = apiClient.safeNdjsonGet("api/bot/game/stream/$gameId")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -74,12 +74,17 @@ class BotService(
      * Make a move in a game being played with the Bot API.
      * The move can also contain a draw offer/agreement.
      */
-    suspend fun botGameMove(gameId: String, move: String, offeringDraw: Boolean? = null): Result<Ok> {
+    suspend fun botGameMove(
+        gameId: String,
+        move: String,
+        offeringDraw: Boolean? = null,
+    ): Result<Ok> {
         return try {
-            val queryParams = mapOf(
-                "offeringDraw" to offeringDraw
-            ).filterValues { it != null }
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/move/${move}", queryParams)
+            val queryParams =
+                mapOf(
+                    "offeringDraw" to offeringDraw,
+                ).filterValues { it != null }
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/move/$move", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -90,13 +95,18 @@ class BotService(
      * Write in the chat
      * Post a message to the player or spectator chat, in a game being played with the Bot API.
      */
-    suspend fun botGameChat(gameId: String, room: String, text: String): Result<Ok> {
+    suspend fun botGameChat(
+        gameId: String,
+        room: String,
+        text: String,
+    ): Result<Ok> {
         return try {
-            val formBody = mapOf(
-                "room" to room,
-                "text" to text
-            ).filterValues { it != null }
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/chat", body = formBody)
+            val formBody =
+                mapOf(
+                    "room" to room,
+                    "text" to text,
+                ).filterValues { it != null }
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/chat", body = formBody)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -109,7 +119,7 @@ class BotService(
      */
     suspend fun botGameChatGet(gameId: String): Result<Flow<GameChat>> {
         return try {
-            val result: Flow<GameChat> = apiClient.safeGet("api/bot/game/${gameId}/chat")
+            val result: Flow<GameChat> = apiClient.safeNdjsonGet("api/bot/game/$gameId/chat")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -122,7 +132,7 @@ class BotService(
      */
     suspend fun botGameAbort(gameId: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/abort")
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/abort")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -135,7 +145,7 @@ class BotService(
      */
     suspend fun botGameResign(gameId: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/resign")
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/resign")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -147,9 +157,12 @@ class BotService(
      * Create/accept/decline draw offers with the Bot API.
      * - `yes`: Offer a draw, or accept the opponent's draw offer.
      */
-    suspend fun botGameDraw(gameId: String, accept: String): Result<Ok> {
+    suspend fun botGameDraw(
+        gameId: String,
+        accept: String,
+    ): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/draw/${accept}")
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/draw/$accept")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -161,9 +174,12 @@ class BotService(
      * Create/accept/decline takebacks with the Bot API.
      * - `yes`: Propose a takeback, or accept the opponent's takeback offer.
      */
-    suspend fun botGameTakeback(gameId: String, accept: String): Result<Ok> {
+    suspend fun botGameTakeback(
+        gameId: String,
+        accept: String,
+    ): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/takeback/${accept}")
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/takeback/$accept")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -176,7 +192,7 @@ class BotService(
      */
     suspend fun botGameClaimVictory(gameId: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/claim-victory")
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/claim-victory")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -189,7 +205,7 @@ class BotService(
      */
     suspend fun botGameClaimDraw(gameId: String): Result<Ok> {
         return try {
-            val result: Ok = apiClient.safePost("api/bot/game/${gameId}/claim-draw")
+            val result: Ok = apiClient.safePost("api/bot/game/$gameId/claim-draw")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

@@ -1,7 +1,6 @@
 package com.viplearner.chess
 
 import com.viplearner.model.formatted
-import kotlin.jvm.JvmRecord
 
 interface Square<T : PieceType> {
     data class Empty<T : PieceType>(val pos: Pos) : Square<T> {
@@ -18,7 +17,9 @@ interface Square<T : PieceType> {
 
     interface Pos {
         fun file(): Char
+
         fun rank(): Int
+
         fun withFile(newFile: Char): Pos {
             return com.viplearner.chess.Square.Companion.pos(newFile, rank())
         }
@@ -27,13 +28,17 @@ interface Square<T : PieceType> {
             return com.viplearner.chess.Square.Companion.pos(file(), newRank)
         }
 
-        fun delta(deltaRank: Int, deltaFile: Int): Pos {
+        fun delta(
+            deltaRank: Int,
+            deltaFile: Int,
+        ): Pos {
             return withRank(rank() + deltaRank)
                 .withFile((file().code + deltaFile).toChar())
         }
     }
 
     fun pos(): Pos
+
     fun file(): Char {
         return pos().file()
     }
@@ -57,12 +62,15 @@ interface Square<T : PieceType> {
     }
 
     companion object {
-        fun <T : PieceType> empty(file: Char, rank: Int): Empty<T> {
+        fun <T : PieceType> empty(
+            file: Char,
+            rank: Int,
+        ): Empty<T> {
             return empty(
                 pos(
                     file,
-                    rank
-                )
+                    rank,
+                ),
             )
         }
 
@@ -74,15 +82,28 @@ interface Square<T : PieceType> {
             return com.viplearner.chess.Square.Empty<T>(pos)
         }
 
-        fun <T : PieceType> withPiece(file: Char, rank: Int, type: T, side: Side): With<T> {
+        fun <T : PieceType> withPiece(
+            file: Char,
+            rank: Int,
+            type: T,
+            side: Side,
+        ): With<T> {
             return withPiece(com.viplearner.chess.Square.Companion.pos(file, rank), type, side)
         }
 
-        fun <T : PieceType> withPiece(square: Square<T>, type: T, side: Side): With<T> {
+        fun <T : PieceType> withPiece(
+            square: Square<T>,
+            type: T,
+            side: Side,
+        ): With<T> {
             return withPiece(square.pos(), type, side)
         }
 
-        fun <T : PieceType> withPiece(pos: Pos, type: T, side: Side): With<T> {
+        fun <T : PieceType> withPiece(
+            pos: Pos,
+            type: T,
+            side: Side,
+        ): With<T> {
             return com.viplearner.chess.Square.With(pos, type, side)
         }
 
@@ -90,7 +111,10 @@ interface Square<T : PieceType> {
             return com.viplearner.chess.Square.Companion.pos(fileRank[0], fileRank[1].digitToInt())
         }
 
-        fun pos(file: Char, rank: Int): Pos {
+        fun pos(
+            file: Char,
+            rank: Int,
+        ): Pos {
             return com.viplearner.chess.Square.FileRank(file, rank)
         }
 

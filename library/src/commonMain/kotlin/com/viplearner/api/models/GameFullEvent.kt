@@ -1,17 +1,16 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class GameFullEventClock(
     val initial: Long? = null,
-    val increment: Long? = null
+    val increment: Long? = null,
 )
 
 @Serializable
 data class GameFullEventPerf(
-    val name: String? = null
+    val name: String? = null,
 )
 
 @Serializable
@@ -28,6 +27,6 @@ data class GameFullEvent(
     val black: GameEventPlayer,
     val initialFen: String,
     val state: GameStateEvent,
-    val daysPerTurn: Int? = null,
-    val tournamentId: String? = null
+    val daysPerTurn: Long? = null,
+    val tournamentId: String? = null,
 )

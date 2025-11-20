@@ -1,17 +1,15 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
-import com.viplearner.api.models.*
-import kotlinx.coroutines.flow.Flow
+import com.viplearner.api.models.SimulResponse
 
 /**
  * Service for Simuls API endpoints
  * Provides methods to interact with Lichess simuls data
  */
 class SimulsService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * Get current simuls
      * Get recently created, started, finished, simuls.

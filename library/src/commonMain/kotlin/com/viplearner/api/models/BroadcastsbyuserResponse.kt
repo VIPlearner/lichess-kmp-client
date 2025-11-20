@@ -7,8 +7,8 @@ data class BroadcastsbyuserResponse(
     val currentPage: Int,
     val maxPerPage: Int,
     val currentPageResults: List<BroadcastByUser>,
-    val nbResults: Int,
-    val previousPage: Int,
-    val nextPage: Int,
-    val nbPages: Int
+    val nbResults: Int?,
+    val previousPage: Int?,
+    val nextPage: Int?,
+    val nbPages: Int,
 )

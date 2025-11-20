@@ -1,31 +1,31 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class PuzzleStormDashboardHigh(
-    val allTime: Int,
-    val day: Int,
-    val month: Int,
-    val week: Int
+    val allTime: Long,
+    val day: Long,
+    val month: Long,
+    val week: Long,
 )
 
 @Serializable
 data class PuzzleStormDashboard(
     val days: List<Day>,
-    val high: PuzzleStormDashboardHigh
+    val high: PuzzleStormDashboardHigh,
 ) {
     @Serializable
     data class Day(
         @SerialName("_id")
         val id: String,
-        val combo: Int,
-        val errors: Int,
-        val highest: Int,
-        val moves: Int,
-        val runs: Int,
-        val score: Int,
-        val time: Int
+        val combo: Long,
+        val errors: Long,
+        val highest: Long,
+        val moves: Long,
+        val runs: Long,
+        val score: Long,
+        val time: Long,
     )
 }

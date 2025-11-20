@@ -1,18 +1,17 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class TvFeedFenD(
     val fen: String,
     val lm: String,
-    val wc: Int,
-    val bc: Int
+    val wc: Long,
+    val bc: Long,
 )
 
 @Serializable
 data class TvFeedFen(
     val t: String,
-    val d: TvFeedFenD
+    val d: TvFeedFenD,
 )

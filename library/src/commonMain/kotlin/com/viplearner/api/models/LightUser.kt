@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class LightUser(
@@ -10,5 +9,5 @@ data class LightUser(
     val flair: Flair? = null,
     val title: Title? = null,
     val patron: Boolean? = null,
-    val patronColor: PatronColor? = null
+    val patronColor: PatronColor? = null,
 )

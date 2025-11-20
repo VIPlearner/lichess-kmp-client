@@ -2,11 +2,10 @@ package com.viplearner.api.client
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class PKCEUtilTest {
-
     @Test
     fun testGenerateCodeVerifier() {
         val verifier = PKCEUtil.generateCodeVerifier()
@@ -59,4 +58,3 @@ class PKCEUtilTest {
         assertTrue(challenge1 != challenge2)
     }
 }
-

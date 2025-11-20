@@ -4,17 +4,27 @@ import com.viplearner.model.formatted
 
 interface FEN {
     fun positions(): String
+
     fun side(): Side
+
     fun castling(): String
+
     fun ep(): String
+
     fun halfMove(): Int
+
     fun move(): Int
 
     fun withPositions(positions: String): FEN
+
     fun withSide(side: Side): FEN
+
     fun withCastling(castling: String): FEN
+
     fun withEP(ep: String): FEN
+
     fun withHalfMove(halfMove: Int): FEN
+
     fun withMove(move: Int): FEN
 
     class Simple(val positions: String, val side: Side, val castling: String, val ep: String, val halfMove: Int, val move: Int) : FEN {
@@ -25,7 +35,7 @@ interface FEN {
                 if (castling!!.isEmpty()) "-" else castling,
                 ep,
                 halfMove,
-                move
+                move,
             )
         }
 
@@ -54,29 +64,70 @@ interface FEN {
         }
 
         override fun withPositions(positions: String): Simple {
-            return com.viplearner.chess.FEN.Simple(positions, this.side, this.castling, this.ep, this.halfMove, this.move)
+            return com.viplearner.chess.FEN.Simple(
+                positions,
+                this.side,
+                this.castling,
+                this.ep,
+                this.halfMove,
+                this.move,
+            )
         }
 
         override fun withSide(side: Side): Simple {
-            return com.viplearner.chess.FEN.Simple(this.positions, side, this.castling, this.ep, this.halfMove, this.move)
+            return com.viplearner.chess.FEN.Simple(
+                this.positions,
+                side,
+                this.castling,
+                this.ep,
+                this.halfMove,
+                this.move,
+            )
         }
 
         override fun withCastling(castling: String): Simple {
-            return com.viplearner.chess.FEN.Simple(this.positions, this.side, castling, this.ep, this.halfMove, this.move)
+            return com.viplearner.chess.FEN.Simple(
+                this.positions,
+                this.side,
+                castling,
+                this.ep,
+                this.halfMove,
+                this.move,
+            )
         }
 
         override fun withEP(ep: String): Simple {
-            return com.viplearner.chess.FEN.Simple(this.positions, this.side, this.castling, ep, this.halfMove, this.move)
+            return com.viplearner.chess.FEN.Simple(
+                this.positions,
+                this.side,
+                this.castling,
+                ep,
+                this.halfMove,
+                this.move,
+            )
         }
 
         override fun withHalfMove(halfMove: Int): Simple {
-            return com.viplearner.chess.FEN.Simple(this.positions, this.side, this.castling, this.ep, halfMove, this.move)
+            return com.viplearner.chess.FEN.Simple(
+                this.positions,
+                this.side,
+                this.castling,
+                this.ep,
+                halfMove,
+                this.move,
+            )
         }
 
         override fun withMove(move: Int): Simple {
-            return com.viplearner.chess.FEN.Simple(this.positions, this.side, this.castling, this.ep, this.halfMove, move)
+            return com.viplearner.chess.FEN.Simple(
+                this.positions,
+                this.side,
+                this.castling,
+                this.ep,
+                this.halfMove,
+                move,
+            )
         }
-
     }
 
     companion object {

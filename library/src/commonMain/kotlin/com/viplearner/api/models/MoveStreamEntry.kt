@@ -1,15 +1,14 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
-
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 
 object MoveStreamEntrySerializer : JsonContentPolymorphicSerializer<MoveStreamEntry>(
-    MoveStreamEntry::class
+    MoveStreamEntry::class,
 ) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<MoveStreamEntry> {
         val jsonObject = element.jsonObject
@@ -35,13 +34,13 @@ sealed class MoveStreamEntry {
         val initialFen: String? = null,
         val fen: String? = null,
         val player: GameColor? = null,
-        val turns: Int? = null,
-        val startedAtTurn: Int? = null,
+        val turns: Long? = null,
+        val startedAtTurn: Long? = null,
         val source: GameSource? = null,
         val status: GameStatus? = null,
-        val createdAt: Int? = null,
+        val createdAt: Long? = null,
         val lastMove: String? = null,
-        val players: GamePlayers? = null
+        val players: GamePlayers? = null,
     ) : MoveStreamEntry()
 
     @Serializable
@@ -49,8 +48,7 @@ sealed class MoveStreamEntry {
     data class Variant2(
         val fen: String,
         val lm: String? = null,
-        val wc: Int,
-        val bc: Int
+        val wc: Long,
+        val bc: Long,
     ) : MoveStreamEntry()
-
 }

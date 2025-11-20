@@ -1,17 +1,16 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class ChallengeOpenJsonPerf(
     val icon: String? = null,
-    val name: String? = null
+    val name: String? = null,
 )
 
 @Serializable
 data class ChallengeOpenJsonOpen(
-    val userIds: List<String>? = null
+    val userIds: List<String>? = null,
 )
 
 @Serializable
@@ -31,5 +30,5 @@ data class ChallengeOpenJson(
     val initialFen: String? = null,
     val urlWhite: String,
     val urlBlack: String,
-    val open: ChallengeOpenJsonOpen
+    val open: ChallengeOpenJsonOpen,
 )

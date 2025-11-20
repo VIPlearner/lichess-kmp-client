@@ -8,7 +8,8 @@ enum class Piece : PieceType {
     bishop,
     rook,
     queen,
-    king;
+    king,
+    ;
 
     fun withSide(side: Side): PieceAndSide {
         return com.viplearner.chess.Piece.PieceAndSide(this, side)
@@ -16,22 +17,23 @@ enum class Piece : PieceType {
 
     @JvmOverloads
     fun toChar(side: Side? = Side.black): Char {
-        val c = when (this) {
-            com.viplearner.chess.Piece.pawn -> 'p'
-            com.viplearner.chess.Piece.knight -> 'n'
-            com.viplearner.chess.Piece.bishop -> 'b'
-            com.viplearner.chess.Piece.rook -> 'r'
-            com.viplearner.chess.Piece.queen -> 'q'
-            com.viplearner.chess.Piece.king -> 'k'
-        }
-        return if (side === Side.black)
+        val c =
+            when (this) {
+                com.viplearner.chess.Piece.pawn -> 'p'
+                com.viplearner.chess.Piece.knight -> 'n'
+                com.viplearner.chess.Piece.bishop -> 'b'
+                com.viplearner.chess.Piece.rook -> 'r'
+                com.viplearner.chess.Piece.queen -> 'q'
+                com.viplearner.chess.Piece.king -> 'k'
+            }
+        return if (side === Side.black) {
             c
-        else
+        } else {
             c.uppercaseChar()
+        }
     }
 
-    class PieceAndSide(val piece: Piece, val side: Side) {
-    }
+    class PieceAndSide(val piece: Piece, val side: Side)
 
     companion object {
         fun fromChar(c: Char): Piece? {
@@ -48,10 +50,11 @@ enum class Piece : PieceType {
 
         fun fromCharWithSide(c: Char): PieceAndSide? {
             val piece = fromChar(c)
-            return if (piece is Piece)
+            return if (piece is Piece) {
                 piece.withSide(if (c.isLowerCase()) Side.black else Side.white)
-            else
+            } else {
                 null
+            }
         }
     }
 }

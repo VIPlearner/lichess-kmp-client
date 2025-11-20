@@ -7,9 +7,8 @@ import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 
-
 object ArenaPositionSerializer : JsonContentPolymorphicSerializer<ArenaPosition>(
-    ArenaPosition::class
+    ArenaPosition::class,
 ) {
     override fun selectDeserializer(element: JsonElement): DeserializationStrategy<ArenaPosition> {
         val jsonObject = element.jsonObject
@@ -29,13 +28,13 @@ sealed class ArenaPosition {
         val eco: String,
         val name: String,
         val fen: String,
-        val url: String
+        val url: String,
     ) : ArenaPosition()
 
     @Serializable
     @SerialName("Custom position")
     data class CustomPosition(
         val name: String,
-        val fen: String
+        val fen: String,
     ) : ArenaPosition()
 }

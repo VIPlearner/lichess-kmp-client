@@ -43,8 +43,10 @@ fun Duration.Companion.ofSeconds(seconds: Int): Duration = seconds.seconds
 /**
  * Obtains a Duration representing a number of seconds with nanosecond adjustment.
  */
-fun Duration.Companion.ofSeconds(seconds: Long, nanoAdjustment: Long): Duration =
-    seconds.seconds + nanoAdjustment.nanoseconds
+fun Duration.Companion.ofSeconds(
+    seconds: Long,
+    nanoAdjustment: Long,
+): Duration = seconds.seconds + nanoAdjustment.nanoseconds
 
 /**
  * Obtains a Duration representing a number of minutes.
@@ -231,4 +233,3 @@ fun Duration.isNegative(): Boolean = this.isNegative()
  * Compares this duration to the specified duration.
  */
 fun Duration.compareTo(other: Duration): Int = this.compareTo(other)
-

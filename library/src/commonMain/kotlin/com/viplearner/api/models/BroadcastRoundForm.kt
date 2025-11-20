@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class BroadcastRoundFormStatus {
@@ -12,14 +12,14 @@ enum class BroadcastRoundFormStatus {
     STARTED,
 
     @SerialName("finished")
-    FINISHED
+    FINISHED,
 }
 
 @Serializable
 data class BroadcastRoundForm(
     val startsAt: Long? = null,
     val startsAfterPrevious: Boolean? = null,
-    val delay: Int? = null,
+    val delay: Long? = null,
     val status: BroadcastRoundFormStatus? = null,
     val rated: Boolean? = null,
     @SerialName("customScoring.white.win")
@@ -30,5 +30,5 @@ data class BroadcastRoundForm(
     val customScoringBlackWin: BroadcastCustomPoints? = null,
     @SerialName("customScoring.black.draw")
     val customScoringBlackDraw: BroadcastCustomPoints? = null,
-    val period: Int? = null
+    val period: Long? = null,
 )

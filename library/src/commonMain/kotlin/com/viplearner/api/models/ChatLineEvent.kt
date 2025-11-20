@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ChatLineEventRoom {
@@ -9,7 +9,7 @@ enum class ChatLineEventRoom {
     PLAYER,
 
     @SerialName("spectator")
-    SPECTATOR
+    SPECTATOR,
 }
 
 @Serializable
@@ -17,5 +17,5 @@ data class ChatLineEvent(
     val type: String,
     val room: ChatLineEventRoom,
     val username: String,
-    val text: String
+    val text: String,
 )

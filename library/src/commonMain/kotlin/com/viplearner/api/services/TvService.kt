@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.Flow
  * Provides methods to interact with Lichess tv data
  */
 class TvService(
-    private val apiClient: BaseApiClient
+    private val apiClient: BaseApiClient,
 ) {
-
     /**
      * Get current TV games
      * Get basic info about the best games being played for each speed and variant,
@@ -33,7 +32,7 @@ class TvService(
      */
     suspend fun tvFeed(): Result<Flow<TvFeed>> {
         return try {
-            val result: Flow<TvFeed> = apiClient.safeGet("api/tv/feed")
+            val result: Flow<TvFeed> = apiClient.safeNdjsonGet("api/tv/feed")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -47,7 +46,7 @@ class TvService(
      */
     suspend fun tvChannelFeed(channel: String): Result<Flow<TvFeed>> {
         return try {
-            val result: Flow<TvFeed> = apiClient.safeGet("api/tv/${channel}/feed")
+            val result: Flow<TvFeed> = apiClient.safeNdjsonGet("api/tv/$channel/feed")
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -59,17 +58,26 @@ class TvService(
      * Get a list of ongoing games for a given TV channel. Similar to [lichess.org/games](https://lichess.org/games).
      * Available in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format, depending on the request `Accept` header.
      */
-    suspend fun tvChannelGames(channel: String, nb: Int? = null, moves: Boolean? = null, pgnInJson: Boolean? = null, tags: Boolean? = null, clocks: Boolean? = null, opening: Boolean? = null): Result<Flow<GameJson>> {
+    suspend fun tvChannelGames(
+        channel: String,
+        nb: Int? = null,
+        moves: Boolean? = null,
+        pgnInJson: Boolean? = null,
+        tags: Boolean? = null,
+        clocks: Boolean? = null,
+        opening: Boolean? = null,
+    ): Result<Flow<GameJson>> {
         return try {
-            val queryParams = mapOf(
-                "nb" to nb,
-                "moves" to moves,
-                "pgnInJson" to pgnInJson,
-                "tags" to tags,
-                "clocks" to clocks,
-                "opening" to opening
-            ).filterValues { it != null }
-            val result: Flow<GameJson> = apiClient.safeGet("api/tv/${channel}", queryParams)
+            val queryParams =
+                mapOf(
+                    "nb" to nb,
+                    "moves" to moves,
+                    "pgnInJson" to pgnInJson,
+                    "tags" to tags,
+                    "clocks" to clocks,
+                    "opening" to opening,
+                ).filterValues { it != null }
+            val result: Flow<GameJson> = apiClient.safeNdjsonGet("api/tv/$channel", queryParams)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

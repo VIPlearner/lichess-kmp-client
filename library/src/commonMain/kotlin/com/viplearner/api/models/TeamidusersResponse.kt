@@ -8,5 +8,5 @@ data class TeamidusersResponse(
     val id: String,
     val name: String,
     val title: Title? = null,
-    val patronColor: PatronColor? = null
+    val patronColor: PatronColor? = null,
 )

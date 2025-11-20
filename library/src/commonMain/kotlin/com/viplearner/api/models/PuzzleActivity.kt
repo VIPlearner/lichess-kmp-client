@@ -1,22 +1,21 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class PuzzleActivityPuzzle(
     val fen: String,
     val id: String,
     val lastMove: String,
-    val plays: Int,
-    val rating: Int,
+    val plays: Long,
+    val rating: Long,
     val solution: List<String>,
-    val themes: List<String>
+    val themes: List<String>,
 )
 
 @Serializable
 data class PuzzleActivity(
-    val date: Int,
+    val date: Long,
     val puzzle: PuzzleActivityPuzzle,
-    val win: Boolean
+    val win: Boolean,
 )

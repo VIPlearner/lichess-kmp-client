@@ -1,12 +1,12 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserActivityInterval(
-    val start: Int,
-    val end: Int
+    val start: Long,
+    val end: Long,
 )
 
 @Serializable
@@ -22,50 +22,49 @@ data class UserActivityGames(
     val horde: UserActivityScore? = null,
     val puzzle: UserActivityScore? = null,
     val classical: UserActivityScore? = null,
-    val rapid: UserActivityScore? = null
+    val rapid: UserActivityScore? = null,
 )
 
 @Serializable
 data class UserActivityPuzzles(
-    val score: UserActivityScore? = null
+    val score: UserActivityScore? = null,
 )
 
 @Serializable
 data class UserActivityTournaments(
-    val nb: Int? = null,
-    val best: List<BestTournament>? = null
+    val nb: Long? = null,
+    val best: List<BestTournament>? = null,
 ) {
     @Serializable
     data class TournamentInfo(
         val id: String,
-        val name: String
+        val name: String,
     )
 
     @Serializable
     data class BestTournament(
         val tournament: TournamentInfo,
-        val nbGames: Int,
-        val score: Int,
-        val rank: Int,
-        val rankPercent: Int
+        val nbGames: Long,
+        val score: Long,
+        val rank: Long,
+        val rankPercent: Long,
     )
-
 }
 
 @Serializable
 data class UserActivityCorrespondencemoves(
-    val nb: Int,
-    val games: List<UserActivityCorrespondenceGame>
+    val nb: Long,
+    val games: List<UserActivityCorrespondenceGame>,
 )
 
 @Serializable
 data class UserActivityCorrespondenceends(
-    val correspondence: CorrespondenceData
+    val correspondence: CorrespondenceData,
 ) {
     @Serializable
     data class CorrespondenceData(
         val score: UserActivityScore,
-        val games: List<UserActivityCorrespondenceGame>
+        val games: List<UserActivityCorrespondenceGame>,
     )
 }
 
@@ -73,12 +72,12 @@ data class UserActivityCorrespondenceends(
 data class UserActivityFollows(
     @SerialName("in")
     val `in`: UserActivityFollowList? = null,
-    val out: UserActivityFollowList? = null
+    val out: UserActivityFollowList? = null,
 )
 
 @Serializable
 data class UserActivityPatron(
-    val months: Int
+    val months: Long,
 )
 
 @Serializable
@@ -99,31 +98,31 @@ data class UserActivity(
     val teams: List<Team>? = null,
     val posts: List<Post>? = null,
     val patron: UserActivityPatron? = null,
-    val stream: Boolean? = null
+    val stream: Boolean? = null,
 ) {
     @Serializable
     data class Study(
         val id: String,
-        val name: String
+        val name: String,
     )
 
     @Serializable
     data class Team(
         val url: String,
         val name: String,
-        val flair: Flair? = null
+        val flair: Flair? = null,
     )
 
     @Serializable
     data class Post(
         val topicUrl: String,
         val topicName: String,
-        val posts: List<PostDetail>
+        val posts: List<PostDetail>,
     ) {
         @Serializable
         data class PostDetail(
             val url: String,
-            val text: String
+            val text: String,
         )
     }
 
@@ -131,6 +130,6 @@ data class UserActivity(
     data class Practice(
         val url: String,
         val name: String,
-        val nbPositions: Int
+        val nbPositions: Long,
     )
 }

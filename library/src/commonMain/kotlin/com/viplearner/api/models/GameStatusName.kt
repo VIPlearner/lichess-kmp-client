@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class GameStatusName {
@@ -45,5 +45,5 @@ enum class GameStatusName {
     INSUFFICIENTMATERIALCLAIM,
 
     @SerialName("variantEnd")
-    VARIANTEND
+    VARIANTEND,
 }

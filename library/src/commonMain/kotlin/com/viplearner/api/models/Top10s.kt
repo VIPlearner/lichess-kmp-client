@@ -1,7 +1,6 @@
 package com.viplearner.api.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class Top10s(
@@ -17,5 +16,5 @@ data class Top10s(
     val antichess: PerfTop10,
     val atomic: PerfTop10,
     val horde: PerfTop10,
-    val racingKings: PerfTop10
+    val racingKings: PerfTop10,
 )

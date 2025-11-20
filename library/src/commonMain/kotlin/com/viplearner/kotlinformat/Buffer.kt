@@ -24,7 +24,6 @@ abstract class Buffer internal constructor(capacity: Int) {
 
     var position = 0
 
-
     fun capacity(): Int {
         return capacity
     }
@@ -48,7 +47,6 @@ abstract class Buffer internal constructor(capacity: Int) {
     fun limit(): Int {
         return limit
     }
-
 
     fun limit(newLimit: Int): Buffer {
         require(!(newLimit < 0 || newLimit > capacity))
@@ -95,4 +93,3 @@ abstract class Buffer internal constructor(capacity: Int) {
         this.capacity = limit
     }
 }
-

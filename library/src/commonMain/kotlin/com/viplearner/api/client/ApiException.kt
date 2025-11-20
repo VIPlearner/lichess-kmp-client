@@ -10,16 +10,15 @@ package com.viplearner.lichess.client.core
 data class ApiException(
     override val message: String,
     val status: Int? = null,
-    val body: String? = null
+    val body: String? = null,
 ) : Exception(
-    buildString {
-        append(message)
-        if (status != null) {
-            append(" (HTTP $status)")
-        }
-        if (body != null) {
-            append(": $body")
-        }
-    }
-)
-
+        buildString {
+            append(message)
+            if (status != null) {
+                append(" (HTTP $status)")
+            }
+            if (body != null) {
+                append(": $body")
+            }
+        },
+    )

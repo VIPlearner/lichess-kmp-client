@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class UserPreferencesTheme {
@@ -75,7 +75,7 @@ enum class UserPreferencesTheme {
     PINK,
 
     @SerialName("ic")
-    IC
+    IC,
 }
 
 @Serializable
@@ -156,7 +156,7 @@ enum class UserPreferencesPieceset {
     SHAPES,
 
     @SerialName("letter")
-    LETTER
+    LETTER,
 }
 
 @Serializable
@@ -204,7 +204,7 @@ enum class UserPreferencesTheme3d {
     JADE,
 
     @SerialName("Woodi")
-    WOODI
+    WOODI,
 }
 
 @Serializable
@@ -240,7 +240,7 @@ enum class UserPreferencesPieceset3d {
     STAUNTON,
 
     @SerialName("CubesAndPi")
-    CUBESANDPI
+    CUBESANDPI,
 }
 
 @Serializable
@@ -270,7 +270,7 @@ enum class UserPreferencesSoundset {
     MUSIC,
 
     @SerialName("speech")
-    SPEECH
+    SPEECH,
 }
 
 @Serializable
@@ -284,34 +284,34 @@ data class UserPreferences(
     val theme3d: UserPreferencesTheme3d? = null,
     val pieceSet3d: UserPreferencesPieceset3d? = null,
     val soundSet: UserPreferencesSoundset? = null,
-    val blindfold: Int? = null,
-    val autoQueen: Int? = null,
-    val autoThreefold: Int? = null,
-    val takeback: Int? = null,
-    val moretime: Int? = null,
-    val clockTenths: Int? = null,
+    val blindfold: Long? = null,
+    val autoQueen: Long? = null,
+    val autoThreefold: Long? = null,
+    val takeback: Long? = null,
+    val moretime: Long? = null,
+    val clockTenths: Long? = null,
     val clockBar: Boolean? = null,
     val clockSound: Boolean? = null,
     val premove: Boolean? = null,
-    val animation: Int? = null,
-    val pieceNotation: Int? = null,
+    val animation: Long? = null,
+    val pieceNotation: Long? = null,
     val captured: Boolean? = null,
     val follow: Boolean? = null,
     val highlight: Boolean? = null,
     val destination: Boolean? = null,
-    val coords: Int? = null,
-    val replay: Int? = null,
-    val challenge: Int? = null,
-    val message: Int? = null,
-    val submitMove: Int? = null,
-    val confirmResign: Int? = null,
-    val insightShare: Int? = null,
-    val keyboardMove: Int? = null,
+    val coords: Long? = null,
+    val replay: Long? = null,
+    val challenge: Long? = null,
+    val message: Long? = null,
+    val submitMove: Long? = null,
+    val confirmResign: Long? = null,
+    val insightShare: Long? = null,
+    val keyboardMove: Long? = null,
     val voiceMove: Boolean? = null,
-    val zen: Int? = null,
-    val ratings: Int? = null,
-    val moveEvent: Int? = null,
-    val rookCastle: Int? = null,
+    val zen: Long? = null,
+    val ratings: Long? = null,
+    val moveEvent: Long? = null,
+    val rookCastle: Long? = null,
     val flairs: Boolean? = null,
-    val sayGG: Int? = null
+    val sayGG: Long? = null,
 )

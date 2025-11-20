@@ -8,9 +8,13 @@ interface Board {
     fun play(move: Move): Board
 
     fun toSAN(move: Move): String
+
     fun toUCI(move: Move): String
+
     fun toFEN(): String
+
     fun validMoves(): Collection<String>
+
     fun variant(): String
 
     fun asMoves(vararg moves: String): List<Move> {
@@ -29,7 +33,8 @@ interface Board {
 
     fun play(vararg moves: String): Board {
         return asMoves(*moves).fold(this) {
-                                          board, move -> board.play(move)
+                board, move ->
+            board.play(move)
         }
     }
 
@@ -55,24 +60,28 @@ interface Board {
 
     fun toPGN(vararg moves: String): String? {
         val end = play(*moves)
-        val sans: List<String> = toSAN(*moves).split(" ")
-            .filter { s -> s.isNotEmpty() }
+        val sans: List<String> =
+            toSAN(*moves).split(" ")
+                .filter { s -> s.isNotEmpty() }
 
         val currentFEN: FEN = FEN.Companion.parse(toFEN())
         val endFEN: FEN = FEN.Companion.parse(end.toFEN())
 
         val lastMove = if (sans.isEmpty()) "" else sans.last()
 
-        val result: String? = when (end.validMoves().isEmpty()) {
-            true -> when {
-                lastMove.contains("#") -> when (endFEN.side()) {
-                    Side.white -> "0-1"
-                    Side.black -> "1-0"
-                }
-                else -> "1/2-1/2"
+        val result: String? =
+            when (end.validMoves().isEmpty()) {
+                true ->
+                    when {
+                        lastMove.contains("#") ->
+                            when (endFEN.side()) {
+                                Side.white -> "0-1"
+                                Side.black -> "1-0"
+                            }
+                        else -> "1/2-1/2"
+                    }
+                false -> "*"
             }
-            false -> "*"
-        }
 
         if (sans.isEmpty()) return result
 
@@ -85,8 +94,11 @@ interface Board {
         }
         var i = if (currentFEN.side() === Side.black) 1 else 0
         while (i < sans.size) {
-            if (i + 1 < sans.size) sb.append("%d. %s %s ".formatted(move, sans.get(i), sans.get(i + 1)))
-            else sb.append("%d. %s ".formatted(move, sans.get(i)))
+            if (i + 1 < sans.size) {
+                sb.append("%d. %s %s ".formatted(move, sans.get(i), sans.get(i + 1)))
+            } else {
+                sb.append("%d. %s ".formatted(move, sans.get(i)))
+            }
             move++
             i += 2
         }
@@ -101,7 +113,9 @@ interface Board {
 
         fun ofStandard(fen: String): Board {
             return ofVariantAndFEN("standard", fen)
-                .orElseGet({ InternalBoardProvider.provider().fromFEN("standard", fen) ?: throw IllegalArgumentException("Invalid FEN: $fen") })
+                .orElseGet({
+                    InternalBoardProvider.provider().fromFEN("standard", fen) ?: throw IllegalArgumentException("Invalid FEN: $fen")
+                })
         }
 
         fun ofChess960(position: Int): Board {
@@ -120,7 +134,10 @@ interface Board {
                 .orElseGet({ InternalBoardProvider.provider().fromFEN("chess960", fen) })
         }
 
-        fun ofVariantAndFEN(variant: String, fen: String): Optional<Board> {
+        fun ofVariantAndFEN(
+            variant: String,
+            fen: String,
+        ): Optional<Board> {
             return Optional.ofNullable(BoardProvider.Companion.providers().get(variant))
                 .map({ provider -> provider.fromFEN(variant, fen) })
         }

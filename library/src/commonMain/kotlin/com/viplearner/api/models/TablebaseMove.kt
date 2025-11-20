@@ -1,7 +1,7 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class TablebaseMoveCategory {
@@ -33,7 +33,7 @@ enum class TablebaseMoveCategory {
     SYZYGY_WIN,
 
     @SerialName("win")
-    WIN
+    WIN,
 }
 
 @Serializable
@@ -41,12 +41,12 @@ data class TablebaseMove(
     val uci: String,
     val san: String,
     val category: TablebaseMoveCategory,
-    val dtz: Int? = null,
+    val dtz: Long? = null,
     @SerialName("precise_dtz")
-    val preciseDtz: Int? = null,
-    val dtc: Int? = null,
-    val dtm: Int? = null,
-    val dtw: Int? = null,
+    val preciseDtz: Long? = null,
+    val dtc: Long? = null,
+    val dtm: Long? = null,
+    val dtw: Long? = null,
     val zeroing: Boolean? = null,
     val conversion: Boolean? = null,
     val checkmate: Boolean? = null,
@@ -56,5 +56,5 @@ data class TablebaseMove(
     @SerialName("variant_loss")
     val variantLoss: Boolean? = null,
     @SerialName("insufficient_material")
-    val insufficientMaterial: Boolean? = null
+    val insufficientMaterial: Boolean? = null,
 )

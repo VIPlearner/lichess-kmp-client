@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ExternalengineacquireResponse(
     val id: String,
     val work: ExternalEngineWork,
-    val engine: ExternalEngine
+    val engine: ExternalEngine,
 )

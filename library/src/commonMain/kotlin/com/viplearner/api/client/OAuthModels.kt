@@ -11,7 +11,7 @@ data class OAuthFlowState(
     val clientId: String,
     val codeVerifier: String,
     val codeChallenge: String,
-    val state: String? = null
+    val state: String? = null,
 )
 
 /**
@@ -21,6 +21,5 @@ data class OAuthFlowState(
 data class OAuthToken(
     val access_token: String,
     val token_type: String,
-    val expires_in: Int? = null
+    val expires_in: Int? = null,
 )
-

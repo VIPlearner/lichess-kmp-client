@@ -1,22 +1,22 @@
 package com.viplearner.api.models
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class TimelineEntryPlanStartType {
     @SerialName("plan-start")
-    PLAN_START
+    PLAN_START,
 }
 
 @Serializable
 data class TimelineEntryPlanStartData(
-    val userId: String
+    val userId: String,
 )
 
 @Serializable
 data class TimelineEntryPlanStart(
     val type: TimelineEntryPlanStartType,
     val date: Double,
-    val data: TimelineEntryPlanStartData
+    val data: TimelineEntryPlanStartData,
 )
