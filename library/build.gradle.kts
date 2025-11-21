@@ -110,6 +110,9 @@ mavenPublishing {
                 id = "viplearner"
                 name = "viplearner"
                 url = "https://github.com/VIPlearner/"
+                email = "joshuaoluwasegun99@gmail.com"
+                organization = ""
+                organizationUrl = ""
             }
         }
         scm {
