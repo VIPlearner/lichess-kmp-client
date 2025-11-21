@@ -1,6 +1,11 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.ChallengeJson
+import com.viplearner.api.models.ChallengeOpenJson
+import com.viplearner.api.models.ChallengeaiResponse
+import com.viplearner.api.models.ChallengelistResponse
+import com.viplearner.api.models.Ok
 
 /**
  * Service for Challenges API endpoints

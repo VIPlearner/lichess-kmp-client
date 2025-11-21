@@ -1,6 +1,12 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.ApiStreamEvent
+import com.viplearner.api.models.BoardSeekRequest
+import com.viplearner.api.models.BoardSeekResponse
+import com.viplearner.api.models.BoardgamestreamEvent
+import com.viplearner.api.models.GameChat
+import com.viplearner.api.models.Ok
 import kotlinx.coroutines.flow.Flow
 
 /**

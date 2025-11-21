@@ -1,6 +1,14 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.ArenaTournament
+import com.viplearner.api.models.ArenaTournamentFull
+import com.viplearner.api.models.ArenaTournamentPlayed
+import com.viplearner.api.models.ArenaTournaments
+import com.viplearner.api.models.GameJson
+import com.viplearner.api.models.Ok
+import com.viplearner.api.models.ResultsbytournamentResponse
+import com.viplearner.api.models.TournamentTeamsResponse
 import kotlinx.coroutines.flow.Flow
 
 /**

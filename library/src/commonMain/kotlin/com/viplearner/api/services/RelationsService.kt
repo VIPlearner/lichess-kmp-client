@@ -1,6 +1,8 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.Ok
+import com.viplearner.api.models.UserExtended
 import kotlinx.coroutines.flow.Flow
 
 /**

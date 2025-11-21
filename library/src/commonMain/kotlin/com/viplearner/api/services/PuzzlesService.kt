@@ -1,6 +1,16 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.PuzzleActivity
+import com.viplearner.api.models.PuzzleAndGame
+import com.viplearner.api.models.PuzzleBatchSelect
+import com.viplearner.api.models.PuzzleBatchSolveRequest
+import com.viplearner.api.models.PuzzleBatchSolveResponse
+import com.viplearner.api.models.PuzzleDashboard
+import com.viplearner.api.models.PuzzleRaceResults
+import com.viplearner.api.models.PuzzleRacer
+import com.viplearner.api.models.PuzzleReplay
+import com.viplearner.api.models.PuzzleStormDashboard
 import kotlinx.coroutines.flow.Flow
 
 /**

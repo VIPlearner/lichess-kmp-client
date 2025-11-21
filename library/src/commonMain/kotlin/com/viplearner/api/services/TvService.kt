@@ -1,6 +1,9 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.GameJson
+import com.viplearner.api.models.TvChannelsResponse
+import com.viplearner.api.models.TvFeed
 import kotlinx.coroutines.flow.Flow
 
 /**

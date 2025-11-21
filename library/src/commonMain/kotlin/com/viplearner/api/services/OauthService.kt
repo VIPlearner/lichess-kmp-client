@@ -1,6 +1,8 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
+import com.viplearner.api.models.TokenResult
+import com.viplearner.api.models.TokenStatus
 
 /**
  * Service for OAuth API endpoints
