@@ -64,7 +64,6 @@ All Lichess API endpoints are exposed through typed services:
 
 ## Documentation
 
-- [Architecture Guide](ARCHITECTURE.md) - Design decisions and patterns
 - [Lichess API Docs](https://lichess.org/api) - Official API reference
 - [OpenAPI Spec](openapi.json) - Complete API specification
 
