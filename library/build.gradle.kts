@@ -35,7 +35,6 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    linuxX64()
     js(IR) {
         browser {
             testTask {
@@ -78,10 +77,6 @@ kotlin {
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-        }
-
-        linuxMain.dependencies {
-            implementation(libs.ktor.client.curl)
         }
 
         // JS engine (if JS target is added in the future)
