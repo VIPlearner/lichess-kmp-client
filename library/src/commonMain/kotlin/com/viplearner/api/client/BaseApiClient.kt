@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 
-const val LICHESS_API_URL = "https://lichess.org/api"
+const val LICHESS_API_URL = "https://lichess.org"
 
 class BaseApiClient(private val ctx: ApiContext) {
     internal val baseUrl: String = ctx.baseUrl
