@@ -1,40 +1,43 @@
 package com.viplearner.api.client
 
 import com.viplearner.lichess.client.core.ApiException
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.Parameters
+import io.ktor.http.appendPathSegments
+import io.ktor.http.contentType
+import io.ktor.http.encodeURLParameter
+import io.ktor.http.headers
+import io.ktor.http.isSuccess
+import io.ktor.http.takeFrom
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.readUTF8Line
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 
 const val LICHESS_API_URL = "https://lichess.org/api"
 
-/**
- * Base API client for making HTTP requests with Ktor.
- *
- * @property baseUrl The base URL for all API requests
- * @property token The bearer token for authentication
- * @property httpClient Optional custom HttpClient (useful for testing with MockEngine)
- */
-class BaseApiClient(
-    val baseUrl: String,
-    token: String,
-    httpClient: HttpClient? = null,
-) {
-    val client: HttpClient = httpClient ?: createDefaultHttpClient(token)
+class BaseApiClient(private val ctx: ApiContext) {
+    internal val baseUrl: String = ctx.baseUrl
+    internal val client: HttpClient = ctx.httpClient
 
     companion object {
         val json =
@@ -44,26 +47,13 @@ class BaseApiClient(
                 explicitNulls = false
             }
 
-        /**
-         * Creates a default HttpClient with standard configuration.
-         * This is exposed so tests can create clients with similar configuration.
-         */
-        fun createDefaultHttpClient(token: String): HttpClient {
+        fun createDefaultHttpClient(): HttpClient {
             return HttpClient {
                 engine {
-                    dispatcher = Dispatchers.IO
                     pipelining = true
                 }
                 install(ContentNegotiation) {
                     json(json)
-                }
-
-                install(Auth) {
-                    bearer {
-                        loadTokens {
-                            BearerTokens(token, null)
-                        }
-                    }
                 }
 
                 install(HttpTimeout) {
@@ -84,10 +74,6 @@ class BaseApiClient(
             }
         }
 
-        /**
-         * Creates a test-friendly HttpClient with minimal configuration.
-         * Useful for creating mock clients without auth, timeouts, etc.
-         */
         fun createTestHttpClient(): HttpClient {
             return HttpClient {
                 install(ContentNegotiation) {
@@ -103,20 +89,22 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Makes a safe GET request and deserializes the response to type T.
-     *
-     * @param path The path to append to the base URL
-     * @param query Query parameters to include in the request
-     * @return The deserialized response
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend inline fun <reified T> safeGet(
+    internal suspend fun applyHeaders(builder: HttpRequestBuilder) {
+        ctx.authProvider.authHeader()?.let { authHeader ->
+            builder.header(HttpHeaders.Authorization, authHeader)
+        }
+        ctx.clientIdProvider?.getClientId()?.let { clientId ->
+            builder.header("X-Client-Id", clientId)
+        }
+    }
+
+    internal suspend inline fun <reified T> safeGet(
         path: String,
         query: Map<String, Any?> = emptyMap(),
     ): T {
         return makeRequest {
             client.get {
+                applyHeaders(this)
                 url {
                     takeFrom(baseUrl)
                     appendPathSegments(path.trim('/'))
@@ -128,23 +116,14 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Makes a safe GET request for PGN content and returns it as a String.
-     *
-     * @param path The path to append to the base URL
-     * @param query Query parameters to include in the request
-     * @return The PGN content as a String
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend fun safeGetPgn(
+    internal suspend fun safeGetPgn(
         path: String,
         query: Map<String, Any?> = emptyMap(),
     ): String {
         val response =
             client.get {
-                headers {
-                    append(HttpHeaders.Accept, "application/x-chess-pgn")
-                }
+                applyHeaders(this)
+                header(HttpHeaders.Accept, "application/x-chess-pgn")
                 url {
                     takeFrom(baseUrl)
                     appendPathSegments(path.trim('/'))
@@ -166,22 +145,14 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Makes a safe POST request and deserializes the response to type T.
-     *
-     * @param path The path to append to the base URL
-     * @param query Query parameters to include in the request
-     * @param body The request body to send
-     * @return The deserialized response
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend inline fun <reified T> safePost(
+    internal suspend inline fun <reified T> safePost(
         path: String,
         query: Map<String, Any?> = emptyMap(),
         body: Any? = null,
     ): T {
         return makeRequest {
             client.post {
+                applyHeaders(this)
                 url {
                     takeFrom(baseUrl)
                     appendPathSegments(path.trim('/'))
@@ -197,22 +168,14 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Makes a safe PUT request and deserializes the response to type T.
-     *
-     * @param path The path to append to the base URL
-     *
-     * @param body The request body to send
-     * @return The deserialized response
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend inline fun <reified T> safePut(
+    internal suspend inline fun <reified T> safePut(
         path: String,
         query: Map<String, Any?> = emptyMap(),
         body: Any? = null,
     ): T {
         return makeRequest {
             client.put {
+                applyHeaders(this)
                 url {
                     takeFrom(baseUrl)
                     appendPathSegments(path.trim('/'))
@@ -228,19 +191,13 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Makes a safe DELETE request and deserializes the response to type T.
-     *
-     * @param path The path to append to the base URL
-     * @return The deserialized response
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend inline fun <reified T> safeDelete(
+    internal suspend inline fun <reified T> safeDelete(
         path: String,
         query: Map<String, Any?> = emptyMap(),
     ): T {
         return makeRequest {
             client.delete {
+                applyHeaders(this)
                 url {
                     takeFrom(baseUrl)
                     appendPathSegments(path.trim('/'))
@@ -252,14 +209,7 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Helper function to make a request and handle errors.
-     *
-     * @param block The request to execute
-     * @return The deserialized response
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend inline fun <reified T> makeRequest(block: () -> HttpResponse): T {
+    internal suspend inline fun <reified T> makeRequest(block: suspend () -> HttpResponse): T {
         val response = block()
 
         return if (response.status.isSuccess()) {
@@ -274,20 +224,14 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Makes a safe POST request with form-urlencoded data and deserializes the response to type T.
-     *
-     * @param path The path to append to the base URL
-     * @param query Query parameters to include in the request
-     * @param formData The form data to send as application/x-www-form-urlencoded
-     * @return The deserialized response
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    suspend inline fun <reified T> safePostFormUrlEncoded(
+    internal suspend inline fun <reified T> safePostFormUrlEncoded(
         path: String,
         query: Map<String, Any?> = emptyMap(),
         formData: Map<String, String>,
     ): T {
+        val authHeader = ctx.authProvider.authHeader()
+        val clientIdHeader = ctx.clientIdProvider?.getClientId()
+
         return makeRequest {
             client.submitForm(
                 url =
@@ -310,25 +254,22 @@ class BaseApiClient(
                             append(key, value)
                         }
                     },
-            )
+            ) {
+                authHeader?.let { header(HttpHeaders.Authorization, it) }
+                clientIdHeader?.let { header("X-Client-Id", it) }
+            }
         }
     }
 
-    /**
-     * Makes a safe POST request with form-urlencoded data and returns an NDJSON stream.
-     *
-     * @param path The path to append to the base URL
-     * @param query Query parameters to include in the request
-     * @param formData The form data to send as application/x-www-form-urlencoded
-     * @return A flow of strings (lines from the NDJSON stream)
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    fun safePostFormUrlEncodedNdjson(
+    internal fun safePostFormUrlEncodedNdjson(
         path: String,
         query: Map<String, Any?> = emptyMap(),
         formData: Map<String, String>,
     ): Flow<String> {
         return flow {
+            val authHeader = ctx.authProvider.authHeader()
+            val clientIdHeader = ctx.clientIdProvider?.getClientId()
+
             val response =
                 client.submitForm(
                     url =
@@ -352,6 +293,8 @@ class BaseApiClient(
                             }
                         },
                 ) {
+                    authHeader?.let { header(HttpHeaders.Authorization, it) }
+                    clientIdHeader?.let { header("X-Client-Id", it) }
                     headers {
                         append("Accept", "application/x-ndjson")
                     }
@@ -376,15 +319,13 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Helper function for streaming ndJson responses.
-     */
-    suspend inline fun <reified T> safeNdjsonGet(
+    internal suspend inline fun <reified T> safeNdjsonGet(
         path: String,
         query: Map<String, Any?> = emptyMap(),
     ): Flow<T> {
         return makeNdJsonRequest {
             client.get {
+                applyHeaders(this)
                 headers {
                     append("Accept", "application/x-ndjson")
                 }
@@ -399,16 +340,14 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Helper function for streaming ndJson responses.
-     */
-    suspend inline fun <reified T> safeNdjsonPost(
+    internal suspend inline fun <reified T> safeNdjsonPost(
         path: String,
         query: Map<String, Any?> = emptyMap(),
         body: Any? = null,
     ): Flow<T> {
         return makeNdJsonRequest {
             client.post {
+                applyHeaders(this)
                 headers {
                     append("Accept", "application/x-ndjson")
                 }
@@ -427,14 +366,7 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Helper function to make a ndJson request and handle errors.
-     *
-     * @param block The request to execute
-     * @return A flow of deserialized responses
-     * @throws com.viplearner.lichess.client.core.ApiException if the request fails
-     */
-    inline fun <reified T> makeNdJsonRequest(crossinline block: suspend () -> HttpResponse): Flow<T> {
+    internal inline fun <reified T> makeNdJsonRequest(crossinline block: suspend () -> HttpResponse): Flow<T> {
         return flow {
             val response = block()
             val channel: ByteReadChannel = response.body()
@@ -448,9 +380,6 @@ class BaseApiClient(
         }
     }
 
-    /**
-     * Closes the HTTP client and releases resources.
-     */
     fun close() {
         client.close()
     }

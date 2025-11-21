@@ -36,6 +36,9 @@ actual object PKCEMultiplatform {
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 private fun ByteArray.toNSData(): NSData {
+    if (this.isEmpty()) {
+        return NSData.create(bytes = null, length = 0u)
+    }
     return this.usePinned { pinned ->
         NSData.create(
             bytes = pinned.addressOf(0),
@@ -46,7 +49,11 @@ private fun ByteArray.toNSData(): NSData {
 
 @OptIn(ExperimentalForeignApi::class)
 private fun NSData.toByteArray(): ByteArray {
-    return ByteArray(this.length.toInt()).apply {
+    val length = this.length.toInt()
+    if (length == 0) {
+        return ByteArray(0)
+    }
+    return ByteArray(length).apply {
         usePinned {
             memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
         }

@@ -37,7 +37,15 @@ kotlin {
     iosSimulatorArm64()
     linuxX64()
     js(IR) {
-        browser()
+        browser {
+            testTask {
+                useKarma {
+                    useSafari()
+                    useChrome()
+                    useFirefox()
+                }
+            }
+        }
         nodejs()
     }
 

@@ -1,7 +1,6 @@
 package com.viplearner.api.services
 
 import com.viplearner.api.client.BaseApiClient
-import com.viplearner.api.models.*
 
 /**
  * Service for External engine API endpoints

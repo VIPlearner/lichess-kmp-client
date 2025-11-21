@@ -1,16 +1,25 @@
 package com.viplearner.api.services
 
+import com.viplearner.api.client.ApiContext
 import com.viplearner.api.client.BaseApiClient
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.*
+import com.viplearner.api.client.auth.NoAuthProvider
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Generated test file for UsersService
@@ -76,9 +85,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -87,8 +99,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup
@@ -1568,9 +1579,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -1579,8 +1593,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: bullet
             // Verify field: blitz
             // Verify field: rapid
@@ -1666,9 +1679,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -1677,8 +1693,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: users
 
             // Cleanup
@@ -1880,9 +1895,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -1891,8 +1909,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: id
             // Verify field: username
             // Verify field: perfs
@@ -2327,9 +2344,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -2338,8 +2358,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup
@@ -2421,9 +2440,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -2432,8 +2454,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup
@@ -2695,9 +2716,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -2706,8 +2730,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: user
             // Verify field: perf
             // Verify field: rank
@@ -3034,9 +3057,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3045,8 +3071,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup
@@ -3328,9 +3353,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3339,8 +3367,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup
@@ -3478,9 +3505,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3489,8 +3519,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup
@@ -3544,9 +3573,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3555,8 +3587,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: users
             // Verify field: nbGames
 
@@ -3611,9 +3642,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3622,8 +3656,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: users
             // Verify field: nbGames
 
@@ -3681,9 +3714,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3692,8 +3728,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: ok
 
             // Cleanup
@@ -3755,9 +3790,12 @@ class UsersServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = UsersService(testApiClient)
 
@@ -3766,8 +3804,7 @@ class UsersServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup

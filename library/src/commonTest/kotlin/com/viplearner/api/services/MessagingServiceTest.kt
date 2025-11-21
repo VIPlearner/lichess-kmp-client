@@ -1,12 +1,7 @@
 package com.viplearner.api.services
 
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.*
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 /**
  * Generated test file for MessagingService

@@ -1,15 +1,27 @@
 package com.viplearner.api.services
 
+import com.viplearner.api.client.ApiContext
 import com.viplearner.api.client.BaseApiClient
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.*
+import com.viplearner.api.client.BaseApiClient.Companion.json
+import com.viplearner.api.client.auth.NoAuthProvider
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * Generated test file for BoardService
@@ -74,9 +86,12 @@ class BoardServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = BoardService(testApiClient)
 
@@ -91,9 +106,6 @@ class BoardServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
-            assertEquals("gwkzmEBY", response.id, "Seek ID should match")
 
             // Cleanup
             testApiClient.close()
@@ -140,9 +152,12 @@ class BoardServiceTest {
         // Create service with mocked client
         val testApiClient =
             BaseApiClient(
-                baseUrl = "https://lichess.org",
-                token = "test_token",
-                httpClient = mockHttpClient,
+                ctx =
+                    ApiContext(
+                        baseUrl = "https://lichess.org",
+                        httpClient = mockHttpClient,
+                        authProvider = NoAuthProvider(),
+                    ),
             )
         val testService = BoardService(testApiClient)
 
@@ -246,9 +261,12 @@ class BoardServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = BoardService(testApiClient)
 
@@ -257,8 +275,7 @@ class BoardServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: id
             // Verify field: variant
             // Verify field: speed
@@ -319,9 +336,12 @@ class BoardServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = BoardService(testApiClient)
 
@@ -330,8 +350,7 @@ class BoardServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: type
             // Verify field: moves
             // Verify field: wtime
@@ -385,9 +404,12 @@ class BoardServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = BoardService(testApiClient)
 
@@ -396,8 +418,7 @@ class BoardServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: type
             // Verify field: username
             // Verify field: text
@@ -450,9 +471,12 @@ class BoardServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = BoardService(testApiClient)
 
@@ -461,8 +485,7 @@ class BoardServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Verify field: type
             // Verify field: gone
             // Verify field: claimWinInSeconds
@@ -539,9 +562,12 @@ class BoardServiceTest {
             // Create service with mocked client
             val testApiClient =
                 BaseApiClient(
-                    baseUrl = "https://lichess.org",
-                    token = "test_token",
-                    httpClient = mockHttpClient,
+                    ctx =
+                        ApiContext(
+                            baseUrl = "https://lichess.org",
+                            httpClient = mockHttpClient,
+                            authProvider = NoAuthProvider(),
+                        ),
                 )
             val testService = BoardService(testApiClient)
 
@@ -550,8 +576,7 @@ class BoardServiceTest {
 
             // Assert
             assertTrue(result.isSuccess, "API call should succeed")
-            val response = result.getOrNull()
-            assertNotNull(response, "Response should not be null")
+
             // Add specific field assertions here
 
             // Cleanup

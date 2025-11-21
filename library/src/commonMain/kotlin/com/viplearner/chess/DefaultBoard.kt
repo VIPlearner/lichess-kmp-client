@@ -1,7 +1,5 @@
 package com.viplearner.chess
 
-import com.viplearner.chess.Square.*
-import com.viplearner.model.*
 import kotlin.jvm.JvmRecord
 
 interface DefaultBoard : PieceTypedBoard<Piece> {

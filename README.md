@@ -1,19 +1,73 @@
-[![official project](http://jb.gg/badges/official.svg)](https://github.com/JetBrains#jetbrains-on-github)
+# Lichess Kotlin Multiplatform Client
 
-# Multiplatform library template
+[![Kotlin](https://img.shields.io/badge/kotlin-1.9.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## What is it?
+Clean, type-safe Kotlin SDK for the [Lichess API](https://lichess.org/api). Supports Android, iOS, JVM, Linux, and JS.
 
-This repository contains a simple library project, intended to demonstrate a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) library that is deployable to [Maven Central](https://central.sonatype.com/).
+## Installation
 
-The library has only one function: generate the [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_sequence) starting from platform-provided numbers. Also, it has a test for each platform just to be sure that tests run.
+```kotlin
+dependencies {
+    implementation("io.github.viplearner:lichess-kmp-client:0.1.0-alpha")
+}
+```
 
-Note that no other actions or tools usually required for the library development are set up, such as [tracking of backwards compatibility](https://kotlinlang.org/docs/jvm-api-guidelines-backward-compatibility.html#tools-designed-to-enforce-backward-compatibility), explicit API mode, licensing, contribution guideline, code of conduct and others. You can find a guide for best practices for designing Kotlin libraries [here](https://kotlinlang.org/docs/api-guidelines-introduction.html).
+## Usage
 
-## Guide
+### Anonymous Access
+```kotlin
+val client = LichessClient.anonymous()
+val tvGames = client.tv.getCurrentTvGames()
+client.close()
+```
 
-Please find the detailed guide [here](https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html).
+### With Authentication
+```kotlin
+val client = LichessClient.withToken("lip_yourAccessToken")
 
-# Other resources
-* [Publishing via the Central Portal](https://central.sonatype.org/publish-ea/publish-ea-guide/)
-* [Gradle Maven Publish Plugin \- Publishing to Maven Central](https://vanniktech.github.io/gradle-maven-publish-plugin/central/)
+client.games.listUserGames("username").onSuccess { games ->
+    games.collect { game -> println(game.id) }
+}
+
+client.close()
+```
+
+### Streaming
+```kotlin
+client.bot.streamEvent().onSuccess { flow ->
+    flow.collect { event -> 
+        println("Event: $event") 
+    }
+}
+```
+
+### OAuth with Auto-Refresh
+```kotlin
+val oauthManager = DefaultOAuthManager(
+    redirectUri = "https://myapp.com/callback",
+    scopes = listOf("board:play", "puzzle:read"),
+    onAuthorizationRequired = { authUrl, _ ->
+        // Direct user to authUrl, return authorization code
+        getCodeFromCallback()
+    }
+)
+
+val client = LichessClient.withClientIdAndOAuth(oauthManager)
+```
+
+## Available Services
+
+All Lichess API endpoints are exposed through typed services:
+
+`account`, `analysis`, `arena`, `board`, `bot`, `broadcasts`, `challenges`, `games`, `messaging`, `oauth`, `puzzles`, `relations`, `studies`, `teams`, `tv`, `users`, and more.
+
+## Documentation
+
+- [Architecture Guide](ARCHITECTURE.md) - Design decisions and patterns
+- [Lichess API Docs](https://lichess.org/api) - Official API reference
+- [OpenAPI Spec](openapi.json) - Complete API specification
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for details
