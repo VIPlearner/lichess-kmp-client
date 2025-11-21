@@ -1,5 +1,10 @@
 package com.viplearner.chess
 
+import com.viplearner.chess.Square.Pos
+import com.viplearner.chess.Square.With
+import com.viplearner.model.formatted
+import com.viplearner.model.join
+import com.viplearner.model.valueOf
 import kotlin.jvm.JvmRecord
 
 interface DefaultBoard : PieceTypedBoard<Piece> {
