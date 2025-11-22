@@ -1,7 +1,6 @@
 # Lichess Kotlin Multiplatform Client
 
-[![Kotlin](https://img.shields.io/badge/kotlin-1.9.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.viplearner/lichess-kmp-client.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.viplearner/lichess-kmp-client)
 
 Clean, type-safe Kotlin SDK for the [Lichess API](https://lichess.org/api). Supports Android, iOS, JVM, Linux, and JS.
 
