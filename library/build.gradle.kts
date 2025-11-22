@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.github.viplearner"
-version = "0.1.0-alpha01"
+version = "0.1.1-alpha"
 
 kotlin {
     jvm()

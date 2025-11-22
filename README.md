@@ -9,7 +9,7 @@ Clean, type-safe Kotlin SDK for the [Lichess API](https://lichess.org/api). Supp
 
 ```kotlin
 dependencies {
-    implementation("io.github.viplearner:lichess-kmp-client:0.1.0-alpha")
+    implementation("io.github.viplearner:lichess-kmp-client:0.1.1-alpha")
 }
 ```
 
