@@ -19,7 +19,7 @@ class BotService(
      * Stream incoming events
      * Stream the events reaching a lichess user in real time as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
-    suspend fun streamEvent(): Result<Flow<ApiStreamEvent>> {
+    fun streamEvent(): Result<Flow<ApiStreamEvent>> {
         return try {
             val result: Flow<ApiStreamEvent> = apiClient.safeNdjsonGet("api/stream/event")
             Result.success(result)

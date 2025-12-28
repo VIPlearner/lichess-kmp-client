@@ -14,7 +14,7 @@ object GameEventOpponentSerializer : JsonContentPolymorphicSerializer<GameEventO
         val jsonObject = element.jsonObject
 
         return when {
-            "rating" in jsonObject && "ratingDiff" in jsonObject -> GameEventOpponent.Player.serializer()
+            "rating" in jsonObject -> GameEventOpponent.Player.serializer()
             "ai" in jsonObject -> GameEventOpponent.AiOpponent.serializer()
             else -> GameEventOpponent.AiOpponent.serializer()
         }
@@ -35,7 +35,7 @@ sealed class GameEventOpponent {
     @Serializable
     @SerialName("ai_opponent")
     data class AiOpponent(
-        val id: Unit?,
+        val id: String? = null,
         val username: String,
         val ai: Long,
     ) : GameEventOpponent()

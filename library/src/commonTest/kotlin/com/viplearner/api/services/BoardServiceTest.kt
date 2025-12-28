@@ -3,7 +3,10 @@ package com.viplearner.api.services
 import com.viplearner.api.client.ApiContext
 import com.viplearner.api.client.BaseApiClient
 import com.viplearner.api.client.BaseApiClient.Companion.json
+import com.viplearner.api.client.LichessClient
 import com.viplearner.api.client.auth.NoAuthProvider
+import com.viplearner.api.models.ApiStreamEvent
+import com.viplearner.api.models.BoardSeekRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -15,6 +18,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
@@ -638,4 +644,59 @@ class BoardServiceTest {
         // Service method: BoardService.boardGameBerserk()
         // This test is skipped until examples are available in the OpenAPI specification
     }
+
+    // integration test
+    @Test
+    fun testStreamLiveGame() =
+        runTest {
+            val client = LichessClient.withToken("lip_0C5vEtdJA4qMC9wBifsK")
+
+            println(client.account.accountMe())
+
+            val gameId = CompletableDeferred<String>()
+
+            val eventJob =
+                backgroundScope.launch {
+                    client.board.streamEvent()
+                        .getOrElse { error("Failed to stream events: $it") }
+                        .collect { event ->
+                            println("Event: $event")
+                            if (event is ApiStreamEvent.GameStartEvent) {
+                                gameId.complete(event.game.gameId)
+                            }
+                        }
+                    println("Event stream CLOSED by Lichess")
+                }
+
+            val seekJob =
+                backgroundScope.launch {
+                    client.board.boardSeekRealTime(
+                        BoardSeekRequest.RealTime(
+                            time = 15.0,
+                            increment = 10,
+                            rated = false,
+                        ),
+                    )
+                        .getOrElse { error("Failed to create seek: $it") }
+                        .collect { seekEvent ->
+                            println("Seek event: $seekEvent")
+                        }
+                    println("Seek stream CLOSED by Lichess")
+                }
+
+            val gameJob =
+                backgroundScope.launch {
+                    val id = gameId.await()
+                    client.board.boardGameStream(id)
+                        .getOrElse { error("Failed to stream game: $it") }
+                        .collect { gameEvent ->
+                            println("Game event: $gameEvent")
+                        }
+                    println("Game stream CLOSED by Lichess — GAME OVER")
+                }
+
+            joinAll(eventJob, seekJob, gameJob)
+
+            println("ALL STREAMS COMPLETED NATURALLY")
+        }
 }

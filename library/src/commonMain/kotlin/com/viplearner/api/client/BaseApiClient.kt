@@ -4,18 +4,21 @@ import com.viplearner.lichess.client.core.ApiException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpRequestRetry
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.prepareForm
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.prepareGet
+import io.ktor.client.request.preparePost
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -25,6 +28,7 @@ import io.ktor.http.contentType
 import io.ktor.http.encodeURLParameter
 import io.ktor.http.headers
 import io.ktor.http.isSuccess
+import io.ktor.http.parameters
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
@@ -54,12 +58,6 @@ class BaseApiClient(private val ctx: ApiContext) {
                 }
                 install(ContentNegotiation) {
                     json(json)
-                }
-
-                install(HttpTimeout) {
-                    requestTimeoutMillis = 30_000
-                    connectTimeoutMillis = 30_000
-                    socketTimeoutMillis = 30_000
                 }
 
                 install(HttpRequestRetry) {
@@ -267,64 +265,14 @@ class BaseApiClient(private val ctx: ApiContext) {
         formData: Map<String, String>,
     ): Flow<String> {
         return flow {
-            val authHeader = ctx.authProvider.authHeader()
-            val clientIdHeader = ctx.clientIdProvider?.getClientId()
-
-            val response =
-                client.submitForm(
-                    url =
-                        buildString {
-                            append(baseUrl)
-                            append("/")
-                            append(path.trim('/'))
-                            if (query.isNotEmpty()) {
-                                append("?")
-                                append(
-                                    query.entries.joinToString("&") { (key, value) ->
-                                        value?.let { "$key=${it.toString().encodeURLParameter()}" } ?: ""
-                                    },
-                                )
-                            }
-                        },
-                    formParameters =
-                        Parameters.build {
-                            formData.forEach { (key, value) ->
-                                append(key, value)
-                            }
-                        },
-                ) {
-                    authHeader?.let { header(HttpHeaders.Authorization, it) }
-                    clientIdHeader?.let { header("X-Client-Id", it) }
-                    headers {
-                        append("Accept", "application/x-ndjson")
-                    }
-                }
-
-            if (!response.status.isSuccess()) {
-                val errorBody = response.bodyAsText()
-                throw ApiException(
-                    message = "API request failed",
-                    status = response.status.value,
-                    body = errorBody,
-                )
-            }
-
-            val channel: ByteReadChannel = response.body()
-            while (!channel.isClosedForRead) {
-                val line = channel.readUTF8Line()
-                if (line != null) {
-                    emit(line)
-                }
-            }
-        }
-    }
-
-    internal suspend inline fun <reified T> safeNdjsonGet(
-        path: String,
-        query: Map<String, Any?> = emptyMap(),
-    ): Flow<T> {
-        return makeNdJsonRequest {
-            client.get {
+            client.prepareForm(
+                formParameters =
+                    Parameters.build {
+                        formData.forEach { (key, value) ->
+                            append(key, value)
+                        }
+                    },
+            ) {
                 applyHeaders(this)
                 headers {
                     append("Accept", "application/x-ndjson")
@@ -336,17 +284,53 @@ class BaseApiClient(private val ctx: ApiContext) {
                         value?.let { parameters.append(key, it.toString()) }
                     }
                 }
+            }.execute { response ->
+                val channel: ByteReadChannel = response.body()
+                while (!channel.isClosedForRead) {
+                    val line = channel.readUTF8Line()
+                    if (line != null) {
+                        emit(line)
+                    }
+                }
             }
         }
     }
 
-    internal suspend inline fun <reified T> safeNdjsonPost(
+    internal inline fun <reified T> safeNdjsonGet(
+        path: String,
+        query: Map<String, Any?> = emptyMap(),
+    ): Flow<T> =
+        flow {
+            client.prepareGet {
+                applyHeaders(this)
+                headers {
+                    append("Accept", "application/x-ndjson")
+                }
+                url {
+                    takeFrom(baseUrl)
+                    appendPathSegments(path.trim('/'))
+                    query.forEach { (key, value) ->
+                        value?.let { parameters.append(key, it.toString()) }
+                    }
+                }
+            }.execute { response ->
+                val channel: ByteReadChannel = response.body()
+                while (!channel.isClosedForRead) {
+                    val line = channel.readUTF8Line()
+                    if (line != null && line.isNotBlank()) {
+                        emit(json.decodeFromString(line))
+                    }
+                }
+            }
+        }
+
+    internal inline fun <reified T> safeNdjsonPost(
         path: String,
         query: Map<String, Any?> = emptyMap(),
         body: Any? = null,
-    ): Flow<T> {
-        return makeNdJsonRequest {
-            client.post {
+    ): Flow<T> =
+        flow {
+            client.preparePost {
                 applyHeaders(this)
                 headers {
                     append("Accept", "application/x-ndjson")
@@ -362,14 +346,21 @@ class BaseApiClient(private val ctx: ApiContext) {
                     contentType(ContentType.Application.Json)
                     setBody(body)
                 }
+            }.execute {
+                val channel: ByteReadChannel = it.body()
+                while (!channel.isClosedForRead) {
+                    val line = channel.readUTF8Line()
+                    if (line != null) {
+                        emit(json.decodeFromString(line))
+                    }
+                }
             }
         }
-    }
 
     internal inline fun <reified T> makeNdJsonRequest(crossinline block: suspend () -> HttpResponse): Flow<T> {
         return flow {
             val response = block()
-            val channel: ByteReadChannel = response.body()
+            val channel: ByteReadChannel = response.bodyAsChannel()
 
             while (!channel.isClosedForRead) {
                 val line = channel.readUTF8Line()

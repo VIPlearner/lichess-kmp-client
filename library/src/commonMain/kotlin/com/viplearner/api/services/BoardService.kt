@@ -20,7 +20,7 @@ class BoardService(
      * Stream incoming events
      * Stream the events reaching a lichess user in real time as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
-    suspend fun streamEvent(): Result<Flow<ApiStreamEvent>> {
+    fun streamEvent(): Result<Flow<ApiStreamEvent>> {
         return try {
             val result: Flow<ApiStreamEvent> = apiClient.safeNdjsonGet("api/stream/event")
             Result.success(result)
@@ -83,7 +83,7 @@ class BoardService(
      * Stream Board game state
      * Stream the state of a game being played with the Board API, as [ndjson](#section/Introduction/Streaming-with-ND-JSON).
      */
-    suspend fun boardGameStream(gameId: String): Result<Flow<BoardgamestreamEvent>> {
+    fun boardGameStream(gameId: String): Result<Flow<BoardgamestreamEvent>> {
         return try {
             val result: Flow<BoardgamestreamEvent> = apiClient.safeNdjsonGet("api/board/game/stream/$gameId")
             Result.success(result)
@@ -127,7 +127,7 @@ class BoardService(
                 mapOf(
                     "room" to room,
                     "text" to text,
-                ).filterValues { it != null }
+                )
             val result: Ok = apiClient.safePost("api/board/game/{gameId}/chat", body = formBody)
             Result.success(result)
         } catch (e: Exception) {
@@ -139,7 +139,7 @@ class BoardService(
      * Fetch the game chat
      * Get the messages posted in the game chat
      */
-    suspend fun boardGameChatGet(): Result<Flow<GameChat>> {
+    fun boardGameChatGet(): Result<Flow<GameChat>> {
         return try {
             val result: Flow<GameChat> = apiClient.safeNdjsonGet("api/board/game/{gameId}/chat")
             Result.success(result)

@@ -263,7 +263,7 @@ class GamesService(
      * Download games by IDs in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format, depending on the request `Accept` header.
      * Games are sorted by reverse chronological order (most recent first)
      */
-    suspend fun gamesExportIds(
+    fun gamesExportIds(
         moves: Boolean? = null,
         pgnInJson: Boolean? = null,
         tags: Boolean? = null,
