@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -647,6 +648,7 @@ class BoardServiceTest {
 
     // integration test
     @Test
+    @Ignore
     fun testStreamLiveGame() =
         runTest {
             val client = LichessClient.withToken("lip_0C5vEtdJA4qMC9wBifsK")
